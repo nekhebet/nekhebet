@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "nekhebet-store"
+version = "4.0.0"
+description = "Nekhebet storage adapter"
+requires-python = ">=3.10"
+
+dependencies = [
+    "psycopg2>=2.9",
+    "nekhebet-core",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["nekhebet_store*"]
