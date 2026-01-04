@@ -21,6 +21,10 @@ import secrets
 import re
 from datetime import datetime, timezone, timedelta
 from typing import Any, Dict, Optional
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from .types import SignedEnvelope
 
 from .types import (
     EnvelopeHeader,
