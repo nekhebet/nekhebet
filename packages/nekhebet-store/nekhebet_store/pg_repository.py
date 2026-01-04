@@ -6,7 +6,7 @@ from typing import Iterable, Optional, Generator, TypedDict, cast
 from uuid import UUID
 
 from psycopg2.extensions import connection as PsycopgConnection
-from psycopg2.extras import RealDictCursor, RealDictRow
+from psycopg2.extras import RealDictCursor
 
 from nekhebet_core import SignedEnvelope
 from nekhebet_core.serialization import to_json_bytes, from_json_bytes
