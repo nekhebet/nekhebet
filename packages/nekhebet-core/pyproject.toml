@@ -10,6 +10,7 @@ requires-python = ">=3.10"
 
 dependencies = [
     "msgspec>=0.18",
+    "cryptography>=42.0.0",  # Добавлена обязательная зависимость для Ed25519
 ]
 
 # =============================================================================
@@ -29,9 +30,9 @@ files = ["packages/nekhebet-core"]
 module = ["msgspec.*"]
 ignore_missing_imports = true
 
-# cryptography has no official stubs
+# cryptography has no official stubs — используем рекурсивный паттерн для всех подмодулей
 [[tool.mypy.overrides]]
-module = ["cryptography.*"]
+module = "cryptography.**"
 ignore_missing_imports = true
 
 # msgspec.Struct uses __init_subclass__ tricks
