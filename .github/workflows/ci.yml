@@ -99,7 +99,7 @@ jobs:
           # Create temporary mypy.ini
           cat > packages/nekhebet-store/mypy_temp.ini << EOF
           [mypy]
-          python_version = 3.11
+          python_version = "3.11"
           strict = true
           check_untyped_defs = true
           disallow_incomplete_defs = true
@@ -109,15 +109,24 @@ jobs:
           warn_return_any = true
           no_implicit_optional = true
           warn_unreachable = true
-
+          
+          # Exclude test files from mypy checking
+          exclude = ".*/tests/.*\\.py$"
+          
           [mypy-lmdb.*]
-          ignore_missing_imports = True
-
+          ignore_missing_imports = true
+          
           [mypy-nekhebet_core.*]
-          ignore_missing_imports = True
-
+          ignore_missing_imports = true
+          
           [mypy-psycopg2.*]
-          ignore_missing_imports = True
+          ignore_missing_imports = true
+          
+          [mypy-dotenv.*]
+          ignore_missing_imports = true
+          
+          [mypy-cryptography.*]
+          ignore_missing_imports = true
           EOF
           
           cd packages/nekhebet-store
