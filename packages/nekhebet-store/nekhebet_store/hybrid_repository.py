@@ -15,22 +15,22 @@ log = logging.getLogger(__name__)
 
 class HybridEventRepository:
     """
-    Гибридное хранилище Nekhebet v4.0 (PostgreSQL + LMDB).
+    Hybrid storage for Nekhebet v4.0 (PostgreSQL + LMDB).
 
-    PostgreSQL — авторитетный источник метаданных, replay-защиты и аналитики.
-    LMDB — сверхбыстрое mmap-хранилище полного SignedEnvelope (blob).
+    PostgreSQL — authoritative source for metadata, replay protection, and analytics.
+    LMDB — ultra-fast mmap storage for full SignedEnvelope blobs.
 
-    Логическая атомарность: сначала PG (критично), потом LMDB.
+    Logical atomicity: PG first (critical), then LMDB.
     """
 
-    __slots__ = ("pg", "lmdb")  # Mechanical Sympathy: избегаем __dict__
+    __slots__ = ("pg", "lmdb")
 
     def __init__(
         self,
         pg_conn,                     # psycopg2 connection
         lmdb_path: str,
         *,
-        map_size: int = 1 << 40,      # 1 TB виртуального пространства
+        map_size: int = 1 << 40,      # 1 TB virtual space
     ) -> None:
         self.pg = PGEventRepository(pg_conn)
         self.lmdb = LMDBEventRepository(path=lmdb_path, map_size=map_size)
@@ -47,12 +47,12 @@ class HybridEventRepository:
 
     def save(self, envelope: SignedEnvelope) -> None:
         """
-        Атомарная (логически) запись в гибрид.
+        Logically atomic write to hybrid storage.
 
-        1. Replay-защита + метаданные → PostgreSQL (authoritative)
-        2. Полный blob → LMDB (только после успеха PG)
+        1. Replay protection + metadata → PostgreSQL (authoritative)
+        2. Full blob → LMDB (only after PG success)
 
-        Если PG провалится — ничего не пишется в LMDB.
+        If PG fails, nothing is written to LMDB.
         """
         header = envelope.header
 
@@ -73,14 +73,14 @@ class HybridEventRepository:
             self.lmdb.save(envelope)
             log.debug("Hybrid save: LMDB blob OK (id=%s)", str(header.id)[:8])
         except LMDBReplayError:
-            # Теоретически невозможно: PG уже проверил replay
+            # Theoretically impossible: PG already checked replay
             log.critical(
                 "Hybrid inconsistency: LMDB replay after PG success (id=%s)",
                 str(header.id)[:8],
             )
             raise
         except Exception as e:
-            # КРИТИЧНО: метаданные в PG есть, blob отсутствует
+            # CRITICAL: metadata in PG exists, blob missing
             log.critical(
                 "HYBRID INCONSISTENCY: PG saved but LMDB failed (id=%s): %s",
                 str(header.id)[:8],
@@ -135,4 +135,4 @@ class HybridEventRepository:
             self.pg._conn.close()  # type: ignore[attr-defined]
         except Exception as e:
             log.warning("Hybrid close: PG connection close error: %s", e)
-        # LMDB закрывается автоматически при завершении процесса
+        # LMDB closes automatically on process termination
