@@ -138,9 +138,6 @@ metrics = EventMetrics()
 # Convenience functions (exported for easy use)
 # =============================================================================
 
-from typing import Any
-import time
-
 def record_signing(event_type: str, start_time: float) -> None:
     """
     Convenience function to record signing metrics.
@@ -166,7 +163,7 @@ def record_verification(
         start_time: Time when verification started (from time.time())
         result: Verification result dictionary containing at least:
                 - "valid": bool
-                - optionally "category": str
+                - optionally "category": str or VerificationCategory
     """
     duration_ms = (time.time() - start_time) * 1000
     metrics.record_verification(
@@ -175,7 +172,6 @@ def record_verification(
         valid=result["valid"],
         category=result.get("category"),
     )
-
 
 # Export for easy access
 __all__ = ["metrics", "record_signing", "record_verification", "EventMetrics"]
