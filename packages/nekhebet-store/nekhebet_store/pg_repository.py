@@ -14,10 +14,6 @@ from nekhebet_core.serialization import to_json_bytes, from_json_bytes
 log = logging.getLogger(__name__)
 
 
-# =====================================================================
-# Errors
-# =====================================================================
-
 class ReplayDetectedError(Exception):
     """
     Raised when a (key_id, nonce) pair has already been seen.
@@ -32,10 +28,6 @@ class ReplayDetectedError(Exception):
     """
     pass
 
-
-# =====================================================================
-# Repository
-# =====================================================================
 
 class EventRepository:
     """
