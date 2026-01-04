@@ -3,7 +3,6 @@ from __future__ import annotations
 import logging
 import os
 from typing import Iterable, Optional
-
 from uuid import UUID
 
 import lmdb
@@ -52,7 +51,7 @@ class LMDBEventRepository:
         self,
         path: str,
         *,
-        map_size: int = 1 << 30,  # 1 GiB по умолчанию — безопасно для Windows и dev
+        map_size: int = 1 << 30,  # 1 GiB default — safe for Windows and dev
         readonly: bool = False,
     ) -> None:
         os.makedirs(path, exist_ok=True)
@@ -65,7 +64,7 @@ class LMDBEventRepository:
             lock=not readonly,
             sync=True,        # durability
             metasync=True,
-            writemap=False,   # лучше для Windows
+            writemap=False,   # better for Windows
             map_async=False,
         )
 
@@ -82,8 +81,8 @@ class LMDBEventRepository:
     @staticmethod
     def _normalize_issued_at(issued_at: str) -> str:
         """
-        В Nekhebet Core issued_at — всегда ISO-строка с 'Z'.
-        Нормализуем на всякий случай (fallback для datetime).
+        In Nekhebet Core, issued_at is always an ISO string ending with 'Z'.
+        Normalize just in case (fallback for datetime objects).
         """
         if issued_at.endswith("Z") or "+" in issued_at:
             return issued_at
@@ -94,25 +93,17 @@ class LMDBEventRepository:
     # ------------------------------------------------------------------ save
     def save(self, envelope: SignedEnvelope) -> None:
         """
-        Persist envelope with replay + idempotency guarantees.
-        Atomic LMDB transaction.
+        Persist envelope with replay protection and idempotency guarantees.
         """
         header = envelope.header
         blob = to_json_bytes(envelope)
-
-        # issued_at — строка в Nekhebet Core
-        replay_val = self._normalize_issued_at(header.issued_at).encode("utf-8")
-        replay_key = self._replay_key(header.key_id, header.nonce)
         content_key = header.payload_hash.encode("utf-8")
+        replay_key = self._replay_key(header.key_id, header.nonce)
 
         with self.env.begin(write=True) as txn:
-            # ------------------------------------------------ replay guard
-            if not txn.put(
-                replay_key,
-                replay_val,
-                db=self._replay,
-                overwrite=False,
-            ):
+            # Replay guard check and insert
+            existing = txn.get(replay_key, db=self._replay)
+            if existing is not None:
                 log.warning(
                     "Replay detected (LMDB): key_id=%s nonce=%s issued_at=%s",
                     header.key_id[:16],
@@ -121,7 +112,15 @@ class LMDBEventRepository:
                 )
                 raise ReplayDetectedError("Nonce already used for this key_id")
 
-            # ------------------------------------------------ main event blob
+            # Store replay entry
+            txn.put(
+                replay_key,
+                header.issued_at.encode("utf-8"),
+                db=self._replay,
+                overwrite=False,
+            )
+
+            # Main event blob
             inserted = txn.put(
                 content_key,
                 blob,
@@ -133,11 +132,11 @@ class LMDBEventRepository:
                     "Duplicate payload ignored (LMDB): content_hash=%s",
                     header.payload_hash[:16],
                 )
-                # Idempotent success — ничего больше не делаем
+                # Idempotent success — no further action needed
 
-    # ------------------------------------------------------------------ get by content_hash (рекомендуемый быстрый путь)
+    # ------------------------------------------------------------------ get by content_hash (recommended fast path)
     def get_by_hash(self, content_hash: str) -> Optional[SignedEnvelope]:
-        """O(1) fetch by payload_hash — основной путь в production."""
+        """O(1) fetch by payload_hash — primary production path."""
         key = content_hash.encode("utf-8")
         with self.env.begin() as txn:
             blob = txn.get(key, db=self._events)
@@ -145,11 +144,11 @@ class LMDBEventRepository:
                 return None
             return from_json_bytes(blob)
 
-    # ------------------------------------------------------------------ get by id (fallback, O(n) — только для dev/debug)
+    # ------------------------------------------------------------------ get by id (fallback, O(n) — dev/debug only)
     def get(self, event_id: str | UUID) -> Optional[SignedEnvelope]:
         """
         Fetch by event id — O(n) scan.
-        В production используйте get_by_hash или внешний индекс.
+        In production, use get_by_hash or an external index.
         """
         log.debug("LMDB.get(event_id=%s) — O(n) scan (dev only)", event_id)
         with self.env.begin() as txn:
@@ -178,7 +177,7 @@ class LMDBEventRepository:
         deleted = 0
         with self.env.begin(write=True) as txn:
             with txn.cursor(db=self._replay) as cur:
-                for _, value in cur:
+                for key, value in cur:
                     if value.decode("utf-8") < older_than_iso:
                         cur.delete()
                         deleted += 1
