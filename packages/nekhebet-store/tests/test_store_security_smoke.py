@@ -74,8 +74,11 @@ def test_store_security_contract() -> None:
 
     payload = {"msg": "store contract", "value": 2026}
 
-    # Reliable path to schema.sql (relative to this test file)
-    schema_path = Path(__file__).parent.parent / "schema.sql"
+    # Reliable path to schema.sql
+    # Структура: packages/nekhebet-store/nekhebet_store/schema.sql
+    # Тест находится в packages/nekhebet-store/tests/
+    schema_path = Path(__file__).resolve().parent.parent / "nekhebet_store" / "schema.sql"
+
     if not schema_path.exists():
         raise FileNotFoundError(f"schema.sql not found at {schema_path}")
 
