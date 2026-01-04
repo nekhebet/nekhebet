@@ -27,9 +27,9 @@ files = ["."]  # Check current package directory (nekhebet_core + tests)
 module = ["msgspec.*"]
 ignore_missing_imports = true
 
-# cryptography has no official stubs — ignore all submodules
+# cryptography has no official stubs — recursively ignore submodules
 [[tool.mypy.overrides]]
-module = "cryptography.**"
+module = "cryptography.*"
 ignore_missing_imports = true
 
 # msgspec.Struct uses __init_subclass__ tricks that mypy cannot fully type-check
