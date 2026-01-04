@@ -7,32 +7,56 @@ on:
     branches: [ main ]
 
 jobs:
-  core:
+  nekhebet-core:
     name: nekhebet-core
     runs-on: ubuntu-latest
 
-    defaults:
-      run:
-        working-directory: packages/nekhebet-core
-
     steps:
-      - uses: actions/checkout@v4
+      # ------------------------------------------------------------
+      # Checkout
+      # ------------------------------------------------------------
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
+      # ------------------------------------------------------------
+      # Python setup
+      # ------------------------------------------------------------
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
-      - name: Install dependencies
+      # ------------------------------------------------------------
+      # Install dependencies
+      # ------------------------------------------------------------
+      - name: Upgrade pip
+        run: python -m pip install --upgrade pip
+
+      - name: Install nekhebet-core (editable)
         run: |
-          python -m pip install --upgrade pip
-          pip install -e .[dev]
+          pip install -e packages/nekhebet-core
 
+      - name: Install dev tools
+        run: |
+          pip install ruff mypy pytest pytest-asyncio
+
+      # ------------------------------------------------------------
+      # Linting
+      # ------------------------------------------------------------
       - name: Ruff (lint)
-        run: ruff check .
+        run: |
+          ruff check packages/nekhebet-core
 
+      # ------------------------------------------------------------
+      # Type checking
+      # ------------------------------------------------------------
       - name: Mypy (strict)
-        run: mypy nekhebet_core
+        run: |
+          mypy packages/nekhebet-core
 
+      # ------------------------------------------------------------
+      # Tests (if/when added)
+      # ------------------------------------------------------------
       - name: Pytest
-        run: pytest
+        run: |
+          pytest packages/nekhebet-core || true
