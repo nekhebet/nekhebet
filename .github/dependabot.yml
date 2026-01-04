@@ -1,0 +1,29 @@
+version: 2
+
+updates:
+  # ------------------------------------------------------------
+  # Python dependencies (pyproject.toml)
+  # ------------------------------------------------------------
+  - package-ecosystem: "pip"
+    directory: "/packages/nekhebet-core"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "04:00"
+    open-pull-requests-limit: 5
+    labels:
+      - dependencies
+      - security
+    commit-message:
+      prefix: "deps"
+      include: "scope"
+
+  # ------------------------------------------------------------
+  # GitHub Actions
+  # ------------------------------------------------------------
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    labels:
+      - dependencies
