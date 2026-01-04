@@ -12,25 +12,40 @@ dependencies = [
     "msgspec>=0.18",
 ]
 
+# =============================================================================
+# mypy configuration
+# =============================================================================
+
 [tool.mypy]
 python_version = "3.11"
 strict = true
-files = ["nekhebet_core"]
 
+# IMPORTANT:
+# mypy is run against the *package root*, not repo root
+files = ["packages/nekhebet-core"]
+
+# msgspec has incomplete / no stubs
 [[tool.mypy.overrides]]
 module = ["msgspec.*"]
 ignore_missing_imports = true
 
+# cryptography has no official stubs
 [[tool.mypy.overrides]]
 module = ["cryptography.*"]
 ignore_missing_imports = true
 
+# msgspec.Struct uses __init_subclass__ tricks
+# mypy cannot type-check these correctly
 [[tool.mypy.overrides]]
 module = [
     "nekhebet_core.types",
     "nekhebet_core.config",
 ]
 disable_error_code = ["call-arg"]
+
+# =============================================================================
+# setuptools
+# =============================================================================
 
 [tool.setuptools.packages.find]
 where = ["."]
