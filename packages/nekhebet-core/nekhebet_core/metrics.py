@@ -24,6 +24,7 @@ class EventMetrics:
     
     _instance: "EventMetrics | None" = None
     _lock = threading.RLock()
+    _initialized: bool
     
     def __new__(cls) -> "EventMetrics":
         if cls._instance is None:
