@@ -1,0 +1,36 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "nekhebet-core"
+version = "4.0.0"
+description = "Nekhebet Core — canonical signed event system"
+requires-python = ">=3.10"
+
+dependencies = [
+    "msgspec>=0.18",
+]
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+files = ["nekhebet_core"]
+
+[[tool.mypy.overrides]]
+module = ["msgspec.*"]
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = ["cryptography.*"]
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = [
+    "nekhebet_core.types",
+    "nekhebet_core.config",
+]
+disable_error_code = ["call-arg"]
+
+[tool.setuptools.packages.find]
+where = ["."]
