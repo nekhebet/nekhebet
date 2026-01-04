@@ -14,16 +14,22 @@ Covers:
 - LMDBEventRepository
 - HybridEventRepository
 
-This is NOT a test suite.
-This is a cryptographic contract.
+This is NOT a regular test suite.
+This is a cryptographic security contract smoke test.
 """
 
 import os
 import shutil
 import sys
 import tempfile
+from pathlib import Path
 
-from dotenv import load_dotenv
+# Optional: load .env for DB credentials (safe if python-dotenv not installed)
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    pass  # python-dotenv not available — use defaults
 
 import psycopg2
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT, connection as PsycopgConnection
@@ -42,20 +48,17 @@ from nekhebet_store.lmdb_repository import LMDBEventRepository, ReplayDetectedEr
 from nekhebet_store.hybrid_repository import HybridEventRepository
 
 
-# Load .env if exists (for DB_PASSWORD etc.)
-load_dotenv()
-
 EVENT_TYPE = "omen.observed"
 SOURCE = "store-security-test"
 KEY_ID = "store-test-key"
 
 
 def get_pg_connection(dbname: str) -> PsycopgConnection:
-    """Universal connection function with .env support"""
+    """Universal connection function with .env support or defaults."""
     return psycopg2.connect(
         dbname=dbname,
         user=os.getenv("DB_USER", "postgres"),
-        password=os.getenv("DB_PASSWORD", ""),  # Empty string if no password
+        password=os.getenv("DB_PASSWORD", ""),  # Empty if no password
         host=os.getenv("DB_HOST", "localhost"),
         port=os.getenv("DB_PORT", "5432"),
     )
@@ -71,15 +74,9 @@ def test_store_security_contract() -> None:
 
     payload = {"msg": "store contract", "value": 2026}
 
-    # Reliable path to schema.sql
-    schema_path = os.path.join(
-        os.path.dirname(__file__),
-        "packages",
-        "nekhebet-store",
-        "nekhebet_store",
-        "schema.sql",
-    )
-    if not os.path.exists(schema_path):
+    # Reliable path to schema.sql (relative to this test file)
+    schema_path = Path(__file__).parent.parent / "schema.sql"
+    if not schema_path.exists():
         raise FileNotFoundError(f"schema.sql not found at {schema_path}")
 
     # ------------------------------------------------------------------
@@ -131,8 +128,8 @@ def test_store_security_contract() -> None:
 
     env3 = create_envelope(event_type=EVENT_TYPE, payload=payload, source=SOURCE, key_id=KEY_ID)
     signed3: SignedEnvelope = sign_envelope(env3, ctx)
-
     repo_lmdb.save(signed3)
+
     try:
         repo_lmdb.save(signed3)
     except LMDBReplayError:
@@ -171,12 +168,12 @@ def test_store_security_contract() -> None:
 
     env5 = create_envelope(event_type=EVENT_TYPE, payload=payload, source=SOURCE, key_id=KEY_ID)
     signed5: SignedEnvelope = sign_envelope(env5, ctx)
-
     repo_hybrid.save(signed5)
+
     try:
         repo_hybrid.save(signed5)
-    except Exception:
-        pass  # Replay from PG or LMDB
+    except Exception:  # Replay from PG or LMDB
+        pass
     else:
         raise AssertionError("Hybrid replay must be rejected")
 
