@@ -21,27 +21,10 @@ dependencies = [
 [tool.mypy]
 python_version = "3.11"
 strict = true
-files = ["nekhebet_store"]
-exclude = ["tests", "test_.*", ".*tests.*"]  # Добавьте исключение тестов
+files = ["packages/nekhebet-store"]
 
-# Настройка пространства имен
-namespace_packages = true
-
-# Игнорировать ошибки импорта для nekhebet-core во время проверки
-ignore_missing_imports = false
-follow_imports = "normal"
-
-# Настройки для некорректных типов
 [[tool.mypy.overrides]]
 module = "lmdb.*"
-ignore_missing_imports = true
-
-[[tool.mypy.overrides]]
-module = "nekhebet_core.*"
-ignore_missing_imports = true
-
-[[tool.mypy.overrides]]
-module = "psycopg2.*"
 ignore_missing_imports = true
 
 # =============================================================================
