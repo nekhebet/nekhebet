@@ -193,7 +193,7 @@ def estimate_payload_size(obj: Any, depth: int = 0) -> int:
     """
     if depth > MAX_PAYLOAD_DEPTH:
         raise ValueError(
-            "Payload nesting depth exceeds limit of {MAX_PAYLOAD_DEPTH}"
+            f"Payload nesting depth exceeds limit of {MAX_PAYLOAD_DEPTH}"
         )
 
     if isinstance(obj, dict):
@@ -201,8 +201,8 @@ def estimate_payload_size(obj: Any, depth: int = 0) -> int:
         for k, v in obj.items():
             if not isinstance(k, str):
                 raise ValueError("Dictionary keys must be strings")
-            size += len(k) + 4 + estimate_payload_size(v, depth + 1) + 1  # quotes + colon + comma
-        return max(size - 1, 2)  # remove trailing comma
+            size += len(k) + 4 + estimate_payload_size(v, depth + 1) + 1
+        return max(size - 1, 2)
 
     if isinstance(obj, list):
         size = 2  # []
@@ -211,20 +211,19 @@ def estimate_payload_size(obj: Any, depth: int = 0) -> int:
         return max(size - 1, 2)
 
     if isinstance(obj, str):
-        return len(obj) + 2  # quotes
+        return len(obj) + 2
 
     if isinstance(obj, (int, bool)):
         return len(str(obj))
 
     if isinstance(obj, float):
         if not math.isfinite(obj):
-            raise ValueError(f"Non-finite float values (NaN, Inf) are not allowed in payload")
+            raise ValueError("Non-finite float values (NaN, Inf) are not allowed in payload")
         return len(str(obj))
 
     if obj is None:
         return 4
 
-    # Reject unsupported types early — canonicalize() will fail later anyway
     raise ValueError(f"Unsupported type in payload: {type(obj).__name__}")
 
 
@@ -245,7 +244,6 @@ def validate_payload_structure(payload: Dict[str, Any]) -> None:
     if not isinstance(payload, dict):
         raise ValueError("Payload must be a dictionary")
 
-    # Reserved fields check — prevents envelope confusion attacks
     reserved = RESERVED_PAYLOAD_FIELDS.intersection(payload.keys())
     if reserved:
         raise ValueError(
@@ -254,7 +252,6 @@ def validate_payload_structure(payload: Dict[str, Any]) -> None:
             "inside payload."
         )
 
-    # Depth and basic type sanity check — early DoS protection
     try:
         estimate_payload_size(payload)
     except ValueError as e:
