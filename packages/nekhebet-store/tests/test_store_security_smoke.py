@@ -22,11 +22,12 @@ import os
 import shutil
 import sys
 import tempfile
+from typing import cast
 
-from dotenv import load_dotenv
+from dotenv import load_dotenv  # type: ignore[import-not-found]
 
 import psycopg2
-from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
+from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT, connection as PsycopgConnection
 
 from nekhebet_core import (
     create_envelope,
@@ -35,14 +36,14 @@ from nekhebet_core import (
     DefaultSigningContext,
     SignedEnvelope,
 )
-from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
+from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey  # type: ignore[import-not-found]
 
 from nekhebet_store.pg_repository import EventRepository, ReplayDetectedError as PGReplayError
 from nekhebet_store.lmdb_repository import LMDBEventRepository, ReplayDetectedError as LMDBReplayError
 from nekhebet_store.hybrid_repository import HybridEventRepository
 
 
-# Загружаем .env, если есть (для DB_PASSWORD и других)
+# Load .env if exists (for DB_PASSWORD etc.)
 load_dotenv()
 
 EVENT_TYPE = "omen.observed"
@@ -50,12 +51,12 @@ SOURCE = "store-security-test"
 KEY_ID = "store-test-key"
 
 
-def get_pg_connection(dbname: str):
-    """Универсальная функция подключения с поддержкой .env"""
+def get_pg_connection(dbname: str) -> PsycopgConnection:
+    """Universal connection function with .env support"""
     return psycopg2.connect(
         dbname=dbname,
         user=os.getenv("DB_USER", "postgres"),
-        password=os.getenv("DB_PASSWORD", ""),  # Если пароля нет — пустая строка
+        password=os.getenv("DB_PASSWORD", ""),  # Empty string if no password
         host=os.getenv("DB_HOST", "localhost"),
         port=os.getenv("DB_PORT", "5432"),
     )
@@ -71,7 +72,7 @@ def test_store_security_contract() -> None:
 
     payload = {"msg": "store contract", "value": 2026}
 
-    # Надёжный путь к schema.sql
+    # Reliable path to schema.sql
     schema_path = os.path.join(
         os.path.dirname(__file__),
         "packages",
@@ -176,7 +177,7 @@ def test_store_security_contract() -> None:
     try:
         repo_hybrid.save(signed5)
     except Exception:
-        pass  # Replay от PG или LMDB
+        pass  # Replay from PG or LMDB
     else:
         raise AssertionError("Hybrid replay must be rejected")
 
@@ -191,7 +192,7 @@ def test_store_security_contract() -> None:
     shutil.rmtree(hybrid_lmdb)
 
     # ------------------------------------------------------------------
-    # Final cleanup: удаляем тестовые БД
+    # Final cleanup: drop test databases
     # ------------------------------------------------------------------
     conn = get_pg_connection("postgres")
     conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
