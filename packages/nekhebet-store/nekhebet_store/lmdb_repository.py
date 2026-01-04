@@ -82,12 +82,9 @@ class LMDBEventRepository:
     def _normalize_issued_at(issued_at: str) -> str:
         """
         In Nekhebet Core, issued_at is always an ISO string ending with 'Z'.
-        Normalize just in case (fallback for datetime objects).
+        Assume it's already normalized.
         """
-        if issued_at.endswith("Z") or "+" in issued_at:
-            return issued_at
-        if hasattr(issued_at, "isoformat"):
-            return issued_at.isoformat().replace("+00:00", "Z")
+        # In Nekhebet v4.0, issued_at is always a proper ISO string
         return issued_at
 
     # ------------------------------------------------------------------ save
