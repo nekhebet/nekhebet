@@ -37,7 +37,7 @@ jobs:
 
       - name: Mypy (strict)
         run: |
-          mypy packages/nekhebet-core || echo "Mypy завершился с ошибками"
+          mypy packages/nekhebet-core || echo "Mypy finished with errors"
 
       - name: Pytest
         run: |
@@ -46,7 +46,7 @@ jobs:
   nekhebet-store:
     name: nekhebet-store
     runs-on: ubuntu-latest
-    needs: nekhebet-core  # Ждем завершения nekhebet-core
+    needs: nekhebet-core  # Wait for nekhebet-core
 
     steps:
       - name: Checkout repository
@@ -60,32 +60,32 @@ jobs:
       - name: Upgrade pip
         run: python -m pip install --upgrade pip
 
-      # Установите зависимости в правильном порядке
+      # Install dependencies in correct order
       - name: Install dependencies
         run: |
-          # Сначала устанавливаем nekhebet-core из локальной директории
+          # First install nekhebet-core from local directory
           pip install -e packages/nekhebet-core
-          # Затем nekhebet-store
+          # Then nekhebet-store
           pip install -e packages/nekhebet-store
           # Dev tools
           pip install ruff mypy pytest pytest-asyncio types-psycopg2
 
-      - name: Проверка импортов
+      - name: Import check
         run: |
           python -c "
           try:
               import nekhebet_core
               from nekhebet_core.serialization import to_json_bytes
-              print('✅ Все импорты работают')
+              print('✅ All imports work')
           except ImportError as e:
-              print(f'❌ Ошибка импорта: {e}')
+              print(f'❌ Import error: {e}')
               import sys
               sys.path.insert(0, 'packages/nekhebet-core')
               sys.path.insert(0, 'packages/nekhebet-store')
-              print('Добавлены пути:', sys.path)
+              print('Added paths:', sys.path)
               try:
                   import nekhebet_core
-                  print('✅ nekhebet_core импортирован после добавления путей')
+                  print('✅ nekhebet_core imported after path addition')
               except:
                   pass
           "
@@ -94,9 +94,9 @@ jobs:
         run: |
           ruff check packages/nekhebet-store
 
-      - name: Mypy (с игнорированием отсутствующих импортов)
+      - name: Mypy (with missing import ignores)
         run: |
-          # Создаем временный mypy.ini
+          # Create temporary mypy.ini
           cat > packages/nekhebet-store/mypy_temp.ini << EOF
           [mypy]
           python_version = 3.11
