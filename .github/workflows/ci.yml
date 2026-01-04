@@ -51,13 +51,13 @@ jobs:
   nekhebet-store:
     name: nekhebet-store
     runs-on: ubuntu-latest
-    needs: nekhebet-core  # Ensure core job passes first
+    needs: nekhebet-core
 
     services:
       postgres:
         image: postgres:16
         env:
-          POSTGRES_PASSWORD: ""      # Empty password (matches test defaults)
+          POSTGRES_HOST_AUTH_METHOD: trust   # Разрешает подключение без пароля (соответствует defaults теста)
           POSTGRES_USER: postgres
           POSTGRES_DB: postgres
         ports:
@@ -90,7 +90,7 @@ jobs:
         run: |
           pip install -e packages/nekhebet-core
           pip install -e packages/nekhebet-store
-          pip install ruff mypy pytest pytest-asyncio python-dotenv  # python-dotenv optional but harmless
+          pip install ruff mypy pytest pytest-asyncio python-dotenv
 
       - name: Ruff (lint)
         run: |
