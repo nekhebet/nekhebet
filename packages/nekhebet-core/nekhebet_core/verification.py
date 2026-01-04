@@ -17,7 +17,10 @@ import re
 from datetime import datetime, timezone, timedelta
 from typing import Optional, Dict, Any
 
-from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PublicKey
+from cryptography.hazmat.primitives.asymmetric.ed25519 import (
+    Ed25519PublicKey,
+)  # type: ignore[import-not-found]
+
 
 from .types import (
     SignedEnvelope,
