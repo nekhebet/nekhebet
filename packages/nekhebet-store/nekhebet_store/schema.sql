@@ -90,10 +90,9 @@ Cleanup is time-based and external.';
 -- ============================================================================
 -- EVENT LINKS (CAUSALITY / DERIVATION GRAPH)
 -- ============================================================================
--- Optional structure:
--- - Links derived / related events
--- - Enables forensic reconstruction
--- - No business logic implied
+-- Optional graph of event relationships.
+-- Purely informational.
+-- No business logic implied.
 -- ============================================================================
 
 CREATE TABLE IF NOT EXISTS event_links (
@@ -192,4 +191,3 @@ Not part of cryptographic trust boundary.';
 --
 -- 5. All security decisions are explicit and auditable
 -- ============================================================================
-
