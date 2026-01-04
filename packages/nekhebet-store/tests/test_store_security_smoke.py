@@ -23,7 +23,7 @@ import shutil
 import sys
 import tempfile
 
-from dotenv import load_dotenv  # type: ignore[import-not-found]
+from dotenv import load_dotenv
 
 import psycopg2
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT, connection as PsycopgConnection
@@ -35,7 +35,7 @@ from nekhebet_core import (
     DefaultSigningContext,
     SignedEnvelope,
 )
-from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey  # type: ignore[import-not-found]
+from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
 
 from nekhebet_store.pg_repository import EventRepository, ReplayDetectedError as PGReplayError
 from nekhebet_store.lmdb_repository import LMDBEventRepository, ReplayDetectedError as LMDBReplayError
