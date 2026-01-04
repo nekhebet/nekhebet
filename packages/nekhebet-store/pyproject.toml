@@ -28,11 +28,12 @@ files = ["."]  # Check current package directory (nekhebet_store + tests)
 module = "lmdb.*"
 ignore_missing_imports = true
 
-# External dependencies without stubs
+# External and optional dependencies without stubs
 [[tool.mypy.overrides]]
 module = [
     "psycopg2.*",
     "nekhebet_core.*",  # Local editable dependency may lack stubs in some environments
+    "dotenv.*",        # python-dotenv used only in tests (optional dev dependency)
 ]
 ignore_missing_imports = true
 
