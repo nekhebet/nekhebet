@@ -10,7 +10,7 @@ requires-python = ">=3.10"
 
 dependencies = [
     "msgspec>=0.18",
-    "cryptography>=42.0.0",  # Добавлена обязательная зависимость для Ed25519
+    "cryptography>=42.0.0",  # Required for Ed25519 operations
 ]
 
 # =============================================================================
@@ -20,23 +20,19 @@ dependencies = [
 [tool.mypy]
 python_version = "3.11"
 strict = true
+files = ["."]  # Check current package directory (nekhebet_core + tests)
 
-# IMPORTANT:
-# mypy is run against the *package root*, not repo root
-files = ["packages/nekhebet-core"]
-
-# msgspec has incomplete / no stubs
+# msgspec has incomplete/no stubs
 [[tool.mypy.overrides]]
 module = ["msgspec.*"]
 ignore_missing_imports = true
 
-# cryptography has no official stubs — используем рекурсивный паттерн для всех подмодулей
+# cryptography has no official stubs — ignore all submodules
 [[tool.mypy.overrides]]
 module = "cryptography.**"
 ignore_missing_imports = true
 
-# msgspec.Struct uses __init_subclass__ tricks
-# mypy cannot type-check these correctly
+# msgspec.Struct uses __init_subclass__ tricks that mypy cannot fully type-check
 [[tool.mypy.overrides]]
 module = [
     "nekhebet_core.types",
@@ -45,8 +41,9 @@ module = [
 disable_error_code = ["call-arg"]
 
 # =============================================================================
-# setuptools
+# setuptools package discovery
 # =============================================================================
 
 [tool.setuptools.packages.find]
 where = ["."]
+include = ["nekhebet_core*"]  # Explicitly include the package namespace
