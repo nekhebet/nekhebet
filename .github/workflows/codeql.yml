@@ -2,34 +2,63 @@ name: CodeQL
 
 on:
   push:
-    branches: [ main ]
+    branches: [ "main" ]
   pull_request:
-    branches: [ main ]
+    branches: [ "main" ]
   schedule:
-    # Еженедельный аудит даже без коммитов
+    # Weekly deep security scan
     - cron: "0 3 * * 1"
+
+permissions:
+  contents: read
+  security-events: write
+
+concurrency:
+  group: codeql-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   analyze:
     name: CodeQL (Python)
     runs-on: ubuntu-latest
 
-    permissions:
-      security-events: write
-      actions: read
-      contents: read
-
     steps:
+      # ------------------------------------------------------------
+      # Checkout
+      # ------------------------------------------------------------
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
 
+      # ------------------------------------------------------------
+      # Initialize CodeQL
+      # ------------------------------------------------------------
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@v3
+        uses: github/codeql-action/init@v4
         with:
           languages: python
-          # Стандартный security-профиль
-          queries: security-and-quality
 
-      # CodeQL сам строит проект
+          # IMPORTANT:
+          # Use security-focused query packs only
+          queries: >
+            security-and-quality
+
+          # Faster + deterministic for Python
+          build-mode: none
+
+      # ------------------------------------------------------------
+      # (Optional but recommended) Install deps
+      # ------------------------------------------------------------
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e packages/nekhebet-core
+
+      # ------------------------------------------------------------
+      # Analyze
+      # ------------------------------------------------------------
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v3
+        uses: github/codeql-action/analyze@v4
+        with:
+          category: "/language:python"
