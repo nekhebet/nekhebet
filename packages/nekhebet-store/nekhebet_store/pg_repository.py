@@ -2,11 +2,11 @@ from __future__ import annotations
 
 import logging
 from contextlib import contextmanager
-from typing import Iterable, Optional, Generator, TypedDict
+from typing import Iterable, Optional, Generator, TypedDict, cast
 from uuid import UUID
 
 from psycopg2.extensions import connection as PsycopgConnection
-from psycopg2.extras import RealDictCursor
+from psycopg2.extras import RealDictCursor, RealDictRow
 
 from nekhebet_core import SignedEnvelope
 from nekhebet_core.serialization import to_json_bytes, from_json_bytes
@@ -167,7 +167,19 @@ class EventRepository:
                 """,
                 (str(event_id),),
             )
-            return cur.fetchone()
+            row = cur.fetchone()
+            
+        if row is None:
+            return None
+            
+        # Convert RealDictRow to EventMetadata
+        return cast(EventMetadata, {
+            "id": row["id"],
+            "event_type": row["event_type"],
+            "issued_at": row["issued_at"],
+            "source": row["source"],
+            "content_hash": row["content_hash"],
+        })
 
     # ------------------------------------------------------------------
     # Get full envelope
