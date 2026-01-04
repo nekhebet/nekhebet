@@ -15,7 +15,7 @@ from __future__ import annotations
 import base64
 import math
 import re
-from datetime import datetime, timezone
+from datetime import datetime
 from typing import Any, Dict, Optional, Set
 
 from .types import (
@@ -193,7 +193,7 @@ def estimate_payload_size(obj: Any, depth: int = 0) -> int:
     """
     if depth > MAX_PAYLOAD_DEPTH:
         raise ValueError(
-            f"Payload nesting depth exceeds limit of {MAX_PAYLOAD_DEPTH}"
+            "Payload nesting depth exceeds limit of {MAX_PAYLOAD_DEPTH}"
         )
 
     if isinstance(obj, dict):
