@@ -22,7 +22,6 @@ import os
 import shutil
 import sys
 import tempfile
-from typing import cast
 
 from dotenv import load_dotenv  # type: ignore[import-not-found]
 
