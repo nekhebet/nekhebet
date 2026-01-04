@@ -1,22 +1,22 @@
 """
 Nekhebet Core v4.0.0 — Serialization
+
 High-performance serialization/deserialization of SignedEnvelope.
 Uses msgspec for speed and strict validation.
 
-FIXES APPLIED:
-- Added proper base64 encoding/decoding for bytes fields (signature, public_key)
-- Replaced non-existent msgspec.base64_encode with standard base64
-- Added dec_hook to Decoder for automatic base64 → bytes conversion
-- Added strict validation in dec_hook (using validate=True where possible)
-- Minor cleanups and error handling improvements
+SECURITY NOTES:
+- This module is part of the security boundary.
+- Serialization must be deterministic and strict.
+- Any relaxation here is a breaking security change.
 """
 
 from __future__ import annotations
 
 import base64
 import json
+from typing import Any, Final
+
 import msgspec
-from typing import Final
 
 from .types import SignedEnvelope
 
@@ -26,36 +26,50 @@ from .types import SignedEnvelope
 # =============================================================================
 
 def _enc_hook(obj: Any) -> Any:
-    """Encode bytes → base64 string for JSON compatibility."""
+    """
+    Encode bytes → base64 ASCII string for JSON compatibility.
+    """
     if isinstance(obj, (bytes, bytearray)):
         return base64.b64encode(obj).decode("ascii")
-    raise TypeError(f"Objects of type {type(obj)} are not serializable")
+    raise TypeError(f"Objects of type {type(obj).__name__} are not serializable")
 
 
 def _dec_hook(type_: type, obj: Any) -> Any:
-    """Decode base64 string → bytes when target type is bytes."""
+    """
+    Decode base64 ASCII string → bytes when target type is bytes.
+
+    Uses strict validation to reject malformed or non-canonical encodings.
+    """
     if type_ is bytes:
         if not isinstance(obj, str):
-            raise msgspec.ValidationError("bytes fields must be base64-encoded strings")
+            raise msgspec.ValidationError(
+                "bytes fields must be base64-encoded strings"
+            )
         try:
-            # validate=True rejects invalid padding/length (Python 3.11+)
+            # validate=True rejects invalid padding / non-base64 input
             return base64.b64decode(obj, validate=True)
         except Exception as e:
-            raise msgspec.ValidationError(f"Invalid base64 encoding: {e}") from e
-    # For all other types, return unchanged
+            raise msgspec.ValidationError(
+                f"Invalid base64 encoding: {e}"
+            ) from e
+
+    # All other types are handled by msgspec itself
     return obj
 
 
 # =============================================================================
-# Encoders/Decoders
+# Encoders / Decoders
 # =============================================================================
 
-# Compact binary JSON encoder with base64 support
-ENVELOPE_ENCODER: Final[msgspec.json.Encoder] = msgspec.json.Encoder(enc_hook=_enc_hook)
+# Compact JSON encoder with deterministic output and base64 support
+ENVELOPE_ENCODER: Final[msgspec.json.Encoder] = msgspec.json.Encoder(
+    enc_hook=_enc_hook
+)
 
-# Strict decoder with base64 → bytes conversion and validation
+# Strict decoder with structural + base64 validation
 ENVELOPE_DECODER: Final[msgspec.json.Decoder] = msgspec.json.Decoder(
-    SignedEnvelope, dec_hook=_dec_hook
+    SignedEnvelope,
+    dec_hook=_dec_hook,
 )
 
 
@@ -66,19 +80,13 @@ ENVELOPE_DECODER: Final[msgspec.json.Decoder] = msgspec.json.Decoder(
 def to_json_bytes(envelope: SignedEnvelope) -> bytes:
     """
     Serialize SignedEnvelope to compact JSON bytes.
-    
-    - bytes fields (signature, public_key) encoded as base64 strings
-    - No pretty-printing, minimal size
-    - Compatible with standard JSON parsers
-    
-    Args:
-        envelope: Signed envelope to serialize
-    
-    Returns:
-        bytes: Serialized envelope
-    
+
+    - bytes fields encoded as base64 ASCII strings
+    - minimal size, no pretty-printing
+    - SAFE for hashing, signing and storage
+
     Raises:
-        ValueError: If serialization fails
+        ValueError: on serialization failure
     """
     try:
         return ENVELOPE_ENCODER.encode(envelope)
@@ -88,21 +96,14 @@ def to_json_bytes(envelope: SignedEnvelope) -> bytes:
 
 def from_json_bytes(data: bytes) -> SignedEnvelope:
     """
-    Deserialize bytes into validated SignedEnvelope.
-    
-    - Automatically decodes base64 for signature and public_key
-    - Full structural validation via msgspec.Struct
-    - Strict base64 validation
-    - Raises on any malformation
-    
-    Args:
-        data: Serialized envelope bytes
-    
-    Returns:
-        SignedEnvelope: Deserialized and validated envelope
-    
+    Deserialize bytes into a fully validated SignedEnvelope.
+
+    - strict structural validation via msgspec.Struct
+    - strict base64 decoding for bytes fields
+    - rejects any malformed or unexpected input
+
     Raises:
-        ValueError: If deserialization or validation fails
+        ValueError: on deserialization or validation failure
     """
     try:
         return ENVELOPE_DECODER.decode(data)
@@ -111,19 +112,17 @@ def from_json_bytes(data: bytes) -> SignedEnvelope:
 
 
 # =============================================================================
-# Optional: human-readable variant (for debugging/logs)
+# Human-readable variant (DEBUG ONLY)
 # =============================================================================
 
 def to_pretty_json_bytes(envelope: SignedEnvelope) -> bytes:
     """
-    Serialize with indentation — for logs, debugging, audits.
-    NOT SAFE for signing or hashing.
-    
-    Args:
-        envelope: Signed envelope to serialize
-    
-    Returns:
-        bytes: Pretty-printed JSON bytes
+    Serialize envelope to pretty-printed JSON bytes.
+
+    WARNING:
+    - NOT deterministic
+    - NOT SAFE for hashing or signing
+    - Intended ONLY for logs, debugging and audits
     """
     data = msgspec.to_builtins(envelope, enc_hook=_enc_hook)
     return json.dumps(
