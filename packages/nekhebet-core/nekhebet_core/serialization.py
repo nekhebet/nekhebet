@@ -67,7 +67,7 @@ ENVELOPE_ENCODER: Final[msgspec.json.Encoder] = msgspec.json.Encoder(
 )
 
 # Strict decoder with structural + base64 validation
-ENVELOPE_DECODER: Final[msgspec.json.Decoder] = msgspec.json.Decoder(
+ENVELOPE_DECODER: Final[msgspec.json.Decoder] = msgspec.json.Decoder(  # type: ignore[type-arg]
     SignedEnvelope,
     dec_hook=_dec_hook,
 )
@@ -106,11 +106,10 @@ def from_json_bytes(data: bytes) -> SignedEnvelope:
         ValueError: on deserialization or validation failure
     """
     try:
-        return ENVELOPE_DECODER.decode(data)
+        return ENVELOPE_DECODER.decode(data)  # type: ignore[no-any-return]
     except (msgspec.DecodeError, msgspec.ValidationError) as e:
         raise ValueError(f"Invalid envelope data: {e}") from e
-
-
+        
 # =============================================================================
 # Human-readable variant (DEBUG ONLY)
 # =============================================================================
