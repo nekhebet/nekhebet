@@ -12,6 +12,8 @@ Design principles:
 
 from __future__ import annotations
 
+from typing import Optional
+
 __version__ = "4.0.0"
 __author__ = "Nekhebet Team"
 __description__ = (
@@ -40,7 +42,6 @@ from .envelope import create_envelope, add_signature
 from .signing import (
     sign_envelope,
     DefaultSigningContext,
-    # load_signing_context_from_env remains a demo helper – not exposed by default
 )
 
 # =============================================================================
@@ -87,7 +88,15 @@ from .replay_guard import InMemoryReplayGuard
 # =============================================================================
 
 try:
-    from .metrics import metrics, record_signing, record_verification
+    from .metrics import (
+        metrics as _metrics,
+        record_signing,
+        record_verification,
+        EventMetrics,
+    )
+
+    metrics: Optional[EventMetrics] = _metrics
+
 except ImportError:  # pragma: no cover
     metrics = None
 
