@@ -59,4 +59,4 @@ jobs:
       # ------------------------------------------------------------
       - name: Pytest
         run: |
-          pytest packages/nekhebet-core || true
+          pytest packages/nekhebet-core
