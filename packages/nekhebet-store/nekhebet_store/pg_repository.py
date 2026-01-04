@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import logging
 from contextlib import contextmanager
-from typing import Iterable, Optional, Generator
+from typing import Iterable, Optional, Generator, TypedDict
 from uuid import UUID
 
 from psycopg2.extensions import connection as PsycopgConnection
@@ -27,6 +27,15 @@ class ReplayDetectedError(Exception):
     and increment metric: seth.caught
     """
     pass
+
+
+class EventMetadata(TypedDict, total=False):
+    """Type definition for event metadata."""
+    id: str
+    event_type: str
+    issued_at: str
+    source: str
+    content_hash: str
 
 
 class EventRepository:
@@ -137,7 +146,7 @@ class EventRepository:
     # Metadata-only access (authoritative index)
     # ------------------------------------------------------------------
 
-    def get_metadata(self, event_id: str | UUID) -> Optional[dict]:
+    def get_metadata(self, event_id: str | UUID) -> Optional[EventMetadata]:
         """
         Fetch event metadata WITHOUT envelope blob.
 
