@@ -9,9 +9,28 @@ description = "Nekhebet storage adapter"
 requires-python = ">=3.10"
 
 dependencies = [
-    "psycopg2>=2.9",
-    "nekhebet-core",
+    "nekhebet-core>=4.0.0",
+    "psycopg2-binary>=2.9",
+    "lmdb>=1.4.1",
 ]
+
+# =============================================================================
+# mypy configuration
+# =============================================================================
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+files = ["nekhebet_store"]   
+
+# lmdb не имеет stubs
+[[tool.mypy.overrides]]
+module = "lmdb.*"
+ignore_missing_imports = true
+
+# =============================================================================
+# setuptools
+# =============================================================================
 
 [tool.setuptools.packages.find]
 where = ["."]
