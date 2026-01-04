@@ -71,13 +71,19 @@ def canonicalize(data: Dict[str, Any]) -> bytes:
         raise TypeError("canonicalize expects a dict (JSON object)")
 
     try:
-        # json.dumps guarantees key sorting and formatting;
-        # encode to UTF-8 bytes exactly as required by RFC 8785
-        canonical_str = json.dumps(data, **_JSON_DUMPS_KWARGS)
+        # RFC 8785 / JCS canonical JSON:
+        # - sorted keys
+        # - no insignificant whitespace
+        # - UTF-8 encoding
+        canonical_str = json.dumps(
+            data,
+            ensure_ascii=False,
+            sort_keys=True,
+            separators=(",", ":"),
+        )
         return canonical_str.encode("utf-8")
     except (TypeError, ValueError) as e:
         raise ValueError(f"Failed to canonicalize data: {e}") from e
-
 
 def canonicalize_header(header: EnvelopeHeader) -> bytes:
     """
