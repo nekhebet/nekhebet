@@ -4,6 +4,8 @@ import logging
 from typing import Optional
 from uuid import UUID
 
+from psycopg2.extensions import connection as PsycopgConnection
+
 from nekhebet_core import SignedEnvelope
 from nekhebet_store.pg_repository import EventRepository as PGEventRepository
 from nekhebet_store.pg_repository import ReplayDetectedError as PGReplayError
@@ -27,7 +29,7 @@ class HybridEventRepository:
 
     def __init__(
         self,
-        pg_conn,                     # psycopg2 connection
+        pg_conn: PsycopgConnection,   # psycopg2 connection
         lmdb_path: str,
         *,
         map_size: int = 1 << 40,      # 1 TB virtual space
@@ -132,7 +134,7 @@ class HybridEventRepository:
     def close(self) -> None:
         """Explicit resource cleanup (optional on shutdown)."""
         try:
-            self.pg._conn.close()  # type: ignore[attr-defined]
+            self.pg._conn.close()
         except Exception as e:
             log.warning("Hybrid close: PG connection close error: %s", e)
         # LMDB closes automatically on process termination
