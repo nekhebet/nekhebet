@@ -77,7 +77,7 @@ jobs:
 
       - name: Mypy (strict)
         run: |
-          mypy packages/nekhebet_store
+          mypy packages/nekhebet-store
 
       - name: Pytest
         run: |
