@@ -77,7 +77,7 @@ jobs:
 
       - name: Mypy (strict)
         run: |
-          mypy nekhebet_store   # имя установленного пакета, а не путь к директории
+          mypy packages/nekhebet_store
 
       - name: Pytest
         run: |
