@@ -25,14 +25,14 @@ from .types import SignedEnvelope
 # Hooks for base64 handling
 # =============================================================================
 
-def _enc_hook(obj: any) -> any:
+def _enc_hook(obj: Any) -> Any:
     """Encode bytes → base64 string for JSON compatibility."""
     if isinstance(obj, (bytes, bytearray)):
         return base64.b64encode(obj).decode("ascii")
     raise TypeError(f"Objects of type {type(obj)} are not serializable")
 
 
-def _dec_hook(type_: type, obj: any) -> any:
+def _dec_hook(type_: type, obj: Any) -> Any:
     """Decode base64 string → bytes when target type is bytes."""
     if type_ is bytes:
         if not isinstance(obj, str):
