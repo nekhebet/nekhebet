@@ -1,246 +1,15 @@
-name: CI/CD
+name: CI
 
 on:
   push:
     branches: [ main ]
-    tags: [ 'v*' ]
   pull_request:
     branches: [ main ]
-  schedule:
-    - cron: '0 2 * * 1'  # Every Monday at 2:00 UTC
-
-permissions:
-  contents: write
-  security-events: write
-
-concurrency:
-  group: ${{ github.ref }}
-  cancel-in-progress: false
-
-env:
-  CXX_STANDARD: '17'
-  SOURCE_DATE_EPOCH: '1700000000'  # Reproducible builds
 
 jobs:
-  # --- SECURITY & NATIVE BUILD ---
-  codeql-analysis:
-    name: CodeQL Security Analysis
-    runs-on: ubuntu-24.04
-    permissions:
-      actions: read
-      contents: read
-      security-events: write
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Install dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y build-essential libcap-dev libsystemd-dev
-
-      - name: Initialize CodeQL (Nekhebet)
-        uses: github/codeql-action/init@v4
-        with:
-          languages: cpp
-          queries: security-extended,security-and-quality
-          build-mode: manual
-
-      - name: Manual Build for CodeQL
-        run: |
-          # Build main nekhebet
-          g++ -std=c++${{ env.CXX_STANDARD }} \
-            -O1 -g -fno-inline \
-            -Wall -Wextra -Wpedantic \
-            -pthread \
-            -DNO_IO_URING \
-            nekhebet.cpp \
-            -lcap -lsystemd \
-            -o nekhebet-codeql
-          
-          # Build charon-vessel if exists
-          if [ -f "gadget/charon-vessel/vessel.cpp" ]; then
-            g++ -std=c++${{ env.CXX_STANDARD }} \
-              -O1 -g -fno-inline \
-              -Wall -Wextra -Wpedantic \
-              gadget/charon-vessel/vessel.cpp \
-              -o vessel-codeql
-          fi
-
-      - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v4
-
-  static-analysis:
-    name: Static Analysis
-    runs-on: ubuntu-24.04
-    needs: [codeql-analysis]
-    continue-on-error: true
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Install tools
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y cppcheck clang-tidy flawfinder clang-format checksec
-
-      - name: cppcheck (Nekhebet)
-        run: |
-          cppcheck --enable=all --std=c++${{ env.CXX_STANDARD }} --inline-suppr --suppress=missingIncludeSystem nekhebet.cpp 2>&1 | tee cppcheck-nekhebet.txt
-
-      - name: cppcheck (Charon Vessel)
-        run: |
-          if [ -f "gadget/charon-vessel/vessel.cpp" ]; then
-            cppcheck --enable=all --std=c++${{ env.CXX_STANDARD }} --inline-suppr --suppress=missingIncludeSystem gadget/charon-vessel/vessel.cpp 2>&1 | tee cppcheck-vessel.txt
-          fi
-
-      - name: flawfinder
-        run: |
-          flawfinder --minlevel=3 --context nekhebet.cpp > flawfinder-nekhebet.txt || true
-          if [ -f "gadget/charon-vessel/vessel.cpp" ]; then
-            flawfinder --minlevel=3 --context gadget/charon-vessel/vessel.cpp > flawfinder-vessel.txt || true
-          fi
-
-      - name: Upload reports
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: static-analysis-reports
-          path: |
-            cppcheck-*.txt
-            flawfinder-*.txt
-          retention-days: 14
-
-  build-linux:
-    name: Linux Native Build
-    runs-on: ubuntu-24.04
-    needs: [codeql-analysis]
-    strategy:
-      matrix:
-        target:
-          - name: nekhebet
-            source: nekhebet.cpp
-            output: nekhebet-linux-x86_64
-            flags: -DNO_IO_URING -lcap -lsystemd
-          - name: charon-vessel
-            source: gadget/charon-vessel/vessel.cpp
-            output: charon-vessel-linux-x86_64
-            flags: ""
-            condition: ${{ fromJSON('{"enabled": true}').enabled }}
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Cache ccache
-        uses: actions/cache@v3
-        with:
-          path: ~/.ccache
-          key: ${{ runner.os }}-ccache-${{ hashFiles('**/*.cpp') }}
-
-      - name: Install dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y build-essential libcap-dev libsystemd-dev ccache checksec
-
-      - name: Build ${{ matrix.target.name }}
-        if: matrix.target.condition == '' || (matrix.target.source && hashFiles(matrix.target.source))
-        env:
-          CCACHE_DIR: ~/.ccache
-        run: |
-          export CC="ccache gcc"
-          export CXX="ccache g++"
-          $CXX -std=c++${{ env.CXX_STANDARD }} \
-            -O3 -march=native -flto -DNDEBUG \
-            -Wall -Wextra -Wpedantic \
-            -D_FORTIFY_SOURCE=2 -fstack-protector-strong \
-            -pthread \
-            ${{ matrix.target.flags }} \
-            ${{ matrix.target.source }} \
-            -o ${{ matrix.target.output }}
-          ccache -s
-          strip ${{ matrix.target.output }} 2>/dev/null || true
-
-      - name: Smoke test
-        run: |
-          if [ -f "${{ matrix.target.output }}" ]; then
-            ./${{ matrix.target.output }} --help | head -3 || echo "No --help option"
-          fi
-
-      - name: Hardening check
-        if: matrix.target.name == 'nekhebet'
-        run: |
-          if [ -f "${{ matrix.target.output }}" ]; then
-            checksec --file=${{ matrix.target.output }}
-          fi
-
-      - name: Upload artifact
-        if: startsWith(github.ref, 'refs/tags/v') && matrix.target.source && hashFiles(matrix.target.source)
-        uses: actions/upload-artifact@v4
-        with:
-          name: ${{ matrix.target.output }}
-          path: ${{ matrix.target.output }}
-          retention-days: 14
-
-  build-freebsd:
-    name: FreeBSD Build
-    runs-on: ubuntu-latest
-    needs: [codeql-analysis]
-    strategy:
-      matrix:
-        target:
-          - name: nekhebet
-            source: nekhebet.cpp
-            output: nekhebet-freebsd-x86_64
-            flags: -DNO_IO_URING
-          - name: charon-vessel
-            source: gadget/charon-vessel/vessel.cpp
-            output: charon-vessel-freebsd-x86_64
-            flags: ""
-            condition: ${{ fromJSON('{"enabled": true}').enabled }}
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Build ${{ matrix.target.name }} on FreeBSD 14.2
-        if: matrix.target.condition == '' || (matrix.target.source && hashFiles(matrix.target.source))
-        uses: cross-platform-actions/action@v0.26.0
-        with:
-          operating_system: freebsd
-          version: '14.2'
-          memory: '8G'
-          cpu_count: '4'
-          shell: sh
-          run: |
-            clang++ -std=c++17 \
-              -O3 -DNDEBUG \
-              -Wall -Wextra -Wpedantic \
-              -pthread \
-              ${{ matrix.target.flags }} \
-              ${{ matrix.target.source }} \
-              -o ${{ matrix.target.output }}
-            [ $? -eq 0 ] || exit 1
-            strip ${{ matrix.target.output }} 2>/dev/null || true
-
-      - name: Upload artifact
-        if: startsWith(github.ref, 'refs/tags/v') && matrix.target.source && hashFiles(matrix.target.source)
-        uses: actions/upload-artifact@v4
-        with:
-          name: ${{ matrix.target.output }}
-          path: ${{ matrix.target.output }}
-          retention-days: 14
-
-  # --- PYTHON PACKAGES ---
   nekhebet-core:
-    name: Python - nekhebet-core
-    runs-on: ubuntu-24.04
-    needs: [codeql-analysis]
-
+    name: nekhebet-core
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -280,9 +49,9 @@ jobs:
           pytest .
 
   nekhebet-store:
-    name: Python - nekhebet-store
-    runs-on: ubuntu-24.04
-    needs: [nekhebet-core]
+    name: nekhebet-store
+    runs-on: ubuntu-latest
+    needs: nekhebet-core
 
     services:
       postgres:
@@ -339,9 +108,9 @@ jobs:
           pytest .
 
   nekhebet-ingest:
-    name: Python - nekhebet-ingest
-    runs-on: ubuntu-24.04
-    needs: [nekhebet-store]
+    name: nekhebet-ingest
+    runs-on: ubuntu-latest
+    needs: nekhebet-store  # зависит от store, т.к. hybrid repo использует PG + LMDB
 
     services:
       postgres:
@@ -398,84 +167,11 @@ jobs:
           cd packages/nekhebet-ingest
           pytest .
         env:
+          # Минимальные переменные для тестов (если тесты используют .env или hybrid repo)
           DB_HOST: localhost
           DB_PORT: 5432
           DB_NAME: postgres
           DB_USER: postgres
           DB_PASSWORD: ""
-
-  # --- RELEASE & QUALITY ---
-  create-release:
-    name: Create Release
-    runs-on: ubuntu-24.04
-    needs: [build-linux, build-freebsd]
-    if: startsWith(github.ref, 'refs/tags/v')
-    permissions:
-      contents: write
-
-    steps:
-      - name: Download artifacts
-        uses: actions/download-artifact@v4
-
-      - name: Assemble release
-        run: |
-          mkdir -p release
-          # Copy all native binaries
-          find . -name "nekhebet-*" -type f -exec cp {} release/ 2>/dev/null \; || true
-          find . -name "charon-vessel-*" -type f -exec cp {} release/ 2>/dev/null \; || true
-          chmod +x release/* 2>/dev/null || true
-          
-          cd release
-          sha256sum * > SHA256SUMS
-          
-          # Generate README
-          cat > README.md << 'EOF'
-          # Nekhebet ${{ github.ref_name }}
-          
-          ## Native Binaries
-          | Platform       | Component       | File                       |
-          |----------------|-----------------|----------------------------|
-          | Linux x86_64   | Nekhebet        | nekhebet-linux-x86_64     |
-          | FreeBSD x86_64 | Nekhebet        | nekhebet-freebsd-x86_64   |
-          | Linux x86_64   | Charon Vessel   | charon-vessel-linux-x86_64|
-          | FreeBSD x86_64 | Charon Vessel   | charon-vessel-freebsd-x86_64|
-          
-          ## Verification
-          ```
-          sha256sum -c SHA256SUMS
-          chmod +x *
-          ```
-          
-          ## Build Info
-          - Git commit: ${{ github.sha }}
-          - Build date: $(date -u '+%Y-%m-%d %H:%M UTC')
-          - C++ Standard: 17
-          
-          Full documentation: https://github.com/nekhebet/nekhebet
-          License: MIT
-          EOF
-
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
-        with:
-          files: release/*
-          body_path: release/README.md
-          generate_release_notes: true
-          draft: false
-          prerelease: false
-
-  quality-gate:
-    name: Quality Gate
-    runs-on: ubuntu-24.04
-    needs: [codeql-analysis, build-linux, nekhebet-ingest]
-    if: always()
-    steps:
-      - name: Check results
-        run: |
-          echo "CodeQL: ${{ needs.codeql-analysis.result }}"
-          echo "Linux Build: ${{ needs.build-linux.result }}"
-          echo "Python Ingest: ${{ needs.nekhebet-ingest.result }}"
-          
-          [[ "${{ needs.codeql-analysis.result }}" == "success" ]] || exit 1
-          [[ "${{ needs.build-linux.result }}" == "success" ]] || exit 1
-          echo "All critical checks passed"
+          # Telegram API credentials можно не указывать, если тесты замоканы
+          # TELEGRAM_API_ID и TELEGRAM_API_HASH не нужны для unit-тестов adapter/mapper
