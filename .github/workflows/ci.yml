@@ -52,7 +52,6 @@ jobs:
     name: nekhebet-store
     runs-on: ubuntu-latest
     needs: nekhebet-core
-
     services:
       postgres:
         image: postgres:16
@@ -102,7 +101,7 @@ jobs:
           cd packages/nekhebet-store
           mypy .
 
-      - name: Pytest (including security smoke test)
+      - name: Pytest (including security smoke tests)
         run: |
           cd packages/nekhebet-store
           pytest .
@@ -110,8 +109,7 @@ jobs:
   nekhebet-ingest:
     name: nekhebet-ingest
     runs-on: ubuntu-latest
-    needs: nekhebet-store  # зависит от store, т.к. hybrid repo использует PG + LMDB
-
+    needs: nekhebet-store  # Depends on store because hybrid repository uses PostgreSQL + LMDB
     services:
       postgres:
         image: postgres:16
@@ -162,16 +160,18 @@ jobs:
           cd packages/nekhebet-ingest
           mypy .
 
-      - name: Pytest
+      - name: Pytest (no tests required)
+        # nekhebet-ingest currently has no tests; allow pytest to exit with code 5 (no tests collected) without failing the job
+        # Other packages (core & store) will still fail if tests are missing or broken
         run: |
           cd packages/nekhebet-ingest
-          pytest .
+          pytest . || [ $? -eq 5 ] && echo "No tests collected in nekhebet-ingest — this is expected and OK" && exit 0
+
         env:
-          # Минимальные переменные для тестов (если тесты используют .env или hybrid repo)
+          # Minimal environment variables for potential future tests that use .env or hybrid repository
           DB_HOST: localhost
           DB_PORT: 5432
           DB_NAME: postgres
           DB_USER: postgres
           DB_PASSWORD: ""
-          # Telegram API credentials можно не указывать, если тесты замоканы
-          # TELEGRAM_API_ID и TELEGRAM_API_HASH не нужны для unit-тестов adapter/mapper
+          # Telegram API credentials are not required for current unit tests (adapter/mapper are mocked if needed)
