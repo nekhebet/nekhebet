@@ -7,16 +7,16 @@ import signal
 import sys
 from contextlib import AsyncExitStack
 from typing import NoReturn
+
 import psycopg2
 from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
 from dotenv import load_dotenv
+
 from nekhebet_core import DefaultSigningContext, sign_envelope
 from nekhebet_ingest.telegram.adapter import TelegramAdapter
 from nekhebet_store.hybrid_repository import HybridEventRepository
 
-# ---------------------------------------------------------------------
-# Bootstrap
-# ---------------------------------------------------------------------
+
 load_dotenv()
 
 logging.basicConfig(
@@ -27,9 +27,6 @@ logging.basicConfig(
 log = logging.getLogger("nekhebet.ingest.telegram")
 
 
-# ---------------------------------------------------------------------
-# Graceful shutdown
-# ---------------------------------------------------------------------
 shutdown_event = asyncio.Event()
 
 
@@ -43,19 +40,14 @@ async def _wait_for_shutdown() -> NoReturn:
     raise SystemExit(0)
 
 
-# ---------------------------------------------------------------------
-# Main
-# ---------------------------------------------------------------------
 async def main() -> None:
     log.info("Starting Nekhebet Telegram ingest (Hybrid PG+LMDB mode)")
 
     for sig in (signal.SIGINT, signal.SIGTERM):
         signal.signal(sig, _signal_handler)
+
     asyncio.create_task(_wait_for_shutdown())
 
-    # ------------------------------------------------------------
-    # Database + LMDB (Mechanical Sympathy edition)
-    # ------------------------------------------------------------
     conn_params = {
         "host": os.getenv("DB_HOST", "localhost"),
         "port": int(os.getenv("DB_PORT", "5432")),
@@ -69,36 +61,13 @@ async def main() -> None:
         "keepalives_count": 5,
     }
 
-    try:
-        conn = psycopg2.connect(**conn_params)
-        conn.autocommit = False
-    except Exception as e:
-        log.error("PostgreSQL connection failed: %s", e)
-        raise
+    conn = psycopg2.connect(**conn_params)
+    conn.autocommit = False
 
     lmdb_path = os.getenv("LMDB_PATH", "X:/nekhebet/data/lmdb").rstrip("/\\")
     os.makedirs(lmdb_path, exist_ok=True)
 
-    default_map_size = 1 << 30  # 1 GiB
-    lmdb_map_size_str = os.getenv("LMDB_MAP_SIZE")
-
-    if lmdb_map_size_str:
-        try:
-            lmdb_map_size = int(lmdb_map_size_str)
-            if lmdb_map_size < (1 << 27):
-                lmdb_map_size = 1 << 27
-                log.warning("LMDB_MAP_SIZE too small, forced to 128 MiB")
-        except ValueError:
-            log.warning("Invalid LMDB_MAP_SIZE value, using default 1 GiB")
-            lmdb_map_size = default_map_size
-    else:
-        lmdb_map_size = default_map_size
-
-    log.info(
-        "Initializing Hybrid repository: PostgreSQL + LMDB at %s (map_size=%d GiB)",
-        lmdb_path,
-        lmdb_map_size >> 30,
-    )
+    lmdb_map_size = int(os.getenv("LMDB_MAP_SIZE", str(1 << 30)))
 
     repo = HybridEventRepository(
         pg_conn=conn,
@@ -106,12 +75,7 @@ async def main() -> None:
         map_size=lmdb_map_size,
     )
 
-    log.info("Hybrid repository ready (PostgreSQL + LMDB)")
-
-    # ------------------------------------------------------------
-    # Signing context
-    # ------------------------------------------------------------
-    private_key = Ed25519PrivateKey.generate()  # dev-only!
+    private_key = Ed25519PrivateKey.generate()
     public_key = private_key.public_key()
     key_id = os.getenv("NEKHEBET_KEY_ID", "telegram-dev")
 
@@ -121,21 +85,10 @@ async def main() -> None:
         key_id=key_id,
     )
 
-    log.info("Signing context initialized (key_id=%s)", key_id)
-
-    # ------------------------------------------------------------
-    # Envelope handler
-    # ------------------------------------------------------------
     async def on_envelope(unsigned: dict) -> None:
-        try:
-            signed = sign_envelope(unsigned, signing_ctx)
-            repo.save(signed)
-        except Exception as e:
-            log.exception("Envelope processing failed: %s", e)
+        signed = sign_envelope(unsigned, signing_ctx)
+        repo.save(signed)
 
-    # ------------------------------------------------------------
-    # Telegram adapter
-    # ------------------------------------------------------------
     adapter = TelegramAdapter(
         api_id=int(os.getenv("TELEGRAM_API_ID")),
         api_hash=os.getenv("TELEGRAM_API_HASH"),
@@ -147,30 +100,13 @@ async def main() -> None:
         stack.callback(conn.close)
         stack.callback(repo.close)
 
-        try:
-            await adapter.run_for_chat(
-                chat_id=int(os.getenv("TELEGRAM_CHAT_ID", "2527908227")),
-                source=os.getenv("TELEGRAM_SOURCE", "telegram"),
-                key_id=key_id,
-                on_envelope=on_envelope,
-            )
-        except asyncio.CancelledError:
-            log.info("Telegram adapter cancelled")
-            raise
-        except Exception:
-            log.exception("Fatal error in adapter")
-            raise
-        finally:
-            log.info("Shutdown complete")
+        await adapter.run_for_chat(
+            chat_id=int(os.getenv("TELEGRAM_CHAT_ID", "2527908227")),
+            source=os.getenv("TELEGRAM_SOURCE", "telegram"),
+            key_id=key_id,
+            on_envelope=on_envelope,
+        )
 
 
 if __name__ == "__main__":
-    try:
-        asyncio.run(main())
-    except (KeyboardInterrupt, SystemExit):
-        log.info("Stopped gracefully")
-        sys.exit(0)
-    except Exception:
-        log.exception("Crashed")
-        sys.exit(1)
-
+    asyncio.run(main())
