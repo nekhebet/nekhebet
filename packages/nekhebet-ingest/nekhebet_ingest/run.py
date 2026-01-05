@@ -1,18 +1,20 @@
 from __future__ import annotations
+
 import asyncio
-from contextlib import AsyncExitStack
 import logging
 import os
 import signal
 import sys
+from contextlib import AsyncExitStack
 from typing import NoReturn
+
 import psycopg2
 from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
 from dotenv import load_dotenv
+
 from nekhebet_core import DefaultSigningContext, sign_envelope
 from nekhebet_ingest.telegram.adapter import TelegramAdapter
 from nekhebet_store.hybrid_repository import HybridEventRepository
-
 
 load_dotenv()
 
@@ -98,3 +100,4 @@ async def main() -> None:
 
 if __name__ == "__main__":
     asyncio.run(main())
+
