@@ -1,9 +1,9 @@
-# nekhebet_ingest/telegram/adapter.py
 from __future__ import annotations
 
 from telethon import TelegramClient, events
 
 from nekhebet_core import create_envelope
+
 from .mapper import telegram_message_to_payload
 
 
