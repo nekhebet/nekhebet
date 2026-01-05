@@ -3,8 +3,7 @@ from __future__ import annotations
 from telethon import TelegramClient, events
 
 from nekhebet_core import create_envelope
-
-from .mapper import telegram_message_to_payload
+from nekhebet_ingest.telegram.mapper import telegram_message_to_payload
 
 
 class TelegramAdapter:
@@ -30,8 +29,6 @@ class TelegramAdapter:
             api_hash=api_hash,
         )
 
-    # ------------------------------------------------------------------
-
     async def run_for_chat(
         self,
         *,
@@ -40,9 +37,7 @@ class TelegramAdapter:
         key_id: str,
         on_envelope,
     ) -> None:
-        """
-        Listen to Telegram chat and emit unsigned envelopes.
-        """
+        """Listen to Telegram chat and emit unsigned envelopes."""
 
         await self.client.start()
 
