@@ -7,11 +7,6 @@ from telethon import TelegramClient, events
 class TelegramAdapter:
     """
     Telegram → Nekhebet UnsignedEnvelope adapter.
-
-    IMPORTANT:
-    - Stateless
-    - No storage knowledge
-    - No replay / security logic
     """
 
     def __init__(
@@ -35,16 +30,12 @@ class TelegramAdapter:
         key_id: str,
         on_envelope,
     ) -> None:
-        """Listen to Telegram chat and emit unsigned envelopes."""
-
         await self.client.start()
 
         @self.client.on(events.NewMessage(chats=chat_id))
         async def handler(event: events.NewMessage.Event):
-            msg = event.message
-
             payload = telegram_message_to_payload(
-                msg,
+                event.message,
                 chat_id=chat_id,
             )
 
