@@ -15,8 +15,6 @@ dependencies = [
     "python-dotenv>=1.0",
     "psycopg2-binary>=2.9",
     "cryptography>=42.0",
-    "nekhebet-core>=4.0.0",
-    "nekhebet-store>=4.0.0",
 ]
 
 [project.optional-dependencies]
@@ -44,8 +42,6 @@ testpaths = ["tests"]
 [tool.ruff]
 line-length = 100
 target-version = "py311"
-
-[tool.ruff.lint]
 select = ["E", "F", "I", "B"]
 ignore = ["E501"]
 
