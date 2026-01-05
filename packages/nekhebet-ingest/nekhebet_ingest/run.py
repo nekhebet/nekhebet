@@ -1,10 +1,10 @@
 from __future__ import annotations
 import asyncio
+from contextlib import AsyncExitStack
 import logging
 import os
 import signal
 import sys
-from contextlib import AsyncExitStack
 from typing import NoReturn
 import psycopg2
 from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
