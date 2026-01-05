@@ -16,8 +16,7 @@ import psycopg2
 
 from nekhebet_core import DefaultSigningContext, sign_envelope
 from nekhebet_ingest.telegram.adapter import TelegramAdapter
-from nekhebet_store.hybrid_repository import HybridEventRepository  # ← Гибрид!
-
+from nekhebet_store.hybrid_repository import HybridEventRepository
 
 # ---------------------------------------------------------------------
 # Bootstrap
@@ -67,8 +66,8 @@ async def main() -> None:
         "dbname": os.getenv("DB_NAME"),
         "user": os.getenv("DB_USER"),
         "password": os.getenv("DB_PASSWORD"),
-        "connect_timeout": 10,  # защита от зависания
-        "keepalives": 1,  # быстрый детект разрыва соединения
+        "connect_timeout": 10,  
+        "keepalives": 1, 
         "keepalives_idle": 30,
         "keepalives_interval": 10,
         "keepalives_count": 5,
@@ -76,22 +75,20 @@ async def main() -> None:
 
     try:
         conn = psycopg2.connect(**conn_params)
-        conn.autocommit = False  # транзакции управляем вручную
+        conn.autocommit = False  
     except Exception as e:
         log.error("PostgreSQL connection failed: %s", e)
         raise
 
-    # Путь и размер LMDB — настраиваемые через env (гибкость + безопасность)
     lmdb_path = os.getenv("LMDB_PATH", "X:/nekhebet/data/lmdb").rstrip("/\\")
     os.makedirs(lmdb_path, exist_ok=True)
 
-    # Mechanical Sympathy: разумный map_size
     default_map_size = 1 << 30  # 1 GiB
     lmdb_map_size_str = os.getenv("LMDB_MAP_SIZE")
     if lmdb_map_size_str:
         try:
             lmdb_map_size = int(lmdb_map_size_str)
-            if lmdb_map_size < (1 << 27):  # минимум 128 MiB
+            if lmdb_map_size < (1 << 27): 
                 lmdb_map_size = 1 << 27
                 log.warning("LMDB_MAP_SIZE too small, forced to 128 MiB")
         except ValueError:
@@ -177,3 +174,4 @@ if __name__ == "__main__":
     except Exception:
         log.exception("Crashed")
         sys.exit(1)
+
