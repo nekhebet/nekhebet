@@ -35,6 +35,7 @@ module = [
     "nekhebet_core.*",  # Local editable dependency may lack stubs in some environments
     "dotenv.*",        # python-dotenv used only in tests (optional dev dependency)
 ]
+module = "lmdb.*"
 ignore_missing_imports = true
 
 # =============================================================================
