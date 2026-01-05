@@ -1,4 +1,3 @@
-# nekhebet_ingest/telegram/adapter.py
 from __future__ import annotations
 
 from telethon import TelegramClient, events
