@@ -1,4 +1,3 @@
-# telegram/mapper.py
 from __future__ import annotations
 
 from datetime import timezone
@@ -101,3 +100,4 @@ def _extract_media(message: Message) -> List[Dict[str, Any]]:
         })
 
     return media
+
