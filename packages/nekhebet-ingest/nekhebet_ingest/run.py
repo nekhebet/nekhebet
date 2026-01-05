@@ -1,5 +1,4 @@
 from __future__ import annotations
-
 import asyncio
 import logging
 import os
@@ -7,11 +6,9 @@ import signal
 import sys
 from contextlib import AsyncExitStack
 from typing import NoReturn
-
 import psycopg2
 from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
 from dotenv import load_dotenv
-
 from nekhebet_core import DefaultSigningContext, sign_envelope
 from nekhebet_ingest.telegram.adapter import TelegramAdapter
 from nekhebet_store.hybrid_repository import HybridEventRepository
@@ -25,7 +22,6 @@ logging.basicConfig(
     handlers=[logging.StreamHandler(sys.stdout)],
 )
 log = logging.getLogger("nekhebet.ingest.telegram")
-
 
 shutdown_event = asyncio.Event()
 
@@ -48,46 +44,38 @@ async def main() -> None:
 
     asyncio.create_task(_wait_for_shutdown())
 
-    conn_params = {
-        "host": os.getenv("DB_HOST", "localhost"),
-        "port": int(os.getenv("DB_PORT", "5432")),
-        "dbname": os.getenv("DB_NAME"),
-        "user": os.getenv("DB_USER"),
-        "password": os.getenv("DB_PASSWORD"),
-        "connect_timeout": 10,
-        "keepalives": 1,
-        "keepalives_idle": 30,
-        "keepalives_interval": 10,
-        "keepalives_count": 5,
-    }
-
-    conn = psycopg2.connect(**conn_params)
+    conn = psycopg2.connect(
+        host=os.getenv("DB_HOST", "localhost"),
+        port=int(os.getenv("DB_PORT", "5432")),
+        dbname=os.getenv("DB_NAME"),
+        user=os.getenv("DB_USER"),
+        password=os.getenv("DB_PASSWORD"),
+        connect_timeout=10,
+        keepalives=1,
+        keepalives_idle=30,
+        keepalives_interval=10,
+        keepalives_count=5,
+    )
     conn.autocommit = False
 
     lmdb_path = os.getenv("LMDB_PATH", "X:/nekhebet/data/lmdb").rstrip("/\\")
     os.makedirs(lmdb_path, exist_ok=True)
 
-    lmdb_map_size = int(os.getenv("LMDB_MAP_SIZE", str(1 << 30)))
-
     repo = HybridEventRepository(
         pg_conn=conn,
         lmdb_path=lmdb_path,
-        map_size=lmdb_map_size,
+        map_size=int(os.getenv("LMDB_MAP_SIZE", str(1 << 30))),
     )
 
     private_key = Ed25519PrivateKey.generate()
-    public_key = private_key.public_key()
-    key_id = os.getenv("NEKHEBET_KEY_ID", "telegram-dev")
-
     signing_ctx = DefaultSigningContext(
         private_key=private_key,
-        public_key=public_key,
-        key_id=key_id,
+        public_key=private_key.public_key(),
+        key_id=os.getenv("NEKHEBET_KEY_ID", "telegram-dev"),
     )
 
     async def on_envelope(unsigned: dict) -> None:
-        signed = sign_envelope(unsigned, signing_ctx)
-        repo.save(signed)
+        repo.save(sign_envelope(unsigned, signing_ctx))
 
     adapter = TelegramAdapter(
         api_id=int(os.getenv("TELEGRAM_API_ID")),
@@ -103,7 +91,7 @@ async def main() -> None:
         await adapter.run_for_chat(
             chat_id=int(os.getenv("TELEGRAM_CHAT_ID", "2527908227")),
             source=os.getenv("TELEGRAM_SOURCE", "telegram"),
-            key_id=key_id,
+            key_id=signing_ctx.key_id,
             on_envelope=on_envelope,
         )
 
