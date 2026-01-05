@@ -70,3 +70,8 @@ ignore_missing_imports = true
 module = "nekhebet_ingest.telegram.run"
 disable_error_code = ["arg-type"]
 
+[[tool.mypy.overrides]]
+files = ["nekhebet_ingest/telegram/run.py"]
+disable_error_code = ["arg-type"]
+
+
