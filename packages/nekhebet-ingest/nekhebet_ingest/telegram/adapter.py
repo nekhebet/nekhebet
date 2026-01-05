@@ -1,14 +1,19 @@
 from __future__ import annotations
 
+from nekhebet_core import create_envelope
 from telethon import TelegramClient, events
 
-from nekhebet_core import create_envelope
-from nekhebet_ingest.telegram.mapper import telegram_message_to_payload
+from .mapper import telegram_message_to_payload
 
 
 class TelegramAdapter:
     """
     Telegram → Nekhebet UnsignedEnvelope adapter.
+
+    IMPORTANT:
+    - Stateless
+    - No storage knowledge
+    - No replay / security logic
     """
 
     def __init__(
@@ -24,6 +29,7 @@ class TelegramAdapter:
             api_hash=api_hash,
         )
 
+
     async def run_for_chat(
         self,
         *,
@@ -32,12 +38,18 @@ class TelegramAdapter:
         key_id: str,
         on_envelope,
     ) -> None:
+        """
+        Listen to Telegram chat and emit unsigned envelopes.
+        """
+
         await self.client.start()
 
         @self.client.on(events.NewMessage(chats=chat_id))
         async def handler(event: events.NewMessage.Event):
+            msg = event.message
+
             payload = telegram_message_to_payload(
-                event.message,
+                msg,
                 chat_id=chat_id,
             )
 
