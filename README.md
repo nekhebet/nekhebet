@@ -1,5 +1,7 @@
 # Nekhebet: Tamper-Evident Signed Event Platform
-
+![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)
+[![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/nekhebet/nekhebet/ci-cd.yml?branch=main&label=CI)](https://github.com/nekhebet/nekhebet/actions)
+[![CodeQL](https://img.shields.io/github/actions/workflow/status/nekhebet/nekhebet/ci-cd.yml?branch=main&label=CodeQL&logo=github)](https://github.com/nekhebet/nekhebet/actions/workflows/ci-cd.yml)
 ## Overview
 
 **Nekhebet** — модульная платформа для сбора, подписывания, хранения и верификации событий с криптографическими гарантиями целостности, подлинности и защиты от повторного воспроизведения (**tamper-evidence**).  
