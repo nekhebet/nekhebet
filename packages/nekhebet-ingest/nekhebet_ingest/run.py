@@ -86,8 +86,6 @@ async def main() -> None:
     os.makedirs(lmdb_path, exist_ok=True)
 
     # Mechanical Sympathy: разумный map_size
-    # - По умолчанию 1 GB — достаточно для десятков миллионов событий
-    # - Можно переопределить в .env: LMDB_MAP_SIZE=2147483648 (2 GB) и т.д.
     default_map_size = 1 << 30  # 1 GiB
     lmdb_map_size_str = os.getenv("LMDB_MAP_SIZE")
     if lmdb_map_size_str:
@@ -103,7 +101,7 @@ async def main() -> None:
         lmdb_map_size = default_map_size
 
     log.info(
-        "Initializing Hybrid repository: PostgreSQL + LMDB at %s (map_size=%s GiB)",
+        "Initializing Hybrid repository: PostgreSQL + LMDB at %s (map_size=%d GiB)",
         lmdb_path,
         lmdb_map_size >> 30,
     )
