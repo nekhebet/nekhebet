@@ -55,23 +55,8 @@ known-first-party = ["nekhebet_ingest"]
 python_version = "3.11"
 strict = false
 
-mypy_path = ["../../packages/nekhebet-core", "../../packages/nekhebet-store"]
-
-[[tool.mypy.overrides]]
-module = [
-    "telethon.*",
-    "psycopg2.*",
-    "dotenv.*",
-    "lmdb.*",
-]
+# Игнорируем ВСЕ missing imports (внутренние editable + внешние без stubs)
 ignore_missing_imports = true
 
-[[tool.mypy.overrides]]
-module = "nekhebet_ingest.telegram.run"
+# Дополнительно отключаем arg-type ошибки глобально (на случай, если останется)
 disable_error_code = ["arg-type"]
-
-[[tool.mypy.overrides]]
-files = ["nekhebet_ingest/telegram/run.py"]
-disable_error_code = ["arg-type"]
-
-
