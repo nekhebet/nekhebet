@@ -7,15 +7,12 @@ import signal
 import sys
 from contextlib import AsyncExitStack
 from typing import NoReturn
-
 import psycopg2
 from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
 from dotenv import load_dotenv
-
 from nekhebet_core import DefaultSigningContext, sign_envelope
 from nekhebet_ingest.telegram.adapter import TelegramAdapter
 from nekhebet_store.hybrid_repository import HybridEventRepository
-
 
 # ---------------------------------------------------------------------
 # Bootstrap
@@ -176,3 +173,4 @@ if __name__ == "__main__":
     except Exception:
         log.exception("Crashed")
         sys.exit(1)
+
