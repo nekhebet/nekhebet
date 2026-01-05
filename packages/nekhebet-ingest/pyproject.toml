@@ -64,5 +64,7 @@ module = [
     "telethon.*",
     "psycopg2.*",
     "dotenv.*",
+    "lmdb.*",
 ]
 ignore_missing_imports = true
+
