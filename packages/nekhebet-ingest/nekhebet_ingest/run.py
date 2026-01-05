@@ -1,3 +1,4 @@
+# nekhebet_ingest/telegram/run.py
 from __future__ import annotations
 
 import asyncio
@@ -15,7 +16,7 @@ import psycopg2
 
 from nekhebet_core import DefaultSigningContext, sign_envelope
 from nekhebet_ingest.telegram.adapter import TelegramAdapter
-from nekhebet_store.hybrid_repository import HybridEventRepository  
+from nekhebet_store.hybrid_repository import HybridEventRepository  # ← Гибрид!
 
 
 # ---------------------------------------------------------------------
@@ -66,14 +67,53 @@ async def main() -> None:
         "dbname": os.getenv("DB_NAME"),
         "user": os.getenv("DB_USER"),
         "password": os.getenv("DB_PASSWORD"),
-        "connect_timeout": 10,               
+        "connect_timeout": 10,  # защита от зависания
+        "keepalives": 1,  # быстрый детект разрыва соединения
+        "keepalives_idle": 30,
+        "keepalives_interval": 10,
+        "keepalives_count": 5,
     }
 
-    conn = psycopg2.connect(**conn_params)
+    try:
+        conn = psycopg2.connect(**conn_params)
+        conn.autocommit = False  # транзакции управляем вручную
+    except Exception as e:
+        log.error("PostgreSQL connection failed: %s", e)
+        raise
+
+    # Путь и размер LMDB — настраиваемые через env (гибкость + безопасность)
+    lmdb_path = os.getenv("LMDB_PATH", "X:/nekhebet/data/lmdb").rstrip("/\\")
+    os.makedirs(lmdb_path, exist_ok=True)
+
+    # Mechanical Sympathy: разумный map_size
+    # - По умолчанию 1 GB — достаточно для десятков миллионов событий
+    # - Можно переопределить в .env: LMDB_MAP_SIZE=2147483648 (2 GB) и т.д.
+    default_map_size = 1 << 30  # 1 GiB
+    lmdb_map_size_str = os.getenv("LMDB_MAP_SIZE")
+    if lmdb_map_size_str:
+        try:
+            lmdb_map_size = int(lmdb_map_size_str)
+            if lmdb_map_size < (1 << 27):  # минимум 128 MiB
+                lmdb_map_size = 1 << 27
+                log.warning("LMDB_MAP_SIZE too small, forced to 128 MiB")
+        except ValueError:
+            log.warning("Invalid LMDB_MAP_SIZE value, using default 1 GiB")
+            lmdb_map_size = default_map_size
+    else:
+        lmdb_map_size = default_map_size
+
+    log.info(
+        "Initializing Hybrid repository: PostgreSQL + LMDB at %s (map_size=%s GiB)",
+        lmdb_path,
+        lmdb_map_size >> 30,
+    )
+
     repo = HybridEventRepository(
         pg_conn=conn,
-        lmdb_path=os.getenv("LMDB_PATH", "./lmdb_data"),
+        lmdb_path=lmdb_path,
+        map_size=lmdb_map_size,
     )
+    log.info("Hybrid repository ready (PostgreSQL + LMDB)")
 
     # ------------------------------------------------------------
     # Signing context
