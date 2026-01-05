@@ -1,7 +1,8 @@
 from __future__ import annotations
 
-from nekhebet_core import create_envelope
 from telethon import TelegramClient, events
+
+from nekhebet_core import create_envelope
 
 from .mapper import telegram_message_to_payload
 
@@ -29,6 +30,7 @@ class TelegramAdapter:
             api_hash=api_hash,
         )
 
+    # ------------------------------------------------------------------
 
     async def run_for_chat(
         self,
