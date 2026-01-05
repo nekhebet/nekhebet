@@ -12,7 +12,7 @@ import psycopg2
 from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
 from dotenv import load_dotenv
 from nekhebet_core import DefaultSigningContext, sign_envelope
-from nekhebet_store.hybrid_repository import HybridEventRepository 
+from nekhebet_store.hybrid_repository import HybridEventRepository
 
 from nekhebet_ingest.telegram.adapter import TelegramAdapter
 
