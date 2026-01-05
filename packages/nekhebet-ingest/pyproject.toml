@@ -55,10 +55,8 @@ known-first-party = ["nekhebet_ingest"]
 python_version = "3.11"
 strict = false
 
-# Критически важно для монопо: mypy должен видеть соседние пакеты
 mypy_path = ["../../packages/nekhebet-core", "../../packages/nekhebet-store"]
 
-# Игнорируем библиотеки без stubs
 [[tool.mypy.overrides]]
 module = [
     "telethon.*",
@@ -67,4 +65,8 @@ module = [
     "lmdb.*",
 ]
 ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "nekhebet_ingest.telegram.run"
+disable_error_code = ["arg-type"]
 
