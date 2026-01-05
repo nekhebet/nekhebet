@@ -50,7 +50,19 @@ ignore = ["E501"]
 [tool.ruff.lint.isort]
 known-first-party = ["nekhebet_ingest"]
 
+# ==================== MYPY CONFIG ====================
 [tool.mypy]
 python_version = "3.11"
 strict = false
 
+# Критически важно для монопо: mypy должен видеть соседние пакеты
+mypy_path = ["../../packages/nekhebet-core", "../../packages/nekhebet-store"]
+
+# Игнорируем библиотеки без stubs
+[[tool.mypy.overrides]]
+module = [
+    "telethon.*",
+    "psycopg2.*",
+    "dotenv.*",
+]
+ignore_missing_imports = true
