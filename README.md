@@ -1,11 +1,11 @@
 
 # Nekhebet — Tamper-Evident Signed Event Platform
 
-[![License](https://img.shields.io/github/license/nekhebet/nekhebet)](LICENSE)
-[![CI](https://img.shields.io/github/actions/workflow/status/nekhebet/nekhebet/ci.yml?branch=main&label=CI)](https://github.com/nekhebet/nekhebet/actions/workflows/ci.yml)
-[![CodeQL](https://img.shields.io/github/actions/workflow/status/nekhebet/nekhebet/codeql.yml?branch=main&label=CodeQL)](https://github.com/nekhebet/nekhebet/actions/workflows/codeql.yml)
-[![Charon Build](https://img.shields.io/github/actions/workflow/status/nekhebet/nekhebet/ci-cd.yml?branch=main&label=Charon%20Build)](https://github.com/nekhebet/nekhebet/actions/workflows/ci-cd.yml)
-[![Latest Release](https://img.shields.io/github/v/release/nekhebet/nekhebet?label=Release)](https://github.com/nekhebet/nekhebet/releases)
+[![License](https://img.shields.io/github/license/yourusername/nekhebet)](LICENSE)
+[![CI](https://img.shields.io/github/actions/workflow/status/yourusername/nekhebet/ci.yml?branch=main&label=CI)](https://github.com/yourusername/nekhebet/actions/workflows/ci.yml)
+[![CodeQL](https://img.shields.io/github/actions/workflow/status/yourusername/nekhebet/codeql.yml?branch=main&label=CodeQL)](https://github.com/yourusername/nekhebet/actions/workflows/codeql.yml)
+[![Charon Build](https://img.shields.io/github/actions/workflow/status/yourusername/nekhebet/ci-cd.yml?branch=main&label=Charon%20Build)](https://github.com/yourusername/nekhebet/actions/workflows/ci-cd.yml)
+[![Latest Release](https://img.shields.io/github/v/release/yourusername/nekhebet?label=Release)](https://github.com/yourusername/nekhebet/releases)
 
 **Nekhebet** — это инфраструктурное решение для создания, подписи, верификации и хранения *криптографически защищённых событий* в виде неизменяемых подписанных конвертов (**SignedEnvelope**).
 
