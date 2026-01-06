@@ -1,9 +1,9 @@
 
 # Nekhebet — Tamper-Evident Signed Event Platform
 
-[![License](https://img.shields.io/github/license/nekhebet/nekhebet)](LICENSE)
-[![CI](https://img.shields.io/github/actions/workflow/status/nekhebet/nekhebet/ci.yml?branch=main&label=CI)](https://github.com/nekhebet/nekhebet/actions/workflows/ci.yml)
+![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)
 [![CodeQL](https://img.shields.io/github/actions/workflow/status/nekhebet/nekhebet/codeql.yml?branch=main&label=CodeQL)](https://github.com/nekhebet/nekhebet/actions/workflows/codeql.yml)
+[![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/nekhebet/nekhebet/ci-cd.yml?branch=main&label=Charon%20CI)](https://github.com/nekhebet/nekhebet/actions)
 [![Charon Build](https://img.shields.io/github/actions/workflow/status/nekhebet/nekhebet/ci-cd.yml?branch=main&label=Charon%20Build)](https://github.com/nekhebet/nekhebet/actions/workflows/ci-cd.yml)
 [![Latest Release](https://img.shields.io/github/v/release/nekhebet/nekhebet?label=Release)](https://github.com/nekhebet/nekhebet/releases)
 
