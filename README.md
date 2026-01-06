@@ -1,11 +1,12 @@
 
 # Nekhebet — Tamper-Evident Signed Event Platform
 
-![License](https://img.shields.io/badge/license-Apache%202.0-blue) 
-![Security](https://img.shields.io/badge/Security-CodeQL-green) 
-![TOCTOU Protection](https://img.shields.io/badge/TOCTOU-Protected-red) 
-![Replay Guard](https://img.shields.io/badge/Replay%20Attack-Detected-red) 
-![Audit Trail](https://img.shields.io/badge/Audit-Forensic%20Ready-blue)
+[![License](https://img.shields.io/github/license/nekhebet/nekhebet)](LICENSE)
+[![CI](https://img.shields.io/github/actions/workflow/status/nekhebet/nekhebet/ci.yml?branch=main&label=CI)](https://github.com/nekhebet/nekhebet/actions/workflows/ci.yml)
+[![CodeQL](https://img.shields.io/github/actions/workflow/status/nekhebet/nekhebet/codeql.yml?branch=main&label=CodeQL)](https://github.com/nekhebet/nekhebet/actions/workflows/codeql.yml)
+[![Charon Build](https://img.shields.io/github/actions/workflow/status/nekhebet/nekhebet/ci-cd.yml?branch=main&label=Charon%20Build)](https://github.com/nekhebet/nekhebet/actions/workflows/ci-cd.yml)
+[![Latest Release](https://img.shields.io/github/v/release/nekhebet/nekhebet?label=Release)](https://github.com/nekhebet/nekhebet/releases)
+[![Stars](https://img.shields.io/github/stars/nekhebet/nekhebet?style=social)](https://github.com/nekhebet/nekhebet/stargazers)
 
 **Nekhebet** — это инфраструктурное решение для создания, подписи, верификации и хранения *криптографически защищённых событий* в виде неизменяемых подписанных конвертов (**SignedEnvelope**).
 
