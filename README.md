@@ -6,7 +6,6 @@
 [![CodeQL](https://img.shields.io/github/actions/workflow/status/nekhebet/nekhebet/codeql.yml?branch=main&label=CodeQL)](https://github.com/nekhebet/nekhebet/actions/workflows/codeql.yml)
 [![Charon Build](https://img.shields.io/github/actions/workflow/status/nekhebet/nekhebet/ci-cd.yml?branch=main&label=Charon%20Build)](https://github.com/nekhebet/nekhebet/actions/workflows/ci-cd.yml)
 [![Latest Release](https://img.shields.io/github/v/release/nekhebet/nekhebet?label=Release)](https://github.com/nekhebet/nekhebet/releases)
-[![Stars](https://img.shields.io/github/stars/nekhebet/nekhebet?style=social)](https://github.com/nekhebet/nekhebet/stargazers)
 
 **Nekhebet** — это инфраструктурное решение для создания, подписи, верификации и хранения *криптографически защищённых событий* в виде неизменяемых подписанных конвертов (**SignedEnvelope**).
 
