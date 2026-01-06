@@ -195,31 +195,6 @@ packages/
 * воспроизводимость,
 * независимая проверка без контекста системы-источника.
 
-## Базовый сценарий использования
-
-```python
-# Создание события
-unsigned = create_envelope(
-    event_type="system.action",
-    payload={"action": "update", "object": "config"},
-    source="service-A",
-    key_id="service-A-key"
-)
-
-# Подпись
-signed = sign_envelope(unsigned, signing_context)
-
-# Передача / хранение
-data = serialize(signed)
-
-# Приём и проверка
-received = deserialize(data)
-result = verify_envelope(received, replay_guard)
-
-if result.valid:
-    handle_event(received.payload)
-```
-
 ## Charon Vessel (опциональный компонент)
 
 **Charon Vessel** — отдельный инструмент управления физическим размещением и жизненным циклом данных.
