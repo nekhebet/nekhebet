@@ -1,9 +1,8 @@
 
 # Nekhebet — Tamper-Evident Signed Event Platform
 
-![Build](https://img.shields.io/github/actions/workflow/status/nekhebet/nekhebet/ci-cd.yml?branch=main) 
-![Security](https://img.shields.io/badge/Security-CodeQL-green) 
 ![License](https://img.shields.io/badge/license-Apache%202.0-blue) 
+![Security](https://img.shields.io/badge/Security-CodeQL-green) 
 ![TOCTOU Protection](https://img.shields.io/badge/TOCTOU-Protected-red) 
 ![Replay Guard](https://img.shields.io/badge/Replay%20Attack-Detected-red) 
 ![Audit Trail](https://img.shields.io/badge/Audit-Forensic%20Ready-blue)
