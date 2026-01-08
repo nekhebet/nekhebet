@@ -59,12 +59,6 @@ from .types import EnvelopeHeader
 # - RFC 8785: https://www.rfc-editor.org/rfc/rfc8785
 # - CPython float repr: https://github.com/python/cpython/blob/main/Python/dtoa.c
 #
-_JSON_DUMPS_KWARGS = {
-    "ensure_ascii": False,
-    "sort_keys": True,
-    "separators": (",", ":"),  # no insignificant whitespace
-    "allow_nan": False,        # REQUIRED by RFC 8785
-}
 
 # =============================================================================
 # Public API
@@ -102,7 +96,10 @@ def canonicalize(data: Dict[str, Any]) -> bytes:
         # - repr(float) with Ryu algorithm for minimal decimal representation
         canonical_str = json.dumps(
             data,
-            **_JSON_DUMPS_KWARGS
+            ensure_ascii=False,
+            sort_keys=True,
+            separators=(",", ":"),  # no insignificant whitespace
+            allow_nan=False,        # REQUIRED by RFC 8785
         )
         return canonical_str.encode("utf-8")
     except (TypeError, ValueError) as e:
