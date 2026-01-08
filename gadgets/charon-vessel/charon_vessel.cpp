@@ -219,7 +219,8 @@ public:
         }
         
         if (ftruncate(fd_.get(), 0) != 0) {
-            
+            fprintf(stderr, "WARNING: Failed to truncate pidfile %s: %s\n",
+                    path_.c_str(), strerror(errno));
         }
         lseek(fd_.get(), 0, SEEK_SET);
         char pid_str[32];
@@ -234,7 +235,8 @@ public:
     ~PidFileLock() {
         if (fd_) {
             if (ftruncate(fd_.get(), 0) != 0) {
-                
+                fprintf(stderr, "WARNING: Failed to truncate pidfile %s on cleanup: %s\n",
+                        path_.c_str(), strerror(errno));
             }
             unlink(path_.c_str());
         }
