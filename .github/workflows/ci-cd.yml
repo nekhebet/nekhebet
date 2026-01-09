@@ -5,8 +5,14 @@ on:
   push:
     branches: [ main ]
     tags: [ 'v*' ]
+    paths:
+      - 'gadgets/charon-vessel/**'
+      - '.github/workflows/ci-cd.yml'
   pull_request:
     branches: [ main ]
+    paths:
+      - 'gadgets/charon-vessel/**'
+      - '.github/workflows/ci-cd.yml'
   schedule:
     - cron: '0 2 * * 1'  # Every Monday at 2:00 UTC
 
@@ -16,7 +22,7 @@ permissions:
 
 concurrency:
   group: ${{ github.ref }}
-  cancel-in-progress: false
+  cancel-in-progress: true  # Cancel previous runs on the same ref (faster feedback on PRs)
 
 env:
   CXX_STANDARD: '17'
