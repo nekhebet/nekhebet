@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import time
 import re
+import logging
 from datetime import datetime, timezone, timedelta
 from typing import Optional, Dict, Any
 
@@ -39,7 +40,7 @@ from .canonical import (
 from .utils import (
     mask_sensitive_data,
     is_iso8601_utc,
-    is_secure_nonce,
+    is_valid_nonce,
     estimate_payload_size,
 )
 from .registry import get_event_policy
@@ -47,10 +48,15 @@ from .config import get_config
 
 
 # =============================================================================
+# Module logger
+# =============================================================================
+log = logging.getLogger(__name__)
+
+
+# =============================================================================
 # Internal constants (audited)
 # =============================================================================
 _PAYLOAD_HASH_RE = re.compile(r"^[0-9a-f]{64}$")
-_MAX_NONCE_LENGTH = 256  # Upper bound — prevents DoS via enormous strings
 
 
 # =============================================================================
@@ -105,12 +111,17 @@ def verify_envelope(
     1. Event type policy
     2. Protocol invariants (version, algorithm, canonicalization)
     3. Structural validation (lengths, formats)
-    4. Nonce security (policy-driven)
+    4. Nonce format validation (hexadecimal only)
     5. Timestamp validation (issued_at + expires_at)
     6. Replay protection (only for temporally valid envelopes)
     7. Signature verification
     8. Payload DoS protection (estimate)
     9. Payload canonicalization + hash verification
+
+    Nonce Security Model:
+    - Nonce format validation only (hexadecimal, length)
+    - NO cryptographic quality validation (entropy, randomness)
+    - Replay protection ensures uniqueness, not randomness quality
 
     All checks are defensive and ordered by cost (cheap first).
 
@@ -184,16 +195,12 @@ def verify_envelope(
             {"max_length": MAX_SOURCE_LENGTH},
         )
 
-    if (
-        not isinstance(header.nonce, str)
-        or not header.nonce
-        or len(header.nonce) > _MAX_NONCE_LENGTH
-    ):
+    # Nonce structural validation
+    if not is_valid_nonce(header.nonce):
         return _error_result(
             "structure_invalid",
-            "Invalid nonce: empty or exceeds maximum length",
+            "Invalid nonce format (must be 32-100 hexadecimal characters)",
             start,
-            {"max_length": _MAX_NONCE_LENGTH},
         )
 
     if len(signature.signature) != 64 or len(signature.public_key) != 32:
@@ -211,20 +218,15 @@ def verify_envelope(
         )
 
     # ------------------------------------------------------------------
-    # 4. Nonce security (strict mode, policy-driven)
+    # 4. Nonce security (structural validation only)
     # ------------------------------------------------------------------
-    if strict:
-        config = get_config()
-        require_secure = (
-            policy.get("require_secure_nonce", True)
-            or config.require_secure_nonce_global
-        )
-        if require_secure and not is_secure_nonce(header.nonce):
-            return _error_result(
-                "nonce_insecure",
-                "Nonce does not meet security requirements",
-                start,
-            )
+    # Note: We only validate format, not cryptographic quality
+    # Nonce format: hexadecimal [0-9a-f], 32-100 characters
+    # Responsibility for cryptographic quality lies with the sender
+    # Replay protection ensures uniqueness, not randomness
+    # 
+    # The `strict` parameter no longer affects nonce validation
+    # All nonces must pass structural validation regardless of strict mode
 
     # ------------------------------------------------------------------
     # 5. Timestamp validation (authoritative ordering)
@@ -270,6 +272,15 @@ def verify_envelope(
     # 6. Replay protection (ONLY after full temporal validity)
     # ------------------------------------------------------------------
     if replay_guard:
+        # Ensure issued_at is valid before passing to replay guard
+        if not is_iso8601_utc(header.issued_at):
+            # This should never happen after previous validation
+            return _error_result(
+                "structure_invalid",
+                "Invalid issued_at format (replay guard precondition failed)",
+                start,
+            )
+        
         accepted = replay_guard.check_and_store(
             header.key_id,
             header.nonce,
@@ -294,7 +305,8 @@ def verify_envelope(
     try:
         public_key = Ed25519PublicKey.from_public_bytes(signature.public_key)
         public_key.verify(signature.signature, header_bytes)
-    except Exception:
+    except Exception as e:
+        log.debug("Signature verification failed: %s", e)
         return _error_result(
             "signature_invalid",
             "Signature verification failed",
@@ -355,7 +367,43 @@ def verify_envelope(
     except ImportError:
         pass
 
+    # Optional: Log potential nonce quality issues (monitoring only)
+    # Note: This is for operational awareness, not security enforcement
+    _log_potential_nonce_quality_issues(header.nonce, header.type)
+
     return _success_result(details, start)
+
+
+def _log_potential_nonce_quality_issues(nonce: str, event_type: str) -> None:
+    """
+    Detect and log potential nonce quality issues for monitoring.
+    
+    SECURITY NOTE:
+    - This is for OPERATIONAL MONITORING only
+    - Does NOT affect verification outcome
+    - Does NOT enforce security boundaries
+    - Helps identify misconfigured clients
+    
+    Pattern detection is heuristic and may have false positives.
+    """
+    # Simple heuristics for monitoring (not security)
+    if len(set(nonce)) < 10:  # Very low character diversity
+        log.info(
+            "Potential low-entropy nonce detected for event_type '%s': "
+            "only %d unique characters",
+            event_type,
+            len(set(nonce))
+        )
+    
+    # Check for repeating patterns (simple detection)
+    if re.match(r'^([0-9a-f])\1{15,}', nonce):  # 16+ repeating characters
+        log.info(
+            "Repeating character pattern in nonce for event_type '%s'",
+            event_type
+        )
+    
+    # All checks are informational only
+    # No exceptions raised, no verification failures
 
 
 # =============================================================================
@@ -367,12 +415,14 @@ def _fast_verify_without_replay_and_nonce(envelope: SignedEnvelope) -> bool:
 
     Disables:
       - Replay protection
-      - Strict nonce strength checks
+      - Nonce format validation
 
     MUST ONLY be used in fully trusted internal systems where replay/nonce
     are handled elsewhere.
 
     All other checks remain enabled.
+    
+    WARNING: This bypasses critical security boundaries.
     """
     try:
         return verify_envelope(
