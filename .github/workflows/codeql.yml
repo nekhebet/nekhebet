@@ -1,13 +1,13 @@
+# .github/workflows/codeql.yml
 name: CodeQL
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ main ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ main ]
   schedule:
-    # Weekly deep security scan
-    - cron: "0 3 * * 1"
+    - cron: "0 3 * * 1"  # Weekly on Monday at 03:00 UTC
 
 permissions:
   actions: read
@@ -20,47 +20,37 @@ concurrency:
 
 jobs:
   analyze:
-    name: CodeQL (Python)
+    name: CodeQL Analysis (Python + C++)
     runs-on: ubuntu-latest
 
     steps:
-      # ------------------------------------------------------------
-      # Checkout
-      # ------------------------------------------------------------
       - name: Checkout repository
         uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
-      # ------------------------------------------------------------
-      # Initialize CodeQL
-      # ------------------------------------------------------------
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v4
         with:
-          languages: python
+          languages: python,cpp
+          queries: security-extended,security-and-quality
+          build-mode: manual  # Required for C++
 
-          # IMPORTANT:
-          # Use security-focused query packs only
-          queries: >
-            security-and-quality
-
-          # Faster + deterministic for Python
-          build-mode: none
-
-      # ------------------------------------------------------------
-      # (Optional but recommended) Install deps
-      # ------------------------------------------------------------
-      - name: Install dependencies
+      - name: Install Python dependencies (for CodeQL Python analysis)
         run: |
           python -m pip install --upgrade pip
           pip install -e packages/nekhebet-core
 
-      # ------------------------------------------------------------
-      # Analyze
-      # ------------------------------------------------------------
+      - name: Install system dependencies for C++ build
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential libcap-dev libsystemd-dev
+
+      - name: Manual build for C++ CodeQL analysis
+        run: |
+          cd gadgets/charon-vessel
+          g++ -std=c++17 -O1 -g -fno-inline -Wall -Wextra -Wpedantic -pthread -DNO_IO_URING \
+            charon_vessel.cpp -lcap -lsystemd -o charon_vessel-codeql
+
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v4
-        with:
-          category: "/language:python"
-          
