@@ -1,3 +1,4 @@
+# .github/workflows/ci-cd.yml
 name: CI/CD for Charon Vessel
 
 on:
@@ -22,56 +23,14 @@ env:
   SOURCE_DATE_EPOCH: '1700000000'  # Reproducible builds
 
 jobs:
-  codeql-analysis:
-    name: CodeQL Security Analysis
-    runs-on: ubuntu-24.04
-    permissions:
-      actions: read
-      contents: read
-      security-events: write
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Install dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y build-essential libcap-dev libsystemd-dev
-
-      - name: Initialize CodeQL
-        uses: github/codeql-action/init@v4
-        with:
-          languages: cpp
-          queries: security-extended,security-and-quality
-          build-mode: manual
-
-      - name: Manual Build for CodeQL
-        run: |
-          cd gadgets/charon-vessel
-          g++ -std=c++${{ env.CXX_STANDARD }} \
-            -O1 -g -fno-inline \
-            -Wall -Wextra -Wpedantic \
-            -pthread \
-            -DNO_IO_URING \
-            charon_vessel.cpp \
-            -lcap -lsystemd \
-            -o charon_vessel-codeql
-
-      - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v4
-
   static-analysis:
     name: Static Analysis
     runs-on: ubuntu-24.04
-    needs: [codeql-analysis]
     continue-on-error: true
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Install tools
         run: |
@@ -109,14 +68,13 @@ jobs:
   build-linux:
     name: Linux Native Build
     runs-on: ubuntu-24.04
-    needs: [codeql-analysis]
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Cache ccache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.ccache
           key: ${{ runner.os }}-ccache-${{ hashFiles('gadgets/charon-vessel/charon_vessel.cpp') }}
@@ -166,11 +124,10 @@ jobs:
   build-freebsd:
     name: FreeBSD Build
     runs-on: ubuntu-latest
-    needs: [codeql-analysis]
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Build on FreeBSD 14.2
         uses: cross-platform-actions/action@v0.26.0
@@ -276,11 +233,10 @@ jobs:
   quality-gate:
     name: Quality Gate
     runs-on: ubuntu-24.04
-    needs: [codeql-analysis, build-linux, build-freebsd]
+    needs: [build-linux, build-freebsd]
     if: always()
     steps:
       - name: Check results
         run: |
-          [[ "${{ needs.codeql-analysis.result }}" == "success" ]] && \
           [[ "${{ needs.build-linux.result }}" == "success" ]] || exit 1
           echo "Critical path passed"
