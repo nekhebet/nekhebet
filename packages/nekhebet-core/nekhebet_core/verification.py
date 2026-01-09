@@ -44,7 +44,6 @@ from .utils import (
     estimate_payload_size,
 )
 from .registry import get_event_policy
-from .config import get_config
 
 
 # =============================================================================
@@ -147,10 +146,11 @@ def verify_envelope(
     }
 
     # ------------------------------------------------------------------
-    # 1. Event type policy
+    # 1. Event type policy (retrieve for future use if needed)
     # ------------------------------------------------------------------
     try:
-        policy = get_event_policy(header.type)
+        # Store policy for potential future use
+        _ = get_event_policy(header.type)
     except ValueError:
         return _error_result(
             "event_type_invalid",
@@ -218,18 +218,7 @@ def verify_envelope(
         )
 
     # ------------------------------------------------------------------
-    # 4. Nonce security (structural validation only)
-    # ------------------------------------------------------------------
-    # Note: We only validate format, not cryptographic quality
-    # Nonce format: hexadecimal [0-9a-f], 32-100 characters
-    # Responsibility for cryptographic quality lies with the sender
-    # Replay protection ensures uniqueness, not randomness
-    # 
-    # The `strict` parameter no longer affects nonce validation
-    # All nonces must pass structural validation regardless of strict mode
-
-    # ------------------------------------------------------------------
-    # 5. Timestamp validation (authoritative ordering)
+    # 4. Timestamp validation (authoritative ordering)
     # ------------------------------------------------------------------
     if not is_iso8601_utc(header.issued_at):
         return _error_result(
@@ -269,7 +258,7 @@ def verify_envelope(
             )
 
     # ------------------------------------------------------------------
-    # 6. Replay protection (ONLY after full temporal validity)
+    # 5. Replay protection (ONLY after full temporal validity)
     # ------------------------------------------------------------------
     if replay_guard:
         # Ensure issued_at is valid before passing to replay guard
@@ -299,7 +288,7 @@ def verify_envelope(
             )
 
     # ------------------------------------------------------------------
-    # 7. Signature verification (cryptographic core)
+    # 6. Signature verification (cryptographic core)
     # ------------------------------------------------------------------
     header_bytes = canonicalize_header(header)
     try:
@@ -314,7 +303,7 @@ def verify_envelope(
         )
 
     # ------------------------------------------------------------------
-    # 8. Payload DoS protection (defensive estimate)
+    # 7. Payload DoS protection (defensive estimate)
     # ------------------------------------------------------------------
     try:
         estimated_size = estimate_payload_size(payload)
@@ -334,7 +323,7 @@ def verify_envelope(
         )
 
     # ------------------------------------------------------------------
-    # 9. Payload canonicalization + hash verification (authoritative)
+    # 8. Payload canonicalization + hash verification (authoritative)
     # ------------------------------------------------------------------
     try:
         canonical_payload = canonicalize(payload)
@@ -354,7 +343,7 @@ def verify_envelope(
         )
 
     # ------------------------------------------------------------------
-    # 10. Success — record metric
+    # 9. Success — record metric
     # ------------------------------------------------------------------
     try:
         from .metrics import record_verification
