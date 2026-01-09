@@ -55,8 +55,7 @@ known-first-party = ["nekhebet_ingest"]
 python_version = "3.11"
 strict = false
 
-# Игнорируем ВСЕ missing imports (внутренние editable + внешние без stubs)
 ignore_missing_imports = true
 
-# Дополнительно отключаем arg-type ошибки глобально (на случай, если останется)
 disable_error_code = ["arg-type"]
+
