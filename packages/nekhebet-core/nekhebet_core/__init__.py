@@ -1,162 +1,144 @@
 """
-Nekhebet Core v4.0.0 — Public package interface
+Nekhebet Core v4.0.0 — canonical signed event system
 
-High-performance, audit-ready, RFC 8785-compliant event envelope system.
+Public API exports for Nekhebet Core.
 
-Design principles:
-- Only signed envelopes (no unsigned events)
-- Deterministic canonicalization (RFC 8785)
-- Strict security by default
-- Explicit trust boundaries
+WARNING:
+- This module defines the PUBLIC API.
+- Any changes to exports are breaking changes.
+- Internal modules may be restructured, but exports must remain stable.
 """
 
 from __future__ import annotations
 
-from typing import Optional
-
-__version__ = "4.0.0"
-__author__ = "Nekhebet Team"
-__description__ = (
-    "Signed Envelope event system with strict canonicalization and security"
-)
-
 # =============================================================================
-# Core structures & protocols
+# Core types and protocols
 # =============================================================================
-
 from .types import (
-    SignedEnvelope,
+    # Constants
+    CLOCK_SKEW_ALLOW,
+    MAX_EXPIRES_SECONDS,
+    MAX_SOURCE_LENGTH,
+    MAX_KEY_ID_LENGTH,
+    MAX_ABSOLUTE_PAYLOAD_SIZE,
+    MAX_PAYLOAD_DEPTH,
+    
+    # Types
+    Algorithm,
+    CanonicalizationMode,
+    VerificationCategory,
+    
+    # Envelope structures
     EnvelopeHeader,
+    EnvelopeSignature,
+    SignedEnvelope,
+    UnsignedEnvelope,
+    
+    # Results & protocols
     VerificationResult,
     SigningContextProtocol,
     ReplayGuardProtocol,
-    CLOCK_SKEW_ALLOW,
-    MAX_EXPIRES_SECONDS,
+    
+    # Errors
+    PayloadTooLargeError,
 )
 
 # =============================================================================
-# Creation & Signing
+# Core functionality
 # =============================================================================
-
 from .envelope import create_envelope, add_signature
-from .signing import (
-    sign_envelope,
-    DefaultSigningContext,
-)
-
-# =============================================================================
-# Verification
-# =============================================================================
-
+from .signing import sign_envelope, DefaultSigningContext
 from .verification import verify_envelope
+from .replay_guard import InMemoryReplayGuard
+from .serialization import to_json_bytes, from_json_bytes, to_pretty_json_bytes
 
 # =============================================================================
-# Serialization
+# Configuration and utilities
 # =============================================================================
-
-from .serialization import (
-    to_json_bytes,
-    from_json_bytes,
-    to_pretty_json_bytes,
-)
-
-# =============================================================================
-# Configuration & Registry
-# =============================================================================
-
 from .config import get_config, clear_config_cache
-from .registry import EVENT_REGISTRY, get_event_policy
-
-# =============================================================================
-# Utilities (selective export — only safe/public helpers)
-# =============================================================================
-
+from .canonical import (
+    canonicalize,
+    canonicalize_header,
+    compute_payload_hash,
+    compute_payload_hash_from_canonical,
+)
 from .utils import (
     mask_sensitive_data,
     is_valid_key_id,
-    is_secure_nonce,
+    is_valid_nonce,           
+    is_iso8601_utc,
+    estimate_payload_size,
+    validate_payload_structure,
+    b64_encode_bytes,
+    b64_decode_str,
+    RESERVED_PAYLOAD_FIELDS,
 )
 
 # =============================================================================
-# Replay Guard (expose the improved in-memory implementation)
+# Registry and metrics
 # =============================================================================
-
-from .replay_guard import InMemoryReplayGuard
-
-# =============================================================================
-# Metrics (optional dependency, graceful degradation)
-# =============================================================================
-
-try:
-    from .metrics import (
-        metrics as _metrics,
-        record_signing,
-        record_verification,
-        EventMetrics,
-    )
-
-    metrics: Optional[EventMetrics] = _metrics
-
-except ImportError:  # pragma: no cover
-    metrics = None
-
-    def record_signing(*args, **kwargs) -> None:  # type: ignore
-        """No-op when metrics module is unavailable."""
-        return None
-
-    def record_verification(*args, **kwargs) -> None:  # type: ignore
-        """No-op when metrics module is unavailable."""
-        return None
+from .registry import EVENT_REGISTRY, get_event_policy
+from .metrics import metrics, record_signing, record_verification
 
 # =============================================================================
-# Public API
+# Public API definition
 # =============================================================================
-
 __all__ = [
-    # Package metadata
-    "__version__",
-    "__author__",
-    "__description__",
-
-    # Core types & protocols
-    "SignedEnvelope",
+    # Types and constants
+    "CLOCK_SKEW_ALLOW",
+    "MAX_EXPIRES_SECONDS",
+    "MAX_SOURCE_LENGTH",
+    "MAX_KEY_ID_LENGTH",
+    "MAX_ABSOLUTE_PAYLOAD_SIZE",
+    "MAX_PAYLOAD_DEPTH",
+    "Algorithm",
+    "CanonicalizationMode",
+    "VerificationCategory",
     "EnvelopeHeader",
+    "EnvelopeSignature",
+    "SignedEnvelope",
+    "UnsignedEnvelope",
     "VerificationResult",
     "SigningContextProtocol",
     "ReplayGuardProtocol",
-    "CLOCK_SKEW_ALLOW",
-    "MAX_EXPIRES_SECONDS",
-
-    # Core lifecycle
+    "PayloadTooLargeError",
+    
+    # Core functionality
     "create_envelope",
     "add_signature",
     "sign_envelope",
-    "verify_envelope",
-
-    # Signing context
     "DefaultSigningContext",
-
-    # Serialization
+    "verify_envelope",
+    "InMemoryReplayGuard",
     "to_json_bytes",
     "from_json_bytes",
     "to_pretty_json_bytes",
-
-    # Configuration & policy
+    
+    # Configuration and utilities
     "get_config",
     "clear_config_cache",
-    "EVENT_REGISTRY",
-    "get_event_policy",
-
-    # Utilities
+    "canonicalize",
+    "canonicalize_header",
+    "compute_payload_hash",
+    "compute_payload_hash_from_canonical",
     "mask_sensitive_data",
     "is_valid_key_id",
-    "is_secure_nonce",
-
-    # Replay guard
-    "InMemoryReplayGuard",
-
-    # Metrics (optional)
+    "is_valid_nonce",          
+    "is_iso8601_utc",
+    "estimate_payload_size",
+    "validate_payload_structure",
+    "b64_encode_bytes",
+    "b64_decode_str",
+    "RESERVED_PAYLOAD_FIELDS",
+    
+    # Registry and metrics
+    "EVENT_REGISTRY",
+    "get_event_policy",
     "metrics",
     "record_signing",
     "record_verification",
 ]
+
+__version__ = "4.0.0"
+__author__ = "Nekhebet Team"
+__license__ = "MIT"
