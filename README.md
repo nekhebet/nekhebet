@@ -1,248 +1,121 @@
 
-# Nekhebet — Tamper-Evident Signed Event Platform
+# Nekhebet — Cryptographically Verifiable Events
 
 ![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)
-[![CodeQL](https://img.shields.io/github/actions/workflow/status/nekhebet/nekhebet/codeql.yml?branch=main&label=CodeQL)](https://github.com/nekhebet/nekhebet/actions/workflows/codeql.yml)
-[![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/nekhebet/nekhebet/ci-cd.yml?branch=main&label=Charon%20CI)](https://github.com/nekhebet/nekhebet/actions)
-[![Charon Build](https://img.shields.io/github/actions/workflow/status/nekhebet/nekhebet/ci-cd.yml?branch=main&label=Charon%20Build)](https://github.com/nekhebet/nekhebet/actions/workflows/ci-cd.yml)
-[![Latest Release](https://img.shields.io/github/v/release/nekhebet/nekhebet?label=Release)](https://github.com/nekhebet/nekhebet/releases)
+[![CodeQL](https://img.shields.io/github/actions/workflow/status/nekhebet/nekhebet/codeql.yml?branch=main\&label=CodeQL)](https://github.com/nekhebet/nekhebet/actions/workflows/codeql.yml)
+[![CI](https://img.shields.io/github/actions/workflow/status/nekhebet/nekhebet/ci-cd.yml?branch=main\&label=CI)](https://github.com/nekhebet/nekhebet/actions)
 
-**Nekhebet** — это инфраструктурное решение для создания, подписи, верификации и хранения *криптографически защищённых событий* в виде неизменяемых подписанных конвертов (**SignedEnvelope**).
+**Nekhebet** — security-oriented protocol and reference implementation
+for creating, signing and verifying **tamper-evident events**.
 
-Для задач, где критичны:
+It provides a **cryptographically strict envelope format** (**SignedEnvelope**)
+with deterministic serialization, replay protection and zero-trust verification.
 
-* доказуемая целостность данных,
-* подтверждаемое происхождение событий,
-* защита от повторного воспроизведения,
-* детерминированная сериализация,
-* безопасное пересечение границ доверия между системами.
 
-Nekhebet это **базовое инженерное решение** для встраивания в другие системы.
+## What problem it solves
 
-## Ключевая модель
+Nekhebet is designed for systems where you must be able to **prove** that:
 
-Любое событие представляется как **SignedEnvelope**, состоящий из:
+* data was not modified,
+* the source of an event is authentic,
+* replay attacks are prevented,
+* verification is independent of runtime or language.
 
-1. **Канонического заголовка** (metadata, идентификаторы, тайминг),
-2. **Payload** (произвольные данные),
-3. **Криптографической подписи**.
+Typical use cases:
 
-Подписывается **не сериализация**, а строго определённое **каноническое представление данных**.
-Это гарантирует воспроизводимую и независимую верификацию в любой среде.
+* audit logs,
+* event-driven systems,
+* data ingestion from untrusted sources,
+* compliance / forensics,
+* reproducible pipelines.
 
-## Инварианты системы
 
-### Криптографическая целостность
+## Core model
 
-* Алгоритм подписи: **Ed25519**
-* Хэширование payload: **SHA-256**
-* Подписывается фиксированный набор полей
-* Любое несовместимое изменение структуры ломает верификацию
+Every event is a **SignedEnvelope**:
 
-### Детерминированность
+1. Canonical header (IDs, timestamps, nonce, policies)
+2. Payload (arbitrary domain data)
+3. Cryptographic signature
 
-* JSON канонизация по **RFC 8785 (JCS)**
-* Один и тот же объект → одинаковый байтовый поток
-* Отсутствие неоднозначностей сериализации
+> 🔐 Signatures are calculated over a **canonical representation**,
+> not over a runtime-dependent serialization.
 
-### Zero-trust модель
 
-* Каждый входящий конверт считается недоверенным
-* Верификация всегда выполняется полностью
-* Нет «доверенных путей» внутри пайплайна
+## Security invariants
 
-### Защита от replay-атак
+* **Signature:** Ed25519
+* **Payload hash:** SHA-256
+* **Canonicalization:** RFC 8785 (JCS)
+* **Model:** Zero-trust (no trusted creation paths)
+* **Replay protection:** `(key_id, nonce, issued_at)`
+* **Verification:** always full, always deterministic
 
-* Комбинация `(key_id, nonce, issued_at)`
-* Stateful replay guard
-* Возможность распределённых backends
+These invariants are **intentional and non-negotiable**.
 
-## Архитектура
 
-### Nekhebet Core
+## Architecture
 
-Самодостаточное ядро, не зависящее от транспорта, БД или источника данных.
+### `nekhebet-core`
 
-**Ответственность Core:**
+Self-contained security core, independent of transport or storage.
 
-* канонические структуры данных,
-* RFC 8785 канонизация,
-* создание и подписание конвертов,
-* полная верификация,
-* replay-guard,
-* политики проверки,
-* конфигурация и метрики.
+Responsibilities:
+
+* canonical data model,
+* deterministic JSON canonicalization,
+* envelope creation & signing,
+* strict verification pipeline,
+* replay protection,
+* policy enforcement.
 
 ```
 nekhebet_core/
-├── types.py           # Канонические структуры и протоколы
-├── canonical.py       # RFC 8785 канонизация
-├── envelope.py        # Создание и базовая валидация
-├── signing.py         # Ed25519 подпись
-├── verification.py   # Полный pipeline верификации
-├── replay_guard.py   # Защита от replay
-├── serialization.py # Сериализация / десериализация
-├── config.py         # Типизированная конфигурация
-├── registry.py       # Реестр типов и политик
-├── metrics.py        # Метрики
+├── envelope.py
+├── signing.py
+├── verification.py
+├── canonical.py
+├── replay_guard.py
+├── types.py
 └── utils.py
 ```
 
-Core может использоваться **изолированно** и встраиваться в любые приложения.
+### Optional components
 
-### Store (опционально)
+* **Store** — persistent storage (PostgreSQL / LMDB reference design)
+* **Ingest** — adapters for external data sources
 
-Компонент долговременного хранения подписанных конвертов.
 
-Текущая реализация — **гибридная**:
+## Non-Goals
 
-* **PostgreSQL** — метаданные, индексы, replay-состояние
-* **LMDB** — бинарные конверты, mmap, zero-copy доступ
+Nekhebet is **not**:
 
-Архитектура допускает альтернативы:
+* a message broker,
+* a transport layer,
+* a business framework,
+* a distributed system out of the box.
 
-* append-only журналы,
-* object storage,
-* time-series хранилища,
-* распределённые KV-backends.
+It is a **security and protocol foundation** meant to be embedded.
 
-### Ingest-модули (опционально)
 
-Адаптеры, преобразующие внешние источники данных в SignedEnvelope.
+## Status
 
-Ingest:
+* Stable core model
+* Auditable security boundaries
+* Actively evolving extensions
 
-* не является обязательной частью системы,
-* служит примером интеграции,
-* задаёт точку расширения под конкретные источники.
+API surface may evolve,
+**security invariants will not**.
 
-## Структура репозитория
 
-```
-packages/
-├── nekhebet-core     # Ядро: подпись, верификация, канонизация
-├── nekhebet-store    # Хранение и индексация
-└── nekhebet-ingest   # Примеры ingest-адаптеров
-```
+## License
 
-`nekhebet-core` не зависит от остальных пакетов.
+MIT
 
-## Типовые сценарии применения
 
-### Аудит и журналирование
+### TL;DR
 
-**Задача:**
-Неизменяемый журнал действий с возможностью независимой проверки.
-
-**Использование:**
-
-* каждое действие → SignedEnvelope,
-* сохранение в store,
-* проверка целостности постфактум.
-
-**Результат:**
-
-* доказуемая неизменяемость,
-* отслеживаемое происхождение,
-* пригодность для compliance и расследований.
-
-### Event-driven системы
-
-**Задача:**
-Безопасный обмен событиями между сервисами.
-
-**Использование:**
-
-* события подписываются источником,
-* получатель выполняет верификацию,
-* replay и подмена исключены.
-
-**Результат:**
-
-* идемпотентность,
-* проверяемый источник,
-* строгая типизация событий.
-
-### Приём данных из недоверенных источников
-
-**Задача:**
-Сбор данных из внешних или полу-доверенных систем.
-
-**Использование:**
-
-* упаковка данных в SignedEnvelope,
-* фиксация источника и времени,
-* повторная проверка при хранении и обработке.
-
-**Результат:**
-
-* гарантированная целостность,
-* цепочка происхождения данных.
-
-### Криптографически строгие пайплайны
-
-**Задача:**
-Детерминированные данные для систем, где важна воспроизводимость (DLT, архивы, расчёты).
-
-**Использование:**
-
-* RFC 8785 обеспечивает одинаковое представление,
-* подпись не зависит от среды исполнения.
-
-**Результат:**
-
-* воспроизводимость,
-* независимая проверка без контекста системы-источника.
-
-## Charon Vessel (опциональный компонент)
-
-**Charon Vessel** — отдельный инструмент управления физическим размещением и жизненным циклом данных.
-
-### Роль
-
-* перенос и ротация файлов между устройствами,
-* атомарные операции,
-* cold-storage и архивирование.
-
-### Совместное использование
-
-* активные данные: LMDB / PostgreSQL,
-* устаревшие конверты сериализуются в файлы,
-* Charon перемещает их в архив,
-* в индексе остаётся ссылка.
-
-Charon **не является частью Nekhebet**, но логически дополняет его в системах с долгим хранением.
-
-## Текущее состояние
-
-* стабильное ядро,
-* зафиксированная модель SignedEnvelope,
-* чёткие границы ответственности компонентов.
-
-Допустимы:
-
-* добавление новых ingest-адаптеров,
-* расширение политик,
-* замена хранилищ,
-* вынос компонентов в сервисы,
-
-без изменения базовой модели и инвариантов.
-
-## Направления развития (без рефакторинга)
-
-* распределённый replay guard,
-* дополнительные криптографические алгоритмы,
-* специализированные политики верификации,
-* микросервисная декомпозиция.
-
-## Итог
-
-**Nekhebet** — **инженерный фундамент** для систем, где критичны:
-
-* доверие к данным,
-* воспроизводимость,
-* строгие инварианты,
-* независимая верификация.
-
-Подходит для прямого использования и как основа для специализированных доменных решений.
+If you need **cryptographically verifiable events** with
+deterministic signatures and strict replay protection —
+**Nekhebet is the core you build on.**
 
