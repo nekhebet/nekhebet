@@ -1,9 +1,9 @@
 # Charon Vessel — Secure File Rotation Infrastructure
 
 ![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)
+![Platform](https://img.shields.io/badge/platform-Linux%20%7C%20FreeBSD-blue)
 ![C++17](https://img.shields.io/badge/C++-17-blue)
 ![Single Binary](https://img.shields.io/badge/single--binary-yes-lightgrey)
-![Platform](https://img.shields.io/badge/platform-Linux%20%7C%20FreeBSD-blue)
 [![CI](https://img.shields.io/github/actions/workflow/status/nekhebet/nekhebet/ci-cd.yml?branch=main\&label=CI)](https://github.com/nekhebet/nekhebet/actions)
 [![CodeQL](https://img.shields.io/github/actions/workflow/status/nekhebet/nekhebet/ci-cd.yml?branch=main\&label=CodeQL)](https://github.com/nekhebet/nekhebet/actions/workflows/ci-cd.yml)
 
