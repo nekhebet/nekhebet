@@ -1,39 +1,49 @@
-name: CI
+# .github/workflows/ci.yml
+name: CI for Nekhebet
+
 on:
   push:
     branches: [ main ]
   pull_request:
     branches: [ main ]
+
 jobs:
   nekhebet-core:
     name: nekhebet-core
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+
       - name: Cache pip
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.cache/pip
           key: pip-${{ runner.os }}-${{ hashFiles('packages/**/pyproject.toml') }}
+
       - name: Upgrade pip
         run: python -m pip install --upgrade pip
+
       - name: Install nekhebet-core (editable) + dev tools
         run: |
           pip install -e packages/nekhebet-core
           pip install ruff mypy pytest pytest-asyncio
+
       - name: Ruff (lint)
         run: |
           cd packages/nekhebet-core
           ruff check .
+
       - name: Mypy (strict)
         run: |
           cd packages/nekhebet-core
           mypy .
+
       - name: Pytest
         run: |
           cd packages/nekhebet-core
@@ -57,33 +67,41 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+
       - name: Cache pip
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.cache/pip
           key: pip-${{ runner.os }}-${{ hashFiles('packages/**/pyproject.toml') }}
+
       - name: Upgrade pip
         run: python -m pip install --upgrade pip
+
       - name: Install dependencies + dev tools
         run: |
           pip install -e packages/nekhebet-core
           pip install -e packages/nekhebet-store
           pip install ruff mypy pytest pytest-asyncio python-dotenv
+
       - name: Ruff (lint)
         run: |
           cd packages/nekhebet-store
           ruff check .
+
       - name: Mypy (strict)
         run: |
           cd packages/nekhebet-store
           mypy .
+
       - name: Pytest (including security smoke test)
         run: |
           cd packages/nekhebet-store
@@ -107,34 +125,42 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+
       - name: Cache pip
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.cache/pip
           key: pip-${{ runner.os }}-${{ hashFiles('packages/**/pyproject.toml') }}
+
       - name: Upgrade pip
         run: python -m pip install --upgrade pip
+
       - name: Install all packages (editable) + dev tools
         run: |
           pip install -e packages/nekhebet-core
           pip install -e packages/nekhebet-store
           pip install -e packages/nekhebet-ingest
           pip install ruff mypy pytest pytest-asyncio python-dotenv telethon
+
       - name: Ruff (lint)
         run: |
           cd packages/nekhebet-ingest
           ruff check .
+
       - name: Mypy (strict)
         run: |
           cd packages/nekhebet-ingest
           mypy .
+
       - name: Pytest
         run: |
           cd packages/nekhebet-ingest
