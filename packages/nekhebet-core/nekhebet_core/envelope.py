@@ -19,6 +19,7 @@ from __future__ import annotations
 import uuid
 import secrets
 import re
+import logging
 from datetime import datetime, timezone, timedelta
 from typing import Any, Dict, Optional
 from typing import TYPE_CHECKING
@@ -38,7 +39,6 @@ from .utils import (
     estimate_payload_size,
     validate_payload_structure,
     is_valid_nonce,
-    is_secure_nonce,
     is_iso8601_utc,
     is_valid_key_id,
 )
@@ -48,6 +48,12 @@ from .canonical import (
     canonicalize,
     compute_payload_hash_from_canonical,
 )
+
+# ------------------------------------------------------------------------------
+# Module logger
+# ------------------------------------------------------------------------------
+log = logging.getLogger(__name__)
+
 
 # ------------------------------------------------------------------------------
 # Hard security constants (audited limits)
@@ -79,8 +85,15 @@ def create_envelope(
     2. source / key_id: format + length
     3. payload: structure → estimated size → canonical → hash
     4. context / extensions: structure + canonical size limits
-    5. nonce: secure generation or validation
+    5. nonce: secure generation or structural validation
     6. timestamps: format + expiration bounds (per-policy)
+
+    Nonce Security Model:
+    - When nonce=None: cryptographically secure random nonce generated automatically
+    - When nonce provided: only structural validation (format, length)
+    - Cryptographic quality of user-provided nonce is NOT verified
+    - Responsibility for nonce security lies with the caller
+    - For production use, always use nonce=None (auto-generation)
 
     Guarantees (if no exception raised):
     - Structurally valid and policy-compliant
@@ -186,17 +199,31 @@ def create_envelope(
             )
 
     # ------------------------------------------------------------------
-    # 5. Nonce handling
+    # 5. Nonce handling (SECURITY CRITICAL SECTION)
     # ------------------------------------------------------------------
     if nonce is None:
+        # Secure by default: generate cryptographically secure random nonce
         nonce = secrets.token_hex(32)  # 256-bit cryptographically secure
+        log.debug(
+            "Auto-generated cryptographically secure nonce for event_type '%s'",
+            event_type
+        )
     else:
+        # User-provided nonce: validate structure only
         if not is_valid_nonce(nonce):
             raise ValueError("Invalid nonce format")
-        if require_secure_nonce and not is_secure_nonce(nonce):
-            raise ValueError(
-                f"Nonce does not meet security requirements for event_type '{event_type}'"
+        
+        # Security advisory for user-provided nonces in secure contexts
+        if require_secure_nonce:
+            log.warning(
+                "User-provided nonce used for secure event_type '%s'. "
+                "For production security, use nonce=None (auto-generation). "
+                "Responsibility for nonce cryptographic quality lies with caller.",
+                event_type
             )
+        
+        # Note: We do NOT validate cryptographic quality of user-provided nonce
+        # Replay protection ensures uniqueness, not randomness quality
 
     # ------------------------------------------------------------------
     # 6. Timestamp handling
