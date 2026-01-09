@@ -59,12 +59,15 @@ RESERVED_PAYLOAD_FIELDS: Set[str] = {
 # =============================================================================
 
 _KEY_ID_RE = re.compile(rf"^[a-zA-Z0-9_-]{{1,{MAX_KEY_ID_LENGTH}}}$")
-_NONCE_RE = re.compile(r"^[a-zA-Z0-9_-]{16,100}$")
 _ISO8601_RE = re.compile(
     r"^\d{4}-\d{2}-\d{2}T"
     r"\d{2}:\d{2}:\d{2}"
     r"(?:\.\d+)?Z$"
 )
+
+# Nonce validation regexes
+# Nekhebet uses hexadecimal nonce format exclusively
+_NONCE_HEX_RE = re.compile(r"^[0-9a-f]{32,100}$")  # 32-100 hex characters
 
 # =============================================================================
 # Sensitive data masking
@@ -113,41 +116,27 @@ def is_valid_key_id(key_id: str) -> bool:
 
 def is_valid_nonce(nonce: str) -> bool:
     """
-    Validate nonce format (basic syntax only).
+    Validate nonce structure according to Nekhebet specification.
 
-    This does NOT check cryptographic strength.
+    Nekhebet uses hexadecimal nonce format exclusively.
+    
+    Requirements:
+    - Hexadecimal characters [0-9a-f] (lowercase)
+    - Minimum 32 characters (128 bits)
+    - Maximum 100 characters (DoS protection)
+    
+    Security Notes:
+    - This validates FORMAT only
+    - Does NOT validate cryptographic quality
+    - Does NOT attempt entropy estimation
+    - Replay protection ensures uniqueness, not randomness
     """
     if not isinstance(nonce, str):
         return False
-    return bool(_NONCE_RE.fullmatch(nonce))
-
-
-def is_secure_nonce(nonce: str) -> bool:
-    """
-    Validate cryptographic strength of a nonce using heuristics.
-
-    Threat model:
-    - Prevent low-entropy patterns commonly used in misconfigured systems
-    - Reject sequential/repeating values that pass basic format checks
-    - Does NOT attempt full entropy estimation (impossible without CSPRNG context)
-
-    Requirements:
-    - Valid nonce format
-    - Length >= 16 characters
-    - Sufficient entropy (not low-entropy patterns)
-    """
-    if not is_valid_nonce(nonce):
-        return False
-
-    # Reject common low-entropy patterns
-    if re.match(r"^(.)\1{15,}$", nonce):  # 16+ repeating chars
-        return False
-    if re.match(r"^(0123456789|9876543210){2,}$", nonce):  # sequential digits
-        return False
-    if nonce.isdigit() and int(nonce) < 2**64:  # small numeric values
-        return False
-
-    return True
+    
+    # Note: We use the same regex for both validation and DoS protection
+    # The regex enforces both format and length limits
+    return bool(_NONCE_HEX_RE.fullmatch(nonce))
 
 
 def is_iso8601_utc(timestamp: str) -> bool:
@@ -294,7 +283,6 @@ __all__ = [
     "mask_sensitive_data",
     "is_valid_key_id",
     "is_valid_nonce",
-    "is_secure_nonce",
     "is_iso8601_utc",
     "estimate_payload_size",
     "validate_payload_structure",
