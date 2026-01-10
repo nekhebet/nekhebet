@@ -1,75 +1,85 @@
-
 # Nekhebet — Cryptographically Verifiable Events
 
 ![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)
 [![CodeQL](https://img.shields.io/github/actions/workflow/status/nekhebet/nekhebet/codeql.yml?branch=main\&label=CodeQL)](https://github.com/nekhebet/nekhebet/actions/workflows/codeql.yml)
 [![CI](https://img.shields.io/github/actions/workflow/status/nekhebet/nekhebet/ci-cd.yml?branch=main\&label=CI)](https://github.com/nekhebet/nekhebet/actions)
 
-**Nekhebet** — security-oriented protocol and reference implementation
-for creating, signing and verifying **tamper-evident events**.
+Nekhebet — протокол и реализация создания,
+подписывания и проверки криптографически проверяемых событий.
 
-It provides a **cryptographically strict envelope format** (**SignedEnvelope**)
-with deterministic serialization, replay protection and zero-trust verification.
-
-
-## What problem it solves
-
-Nekhebet is designed for systems where you must be able to **prove** that:
-
-* data was not modified,
-* the source of an event is authentic,
-* replay attacks are prevented,
-* verification is independent of runtime or language.
-
-Typical use cases:
-
-* audit logs,
-* event-driven systems,
-* data ingestion from untrusted sources,
-* compliance / forensics,
-* reproducible pipelines.
+Проект определяет строгий формат контейнера событий
+(**SignedEnvelope**) с канонической сериализацией,
+криптографической подписью и детерминированной процедурой проверки.
 
 
-## Core model
+## Какую задачу решает
 
-Every event is a **SignedEnvelope**:
+Nekhebet используется в системах, где требуется
+проверяемо установить, что:
 
-1. Canonical header (IDs, timestamps, nonce, policies)
-2. Payload (arbitrary domain data)
-3. Cryptographic signature
+- данные не были изменены,
+- источник события аутентичен,
+- повторное воспроизведение событий обнаруживается,
+- проверка не зависит от среды выполнения или языка.
 
-> 🔐 Signatures are calculated over a **canonical representation**,
-> not over a runtime-dependent serialization.
+Типичные области применения:
 
-
-## Security invariants
-
-* **Signature:** Ed25519
-* **Payload hash:** SHA-256
-* **Canonicalization:** RFC 8785 (JCS)
-* **Model:** Zero-trust (no trusted creation paths)
-* **Replay protection:** `(key_id, nonce, issued_at)`
-* **Verification:** always full, always deterministic
-
-These invariants are **intentional and non-negotiable**.
+- аудит и журналы событий,
+- event-driven системы,
+- приём данных из недоверенных источников,
+- комплаенс и форензика,
+- воспроизводимые конвейеры обработки данных.
 
 
-## Architecture
+## Модель данных
+
+Каждое событие представлено в виде **SignedEnvelope**,
+который состоит из трёх частей:
+
+1. Канонический заголовок  
+   (идентификаторы, временные метки, nonce, политики)
+2. Полезная нагрузка  
+   (произвольные доменные данные)
+3. Криптографическая подпись
+
+Подпись вычисляется **по каноническому представлению данных**,
+а не по сериализации, зависящей от среды выполнения.
+
+
+## Инварианты безопасности
+
+Следующие свойства являются частью модели и не подлежат изменению:
+
+- **Алгоритм подписи:** Ed25519
+- **Хэш полезной нагрузки:** SHA-256
+- **Канонизация:** RFC 8785 (JSON Canonicalization Scheme)
+- **Модель доверия:** zero-trust
+- **Защита от replay:** `(key_id, nonce, issued_at)`
+- **Проверка:** полная и детерминированная
+
+Эти инварианты зафиксированы на уровне протокола.
+
+
+## Архитектура
 
 ### `nekhebet-core`
 
-Self-contained security core, independent of transport or storage.
+Самодостаточное ядро безопасности,
+независимое от транспорта и хранилища.
 
-Responsibilities:
+Обязанности:
 
-* canonical data model,
-* deterministic JSON canonicalization,
-* envelope creation & signing,
-* strict verification pipeline,
-* replay protection,
-* policy enforcement.
+- определение канонической модели данных,
+- детерминированная JSON-канонизация,
+- создание и подписание контейнеров событий,
+- строгая верификация подписей и структуры,
+- защита от повторного воспроизведения,
+- применение политик проверки.
+
+Структура:
 
 ```
+
 nekhebet_core/
 ├── envelope.py
 ├── signing.py
@@ -78,44 +88,43 @@ nekhebet_core/
 ├── replay_guard.py
 ├── types.py
 └── utils.py
+
 ```
 
-### Optional components
 
-* **Store** — persistent storage (PostgreSQL / LMDB reference design)
-* **Ingest** — adapters for external data sources
+### Дополнительные компоненты
 
+Следующие компоненты не являются частью ядра и подключаются отдельно:
 
-## Non-Goals
-
-Nekhebet is **not**:
-
-* a message broker,
-* a transport layer,
-* a business framework,
-* a distributed system out of the box.
-
-It is a **security and protocol foundation** meant to be embedded.
+- **Store** — постоянное хранилище (референс-дизайн для PostgreSQL / LMDB)
+- **Ingest** — адаптеры для внешних источников данных
 
 
-## Status
+## Не является целью проекта
 
-* Stable core model
-* Auditable security boundaries
-* Actively evolving extensions
+Nekhebet **не является**:
 
-API surface may evolve,
-**security invariants will not**.
+- брокером сообщений,
+- транспортным уровнем,
+- бизнес-фреймворком,
+- распределённой системой «из коробки».
 
-
-## License
-
-MIT
+Проект представляет собой **протокольную и криптографическую основу**,
+предназначенную для встраивания в другие системы.
 
 
-### TL;DR
+## Статус
 
-If you need **cryptographically verifiable events** with
-deterministic signatures and strict replay protection —
-**Nekhebet is the core you build on.**
+- Стабильная модель ядра
+- Чётко очерченные границы безопасности
+- Развитие дополнительных компонентов
+
+Интерфейсы могут эволюционировать,
+инварианты безопасности — нет.
+
+
+## Лицензия
+
+MIT License
+
 
