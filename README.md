@@ -4,10 +4,10 @@
 [![CodeQL](https://img.shields.io/github/actions/workflow/status/nekhebet/nekhebet/codeql.yml?branch=main\&label=CodeQL)](https://github.com/nekhebet/nekhebet/actions/workflows/codeql.yml)
 [![CI](https://img.shields.io/github/actions/workflow/status/nekhebet/nekhebet/ci-cd.yml?branch=main\&label=CI)](https://github.com/nekhebet/nekhebet/actions)
 
-Nekhebet — протокол и реализация создания,
+Nekhebet — реализация создания,
 подписывания и проверки криптографически проверяемых событий.
 
-Проект определяет строгий формат контейнера событий
+Определяет строгий формат контейнера событий
 (**SignedEnvelope**) с канонической сериализацией,
 криптографической подписью и детерминированной процедурой проверки.
 
