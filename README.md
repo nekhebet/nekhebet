@@ -9,7 +9,6 @@ Nekhebet Omen Display — демонстрация реализации end-to-e
 
 **Charon Vessel - Secure File Rotation Daemon**
 
-![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![C++17](https://img.shields.io/badge/C++-17-blue)
 ![Platform](https://img.shields.io/badge/platform-Linux%20%7C%20FreeBSD-blue)
 ![Single Binary](https://img.shields.io/badge/single-binary-lightgrey.svg)
