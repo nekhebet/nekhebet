@@ -5,7 +5,7 @@
 [![CI](https://img.shields.io/github/actions/workflow/status/nekhebet/nekhebet/ci-cd.yml?branch=main\&label=CI)](https://github.com/nekhebet/nekhebet/actions)
 
 Nekhebet — реализация создания,
-подписывания и проверки криптографически проверяемых событий.
+подписи и проверки криптографически проверяемых событий.
 
 Определяет строгий формат контейнера событий
 (**SignedEnvelope**) с канонической сериализацией,
