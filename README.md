@@ -1,16 +1,24 @@
-# Nekhebet — Cryptographically Verifiable Events
+# Nekhebet 
+**Nekhebet Omen Display — Verifiable Real-Time Event Display Pipeline**
+
+![Python](https://img.shields.io/badge/python-3.11-blue)
+![Node.js](https://img.shields.io/badge/nodejs-20-blue)
+![Security](https://img.shields.io/badge/security-cryptographically%20verifiable-brightgreen)
+
+Nekhebet Omen Display — демонстрация реализации end-to-end пайплайна для криптографически верифицируемого сбора, хранения и отображения событий из Telegram в реальном времени.
+
+**Nekhebet Core · Store · Adapters - Cryptographically Verifiable Events**
 
 ![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)
 [![CodeQL](https://img.shields.io/github/actions/workflow/status/nekhebet/nekhebet/codeql.yml?branch=main\&label=CodeQL)](https://github.com/nekhebet/nekhebet/actions/workflows/codeql.yml)
 [![CI](https://img.shields.io/github/actions/workflow/status/nekhebet/nekhebet/ci-cd.yml?branch=main\&label=CI)](https://github.com/nekhebet/nekhebet/actions)
 
-Nekhebet — реализация создания,
+Nekhebet Core · Store · Adapters — реализация создания,
 подписи и проверки криптографически проверяемых событий.
 
 Определяет строгий формат контейнера событий
 (**SignedEnvelope**) с канонической сериализацией,
 криптографической подписью и детерминированной процедурой проверки.
-
 
 ## Какую задачу решает
 
