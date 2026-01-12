@@ -1,4 +1,5 @@
-# Nekhebet Omen Display — Verifiable Real-Time Event Display Pipeline
+# Nekhebet Omen Display
+**Verifiable Real-Time Event Display Pipeline**
 
 ![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![Python](https://img.shields.io/badge/python-3.11-blue)
