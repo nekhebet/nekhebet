@@ -1,6 +1,7 @@
 # Nekhebet Ingest
 **Event Ingestion Adapters (Telegram + future sources)**
 
+![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![Python](https://img.shields.io/badge/python-3.11+-blue)
 ![Telethon](https://img.shields.io/badge/telegram-telethon-orange)
 ![nekhebet-core](https://img.shields.io/badge/depends-on%20nekhebet--core%204.0+-9cf)
