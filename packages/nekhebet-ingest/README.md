@@ -5,7 +5,6 @@
 ![Telethon](https://img.shields.io/badge/telegram-telethon-orange)
 ![nekhebet-core](https://img.shields.io/badge/depends-on%20nekhebet--core%204.0+-9cf)
 ![nekhebet-store](https://img.shields.io/badge/depends-on%20nekhebet--store%204.0+-9cf)
-![License](https://img.shields.io/badge/license-Proprietary-red)
 
 ## 🔺 Обзор
 
