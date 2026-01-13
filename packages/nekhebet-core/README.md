@@ -2,7 +2,7 @@
 **Cryptographically Verifiable Events — Signing & Verification Core**
 
 ![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)
-![Python](https://img.shields.io/badge/python-3.10+-blue)
+![Python](https://img.shields.io/badge/python-3.11+-blue)
 ![msgspec](https://img.shields.io/badge/serialization-msgspec-orange)
 ![Ed25519](https://img.shields.io/badge/signature-Ed25519-9cf)
 
