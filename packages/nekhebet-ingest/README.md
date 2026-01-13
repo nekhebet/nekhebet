@@ -11,7 +11,7 @@
 
 **Nekhebet Ingest** — это слой приёма событий из внешних источников с последующей нормализацией, созданием неподписанных конвертов и передачей их в подпись + хранилище.
 
-На текущий момент основной адаптер — **Telegram** (группы, каналы, чаты), но архитектура спроектирована для лёгкого добавления других источников (Webhooks, Kafka, SQS, RSS, email и т.д.).
+На текущий момент адаптер — **Telegram** как пример (группы, каналы, чаты), но архитектура спроектирована для лёгкого добавления других источников (Webhooks, Kafka, SQS, RSS, email и т.д.).
 
 Основные задачи адаптера:
 
@@ -44,12 +44,12 @@ External source
 
 ```bash
 # Пока пакет приватный / в разработке
-pip install git+https://github.com/your-org/nekhebet-ingest.git@main
+pip install git+https://github.com/nekhebet/nekhebet-ingest.git@main
 ```
 
 ```bash
 # Для локальной разработки
-git clone https://github.com/your-org/nekhebet-ingest.git
+git clone https://github.com/nekhebet/nekhebet-ingest.git
 cd nekhebet-ingest
 pip install -e ".[dev]"
 ```
