@@ -9,7 +9,7 @@
 <table class="mobile-table">
   <tr>
     <td colspan="2" class="mobile-main">
-      <p> <img src="https://i.postimg.cc/qvRwVDvL/080808.png" alt="Описание" width="100%" /></p>
+      <p> <img src="https://i.postimg.cc/qvRwVDvL/080808.png" alt="Nekhebet Omen Display" width="100%" /></p>
     </td>
   </tr>
   <tr>
@@ -20,7 +20,7 @@
 </table>
 
 ## **Управление**
-**Медиа из выбранных источников Telegram**
+**Медиа из выбранных каналов и групп**
    - Фото, видео (клик по видео = включить/выключить звук)
    - Специальные медиа (список/метка) могут вызывать вспышки экрана
    - Автоматическая смена каждые ~5.5 секунд
