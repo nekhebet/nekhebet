@@ -2,7 +2,7 @@
 **Append-Only Cryptographically Verifiable Event Storage**
 
 ![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)
-![Python](https://img.shields.io/badge/python-3.10+-blue)
+![Python](https://img.shields.io/badge/python-3.11+-blue)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16+-blue)
 ![LMDB](https://img.shields.io/badge/LMDB-1.4+-orange)
 ![nekhebet-core](https://img.shields.io/badge/depends-on%20nekhebet--core%204.0+-9cf)
