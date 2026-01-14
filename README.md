@@ -1,5 +1,5 @@
 # Nekhebet 
-**Nekhebet Omen Display — Verifiable Real-Time Event Display Pipeline**
+** 🔺 Nekhebet Omen Display — Verifiable Real-Time Event Display Pipeline**
 
 ![Python](https://img.shields.io/badge/python-3.11-blue)
 ![Node.js](https://img.shields.io/badge/nodejs-20-blue)
@@ -7,7 +7,7 @@
 
 Nekhebet Omen Display — демонстрация реализации end-to-end пайплайна для криптографически верифицируемого сбора, хранения и отображения событий из Telegram в реальном времени.
 
-**Charon Vessel - Secure File Rotation Daemon**
+** 🔺 Charon Vessel - Secure File Rotation Daemon**
 
 ![C++17](https://img.shields.io/badge/C++-17-blue)
 ![Platform](https://img.shields.io/badge/platform-Linux%20%7C%20FreeBSD-blue)
@@ -15,7 +15,7 @@ Nekhebet Omen Display — демонстрация реализации end-to-e
 
 Charon Vessel — демон ротации файлов для Linux и FreeBSD с **атомарными операциями** и строгой защитой от race-condition атак, для надёжного и предсказуемого управления жизненным циклом файлов в условиях потенциально враждебной среды.
 
-**Nekhebet Core · Store · Adapters - Cryptographically Verifiable Events**
+** 🔺 Nekhebet Core · Store · Adapters - Cryptographically Verifiable Events**
 
 ![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)
 [![CodeQL](https://img.shields.io/github/actions/workflow/status/nekhebet/nekhebet/codeql.yml?branch=main\&label=CodeQL)](https://github.com/nekhebet/nekhebet/actions/workflows/codeql.yml)
