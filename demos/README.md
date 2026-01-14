@@ -14,7 +14,6 @@
   </tr>
   <tr>
     <td colspan="2" class="mobile-side">
-       
     </td>
   </tr>
 </table>
