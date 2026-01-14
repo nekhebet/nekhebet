@@ -14,12 +14,14 @@
   </tr>
   <tr>
     <td colspan="2" class="mobile-side">
-      **Live демо**: http://0808.us.nekhebet.su:8080
+      **Live демо**: 
     </td>
   </tr>
 </table>
 
-## Управление и интерфейс
+   ```
+   http://0808.us.nekhebet.su:8080
+   ```
 
 ### Архитектура отображения
 
