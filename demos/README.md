@@ -14,11 +14,11 @@
   </tr>
   <tr>
     <td colspan="2" class="mobile-side">
-      **Live демо**: 
+       
     </td>
   </tr>
 </table>
-
+**Live демо**:
    ```
    http://0808.us.nekhebet.su:8080
    ```
