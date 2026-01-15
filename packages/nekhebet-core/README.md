@@ -70,7 +70,7 @@ VerificationResult
 Любое отклонение от спецификации делает событие **недействительным**.
 
 ## Replay-защита
-Replay-атака предотвращается проверкой уникальности тройки `(key_id, nonce, issued_at)`.  
+Replay-атака предотвращается проверкой уникальности пары `(key_id, nonce)`.  
 Core предоставляет reference-реализацию `InMemoryReplayGuard`.  
 Для production рекомендуется внешнее распределённое хранилище (Redis / PostgreSQL / KV-store).
 
