@@ -33,7 +33,7 @@ Ingest **не выполняет**:
 Текущая реализация:
 - **Telegram** (каналы, группы, чаты) — reference-адаптер via Telethon
 
-Планируемые/возможные:
+Возможные:
 - Webhooks
 - Kafka / RabbitMQ / SQS
 - RSS / Atom
