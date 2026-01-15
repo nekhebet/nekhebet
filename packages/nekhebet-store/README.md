@@ -1,4 +1,5 @@
-Nekhebet Store
+# Nekhebet Store
+
 **Append-only хранилище верифицируемых событий**
 
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
