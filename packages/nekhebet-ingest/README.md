@@ -1,77 +1,91 @@
 # Nekhebet Ingest
-**Event Ingestion Adapters (Telegram + future sources)**
+**Event ingestion adapters for zero-trust pipelines**
 
-![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)
-![Python](https://img.shields.io/badge/python-3.11+-blue)
-![Telethon](https://img.shields.io/badge/telegram-telethon-orange)
-![nekhebet-core](https://img.shields.io/badge/depends-on%20nekhebet--core%204.0+-9cf)
-![nekhebet-store](https://img.shields.io/badge/depends-on%20nekhebet--store%204.0+-9cf)
+[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Python](https://img.shields.io/badge/python-3.11+-blue)](pyproject.toml)
+[![Telethon](https://img.shields.io/badge/telegram-telethon-orange)](https://docs.telethon.dev/)
+[![nekhebet-core](https://img.shields.io/badge/depends-on%20nekhebet--core%204.0+-9cf)](https://pypi.org/project/nekhebet-core/)
+[![nekhebet-store](https://img.shields.io/badge/depends-on%20nekhebet--store%204.0+-9cf)](https://pypi.org/project/nekhebet-store/)
 
-## 🔺 Обзор
+Nekhebet Ingest — слой приёма событий из внешних, недоверенных источников.  
+Он подключается к внешним системам, извлекает события в реальном времени, нормализует их и передаёт в криптографический пайплайн Nekhebet.
 
-**Nekhebet Ingest** — это слой приёма событий из внешних источников с последующей нормализацией, созданием неподписанных конвертов и передачей их в подпись + хранилище.
+Ingest **не принимает решений** и **ничему не доверяет**.  
+Он лишь преобразует внешний сигнал в строго формализованное событие.
 
-На текущий момент адаптер — **Telegram** как пример (группы, каналы, чаты), но архитектура спроектирована для лёгкого добавления других источников (Webhooks, Kafka, SQS, RSS, email и т.д.).
+## Задача ingest-слоя
+- Подключение к внешнему источнику
+- Получение новых событий
+- Детерминированное преобразование в payload
+- Создание `UnsignedEnvelope` (nekhebet-core)
+- Передача на подпись и сохранение
 
-Основные задачи адаптера:
+Ingest **не выполняет**:
+- Криптографическую подпись
+- Верификацию
+- Хранение событий
+- Управление ключами
+- Бизнес-логику
 
-- подключение к внешнему источнику
-- получение новых событий в реальном времени
-- преобразование в единый формат payload
-- создание `UnsignedEnvelope` через `nekhebet-core`
-- передача на подпись и сохранение в `nekhebet-store`
+Это сознательное ограничение архитектуры.
 
-Адаптер **не выполняет** подпись, верификацию и хранение — он максимально лёгкий и stateless.
+## Поддерживаемые источники
+Текущая реализация:
+- **Telegram** (каналы, группы, чаты) — reference-адаптер via Telethon
 
-## 🔺 Архитектура ingest-пайплайна
+Планируемые/возможные:
+- Webhooks
+- Kafka / RabbitMQ / SQS
+- RSS / Atom
+- Email (IMAP)
+- Любые event-driven системы
 
+## Архитектура пайплайна
 ```
-External source
-   (Telegram, Webhook, etc.)
-         ↓
-   Ingest Adapter
-         ↓
-   telegram_message → payload
-         ↓
-   create_envelope()   ← nekhebet-core
-         ↓
-   sign_envelope()     ← nekhebet-core
-         ↓
-   HybridEventRepository.save()  ← nekhebet-store
+External source (недоверенный)
+        ↓
+Ingest adapter
+        ↓
+Raw event → детерминированный payload
+        ↓
+create_envelope()          ← nekhebet-core
+        ↓
+sign_envelope()            ← nekhebet-core
+        ↓
+repo.save()                 ← nekhebet-store
 ```
 
-## 🔺 Установка
+Каждый этап изолирован.  
+Доверие не передаётся между слоями.
 
+## Установка
 ```bash
-# Пока пакет приватный / в разработке
-pip install git+https://github.com/nekhebet/nekhebet-ingest.git@main
+pip install nekhebet-ingest
 ```
 
+Для разработки:
 ```bash
-# Для локальной разработки
 git clone https://github.com/nekhebet/nekhebet-ingest.git
 cd nekhebet-ingest
 pip install -e ".[dev]"
 ```
 
-Зависимости (автоматически):
-- `nekhebet-core>=4.0.0`
-- `nekhebet-store>=4.0.0`
-- `telethon>=1.34`
-- `python-dotenv`
-- `psycopg2-binary`
+## Зависимости
+- `nekhebet-core >= 4.0.0`
+- `nekhebet-store >= 4.0.0`
+- `telethon >= 1.34`
 - `cryptography`
+- `psycopg2-binary`
+- `python-dotenv` (для .env в примерах)
 
-Требуется **Python 3.11+**.
+Python 3.11+
 
-## 🔺 Запуск Telegram-адаптера
-
-```bash
-# 1. Создайте .env файл (пример)
-cat > .env <<EOF
+## Конфигурация и запуск Telegram-адаптера
+### .env пример
+```env
 TELEGRAM_API_ID=1234567
 TELEGRAM_API_HASH=0123456789abcdef0123456789abcdef
-TELEGRAM_CHAT_ID=-1001234567890          # группа или канал
+TELEGRAM_CHAT_ID=-1001234567890
 TELEGRAM_SOURCE=telegram-group-alpha
 
 DB_HOST=localhost
@@ -81,32 +95,36 @@ DB_USER=postgres
 DB_PASSWORD=
 
 NEKHEBET_KEY_ID=telegram-ingest-01
+NEKHEBET_PRIVATE_KEY=ed25519_private_key_base64  # или путь к файлу
+
 LMDB_PATH=/var/lib/nekhebet/lmdb
-EOF
+PG_DSN=postgresql://postgres:@localhost:5432/nekhebet  # альтернативно
 ```
 
+### Запуск
 ```bash
-# 2. Запуск
-python -m nekhebet_ingest.telegram.run
-# или через poetry/pipx/uv:
-nekhebet-telegram
+nekhebet-ingest-telegram
 ```
 
-Логирование идёт в stdout. При получении SIGINT/SIGTERM происходит graceful shutdown.
+или
+```bash
+python -m nekhebet_ingest.telegram.run
+```
 
-## 🔺 Структура payload (Telegram → Nekhebet)
+Graceful shutdown по SIGINT/SIGTERM.
 
+## Формат payload (Telegram-пример)
 ```json
 {
   "platform": "telegram",
   "chat_id": -1001234567890,
   "message_id": 12345,
-  "date": "2026-01-13T09:45:12+00:00",
+  "date": "2026-01-13T09:45:12Z",
   "text": "Hello from Amsterdam!",
   "author": {
-    "id": "987654321",
-    "username": "anna_amsterdam",
-    "first_name": "Анна",
+    "id": 987654321,
+    "username": "nekhebet",
+    "first_name": "Nekhebet",
     "last_name": null
   },
   "metrics": {
@@ -120,32 +138,31 @@ nekhebet-telegram
     "has_media": true
   },
   "media": [
-    { "type": "photo", "id": 987654 }
+    { "type": "photo", "file_id": "AgACAg..." }
   ]
 }
 ```
 
-## 🔺 Основные модули
+Payload:
+- Полностью детерминирован
+- JSON-сериализуем
+- Без бинарных данных (медиа — только метаданные)
 
-- `adapter.py` — TelegramClient + events.NewMessage handler
-- `mapper.py` — преобразование `telethon.Message` → Nekhebet payload
-- `run.py` — основной цикл: подключение к БД/LMDB, подпись, сохранение
-- `telegram/run.py` — точка входа (CLI-скрипт)
+## Ключевые инварианты
+1. Ingest не хранит долговременное состояние (кроме сессии источника)
+2. Payload всегда детерминирован и воспроизводим
+3. Медиафайлы не загружаются — только идентификаторы
+4. Подпись происходит **после** создания envelope
+5. Все ошибки пробрасываются вверх
+6. Внешний источник остаётся недоверенным на всех этапах
 
-## 🔺 Инварианты
+## Лицензия
+MIT License
 
-1. Адаптер **не хранит** состояние (кроме сессии Telethon)
-2. Payload **детерминирован** и **JSON-сериализуем**
-3. Нет загрузки медиа-файлов — только метаданные (Charon Vessel обрабатывает скачивание)
-4. Подпись и сохранение происходят **после** создания конверта
-5. При сбое подписи/сохранения событие **не теряется** — логируются ошибки
+## Кратко
+**Nekhebet Ingest — это входной шлюз в zero-trust систему.**  
+Он ничего не доказывает.  
+Он ничего не хранит.  
 
-## 🔺 Лицензия
-
-Proprietary (закрытая)
-
-## 🔺 Краткое резюме
-
-**Nekhebet Ingest** — это лёгкий, расширяемый слой приёма событий из внешних источников, который превращает сырые сообщения (Telegram как пример) в канонические неподписанные конверты Nekhebet и передаёт их на подпись и хранение.
-
-Если сообщение попало в Telegram-чат → оно **очень скоро** станет математически доказуемо подлинным событием в Nekhebet.
+Он просто превращает внешний сигнал
+в событие, которое дальше может быть доказано.
