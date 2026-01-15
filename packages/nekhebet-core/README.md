@@ -1,103 +1,46 @@
 # Nekhebet Core
-**Cryptographically Verifiable Events — Signing & Verification Core**
+**Криптографическое ядро верифицируемых событий**
 
-![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)
-![Python](https://img.shields.io/badge/python-3.11+-blue)
-![msgspec](https://img.shields.io/badge/serialization-msgspec-orange)
-![Ed25519](https://img.shields.io/badge/signature-Ed25519-9cf)
+[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Python](https://img.shields.io/badge/python-3.11+-blue)](pyproject.toml)
+[![msgspec](https://img.shields.io/badge/serialization-msgspec-orange)](https://jcristharif.com/msgspec/)
+[![Ed25519](https://img.shields.io/badge/signature-Ed25519-9cf)](https://ed25519.cr.yp.to/)
+[![cryptography](https://img.shields.io/badge/cryptography-42.0.0+-blue)](https://cryptography.io/)
 
-## 🔺 Обзор
+Nekhebet Core — самостоятельное криптографическое ядро для создания, подписи и строгой верификации событий в zero-trust модели.
 
-**Nekhebet Core** — компактное криптографическое ядро для создания, подписи и строгой верификации событий в zero-trust модели.
+Компонент обеспечивает математически доказуемую подлинность, целостность и уникальность событий независимо от источника и среды выполнения.
 
-Это самостоятельный компонент, который отвечает за:
+## Ключевые гарантии
 
-- детерминированную канонизацию по RFC 8785 (JCS)
-- подпись и проверку Ed25519
-- защиту от replay-атак
-- применение политик по типам событий
-- жёсткую защиту от DoS и некорректных данных
+- Подпись исключительно Ed25519 над каноническим представлением по RFC 8785 (JCS)
+- Zero-trust верификация: ничего не доверяется этапу создания
+- Защита от replay-атак по тройке (key_id, nonce, issued_at)
+- Строго append-only семантика на уровне протокола
+- Жёсткие лимиты против DoS (1 MiB payload, ограниченная глубина, reserved fields)
+- Детерминированная канонизация и категоризация всех ошибок верификации
 
-Core задаёт **математические гарантии** всей системы Nekhebet: если событие прошло верификацию — оно подлинное, независимо от источника, времени и среды.
+## Архитектура
 
-## 🔺 Ключевой инвариант
+```
+Payload + Header → canonicalize → SHA-256 → Ed25519 sign → SignedEnvelope
+                                   ↓
+                        verify_envelope (zero-trust)
+                                   ↓
+                        VerificationResult (valid / category)
+```
 
-> Событие считается существующим только тогда,  
-> когда его подпись и структура успешно прошли полную верификацию.
+- Канонизация: RFC 8785 JCS (json.dumps + Ryu, с предупреждением о cross-language)
+- Replay guard: reference in-memory реализация (для production — внешнее хранилище)
+- Конфигурация: кэшированная из env с безопасными дефолтами
 
-## 🔺 Основные гарантии
-
-- Только **Ed25519** + **SHA-256**
-- Канонизация строго по **RFC 8785** (JCS)
-- Replay-защита по тройке `(key_id, nonce, issued_at)`
-- Zero-trust: верификация не доверяет ничему из этапа создания
-- Жёсткие лимиты: 1 MiB на канонизированный payload, ограниченная глубина, формат nonce и т.д.
-- Категоризация всех ошибок для мониторинга и аудита
-- Метрики signing/verification по типам событий
-
-## 🔺 Установка
+## Установка
 
 ```bash
-# Рекомендуемый способ
 pip install nekhebet-core
 ```
 
-```bash
-# Репозиторий
-pip install git+https://github.com/nekhebet/nekhebet-core.git@main
-```
-
-```bash
-# Для локальной разработки и тестов (самый удобный вариант)
-git clone https://github.com/nekhebet/nekhebet-core.git
-cd nekhebet-core
-pip install -e ".[dev]"          # с mypy, pytest, ruff и т.д.
-```
-
-Зависимости (автоматически):
-- `msgspec>=0.18` — быстрая и строгая сериализация/валидация
-- `cryptography>=42.0.0` — Ed25519
-
-Требуется **Python 3.10+**.
-
-Проверка установки:
-
-```python
-import nekhebet_core
-print(nekhebet_core.__version__)                    # → 4.0.0 (или актуальная)
-print(nekhebet_core.MAX_ABSOLUTE_PAYLOAD_SIZE)      # → 1048576
-```
-
-## 🔺 Формат события (SignedEnvelope)
-
-```json
-{
-  "header": {
-    "id":               "550e8400-e29b-41d4-a716-446655440000",
-    "type":             "omen.observed",
-    "version":          "4.0.0",
-    "source":           "collector-01",
-    "issued_at":        "2026-01-13T09:45:12.345Z",
-    "expires_at":       "2026-01-13T10:45:12.345Z",   // опционально
-    "nonce":            "a1b2c3d4e5f67890... (32–100 hex chars)",
-    "key_id":           "ed25519:reg-001",
-    "algorithm":        "ed25519",
-    "canonicalization": "rfc8785",
-    "payload_hash":     "64 символа sha256 lowercase",
-    "context":          { ... },                      // опционально
-    "extensions":       { ... }                       // опционально
-  },
-  "payload": {
-    // любые JSON-значения — доменные данные
-  },
-  "signature": {
-    "signature":  "base64(64 байта Ed25519 signature)",
-    "public_key": "base64(32 байта Ed25519 public key)"
-  }
-}
-```
-
-## 🔺 Пример использования
+## Быстрый старт
 
 ```python
 from nekhebet_core import (
@@ -109,63 +52,34 @@ from nekhebet_core import (
 )
 from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
 
-# Генерация ключа (в реальности — загрузка из безопасного хранилища)
-private_key = Ed25519PrivateKey.generate()
-public_key = private_key.public_key()
+# 1. Подготовка ключей
+priv = Ed25519PrivateKey.generate()
+pub = priv.public_key()
+ctx = DefaultSigningContext(private_key=priv, public_key=pub, key_id="test-key-01")
+guard = InMemoryReplayGuard()
 
-signing_ctx = DefaultSigningContext(
-    private_key=private_key,
-    public_key=public_key,
-    key_id="ed25519:reg-001"
-)
-
-replay_guard = InMemoryReplayGuard()
-
-# 1. Создание события
+# 2. Создание и подпись
 unsigned = create_envelope(
     event_type="omen.observed",
-    payload={"temperature": 23.7, "sensor_id": "ext-42"},
-    source="collector-pi-07",
-    key_id="ed25519:reg-001"
+    payload={"temperature": 23.7, "location": "Amsterdam"},
+    source="sensor-42",
+    key_id="test-key-01",
 )
 
-# 2. Подпись
-signed = sign_envelope(unsigned, signing_ctx)
+signed = sign_envelope(unsigned, ctx)
 
-# 3. Верификация (самый критичный вызов)
-result = verify_envelope(signed, replay_guard=replay_guard)
-
-print(result.valid)          # True
-print(result.reason)         # "Envelope verified successfully"
+# 3. Верификация
+result = verify_envelope(signed, replay_guard=guard, strict=True)
+print(result.valid)      # True
+print(result.reason)     # "Envelope verified successfully"
 ```
 
-## 🔺 Важные модули
+## Лицензия
 
-- `canonical.py` — **единственная** точка канонизации (JCS)
-- `verification.py` — основной zero-trust конвейер проверки
-- `envelope.py` — создание + валидация политик
-- `signing.py` — подпись заголовка
-- `replay_guard.py` — эталонная защита от повторов (in-memory)
-- `types.py` — все структуры и константы (изменение → ломает подписи!)
-- `registry.py` — политики типов событий
+MIT License
 
-## 🔺 Инварианты, которые нельзя нарушать
+## Краткое резюме
 
-1. Изменение структуры `EnvelopeHeader` → все подписи инвалидны
-2. Изменение логики `canonicalize()` → все подписи инвалидны
-3. Ослабление проверок в `verify_envelope()` → нарушение контракта
-4. Игнорирование лимитов (`MAX_ABSOLUTE_PAYLOAD_SIZE`, глубины и т.д.)
-5. Доверие любым данным вне `verify_envelope()`
+Nekhebet Core — минималистичное и строгое криптографическое ядро, гарантирующее математически доказуемую подлинность событий.
 
-## 🔺 Лицензия
-
-MIT
-
-## 🔺 Краткое резюме
-
-**Nekhebet Core** — это минималистичное, строгое и самодостаточное криптографическое ядро, которое позволяет любой системе гарантировать:
-
-> Каждое принятое событие имеет **математически доказуемую** подлинность, целостность и свежесть.
-
-Если подпись прошла верификацию — событие настоящее.  
-Точка.
+Если верификация прошла успешно — событие подлинное. Точка.
