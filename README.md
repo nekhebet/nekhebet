@@ -1,146 +1,80 @@
-# Nekhebet 
-**🔺 Nekhebet Omen Display — Verifiable Real-Time Event Display Pipeline**
+# Nekhebet
+**Криптографически верифицируемый пайплайн событий в реальном времени**
 
-![Python](https://img.shields.io/badge/python-3.11-blue)
-![Node.js](https://img.shields.io/badge/nodejs-20-blue)
-![Security](https://img.shields.io/badge/security-cryptographically%20verifiable-brightgreen)
-
-Nekhebet Omen Display — демонстрация реализации end-to-end пайплайна для криптографически верифицируемого сбора, хранения и отображения событий из Telegram в реальном времени.
-
-**🔺 Charon Vessel - Secure File Rotation Daemon**
-
-![C++17](https://img.shields.io/badge/C++-17-blue)
-![Platform](https://img.shields.io/badge/platform-Linux%20%7C%20FreeBSD-blue)
-![Single Binary](https://img.shields.io/badge/single-binary-lightgrey.svg)
-
-Charon Vessel — демон ротации файлов для Linux и FreeBSD с **атомарными операциями** и строгой защитой от race-condition атак, для надёжного и предсказуемого управления жизненным циклом файлов в условиях потенциально враждебной среды.
-
-**🔺 Nekhebet Core · Store · Adapters - Cryptographically Verifiable Events**
-
-![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)
-[![CodeQL](https://img.shields.io/github/actions/workflow/status/nekhebet/nekhebet/codeql.yml?branch=main\&label=CodeQL)](https://github.com/nekhebet/nekhebet/actions/workflows/codeql.yml)
-[![CI](https://img.shields.io/github/actions/workflow/status/nekhebet/nekhebet/ci-cd.yml?branch=main\&label=CI)](https://github.com/nekhebet/nekhebet/actions)
-
-Nekhebet Core · Store · Adapters — реализация создания,
-подписи и проверки криптографически проверяемых событий.
-
-Определяет строгий формат контейнера событий
-(**SignedEnvelope**) с канонической сериализацией,
-криптографической подписью и детерминированной процедурой проверки.
-
-## Какую задачу решает
-
-В системах, где требуется
-проверяемо установить, что:
-
-- данные не были изменены,
-- источник события аутентичен,
-- повторное воспроизведение событий обнаруживается,
-- проверка не зависит от среды выполнения или языка.
-
-Типичные области применения:
-
-- аудит и журналы событий,
-- event-driven системы,
-- приём данных из недоверенных источников,
-- комплаенс и форензика,
-- воспроизводимые конвейеры обработки данных.
+[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Python](https://img.shields.io/badge/python-3.11+-blue)](packages/)
+[![Node.js](https://img.shields.io/badge/nodejs-20-blue)](demos/)
+[![C++17](https://img.shields.io/badge/C++-17-blue)](gadgets/charon-vessel/)
 
 
-## Модель данных
+<!-- CI/CD -->
+[![CI](https://github.com/nekhebet/nekhebet/actions/workflows/ci.yml/badge.svg)](https://github.com/nekhebet/nekhebet/actions/workflows/ci.yml)
+[![Charon Vessel CI/CD](https://github.com/nekhebet/nekhebet/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/nekhebet/nekhebet/actions/workflows/ci-cd.yml)
+[![CodeQL](https://github.com/nekhebet/nekhebet/actions/workflows/codeql.yml/badge.svg)](https://github.com/nekhebet/nekhebet/actions/workflows/codeql.yml)
 
-Каждое событие представлено в виде **SignedEnvelope**,
-который состоит из трёх частей:
+Nekhebet — модульная zero-trust система для криптографически верифицируемого сбора, обработки, хранения и отображения событий из внешних источников в реальном времени.
 
-1. Канонический заголовок  
-   (идентификаторы, временные метки, nonce, политики)
-2. Полезная нагрузка  
-   (произвольные доменные данные)
-3. Криптографическая подпись
+Система обеспечивает математически доказуемую подлинность каждого принятого события в недоверенной среде: аутентичность, целостность и уникальность строго гарантированы.
 
-Подпись вычисляется **по каноническому представлению данных**,
-а не по сериализации, зависящей от среды выполнения.
+## Компоненты
 
+- **nekhebet-core** — криптографическое ядро (подпись Ed25519, канонизация по RFC 8785 JCS, строгая верификация, защита от replay-атак)
+- **nekhebet-store** — append-only хранилище (гибрид PostgreSQL + LMDB для метаданных и быстрого доступа к blob’ам)
+- **nekhebet-ingest** — адаптеры приёма событий (Telegram как основной пример, расширяемо)
+- **Charon Vessel** — демон атомарной ротации файлов (C++17, single binary, Linux/FreeBSD)
+- **Omen Display** — веб-интерфейс реального времени для визуализации событий (Node.js + JavaScript)
 
-## Инварианты безопасности
+## Ключевые гарантии
 
-Следующие свойства являются частью модели и не подлежат изменению:
-
-- **Алгоритм подписи:** Ed25519
-- **Хэш полезной нагрузки:** SHA-256
-- **Канонизация:** RFC 8785 (JSON Canonicalization Scheme)
-- **Модель доверия:** zero-trust
-- **Защита от replay:** `(key_id, nonce, issued_at)`
-- **Проверка:** полная и детерминированная
-
-Эти инварианты зафиксированы на уровне протокола.
-
+- Zero-trust верификация, независимая от источника и транспорта
+- Математически доказуемая подлинность через Ed25519 над каноническим JCS-представлением
+- Защита от replay-атак через уникальную тройку (key_id, nonce, issued_at)
+- Строго append-only хранение — события никогда не модифицируются и не удаляются
+- Атомарные операции с файлами с полной защитой от race-condition и symlink-атак
 
 ## Архитектура
 
-### `nekhebet-core`
-
-Самодостаточное ядро безопасности,
-независимое от транспорта и хранилища.
-
-Обязанности:
-
-- определение канонической модели данных,
-- детерминированная JSON-канонизация,
-- создание и подписание контейнеров событий,
-- строгая верификация подписей и структуры,
-- защита от повторного воспроизведения,
-- применение политик проверки.
-
-Структура:
-
+```
+Внешние источники
+        ↓
+Адаптеры приёма → UnsignedEnvelope
+        ↓
+Ядро (подпись + верификация)
+        ↓
+Хранилище (append-only)
+        ↓
+Потребители
+   ├─ Omen Display (визуализация в реальном времени)
+   ├─ Аналитика / Аудит
+   └─ Charon Vessel (безопасная ротация медиа)
 ```
 
-nekhebet_core/
-├── envelope.py
-├── signing.py
-├── verification.py
-├── canonical.py
-├── replay_guard.py
-├── types.py
-└── utils.py
+## Рабочая демонстрация
 
+Инстанс Omen Display в реальном времени:  
+
+   ```
+   http://0808.us.nekhebet.su:8080
+   ```
+
+(Инстанс получает события из тестового Telegram-канала и демонстрирует полный end-to-end пайплайн.)
+
+## Быстрый старт
+
+```bash
+pip install nekhebet-core nekhebet-store nekhebet-ingest
 ```
 
+Подробная настройка каждого компонента — в соответствующей директории пакета.
 
-### Дополнительные компоненты
-
-Следующие компоненты не являются частью ядра и подключаются отдельно:
-
-- **Store** — постоянное хранилище (референс-дизайн для PostgreSQL / LMDB)
-- **Ingest** — адаптеры для внешних источников данных
-
-
-## Не является целью
-
-Nekhebet **не является**:
-
-- брокером сообщений,
-- транспортным уровнем,
-- бизнес-фреймворком,
-- распределённой системой «из коробки».
-
-Nekhebet представляет собой **протокольную и криптографическую основу**,
-предназначенную для встраивания в другие системы.
-
-
-## Статус
-
-- Стабильная модель ядра
-- Очерченные границы безопасности
-- Развитие дополнительных компонентов
-
-Интерфейсы могут эволюционировать,
-инварианты безопасности — нет.
-
+Полный локальный пример развертывания — в `examples/quick-start/` (docker-compose в разработке).
 
 ## Лицензия
 
 MIT License
 
+## Краткое резюме
 
+Nekhebet предоставляет строгую криптографическую основу для систем, где требуется доказуемая подлинность событий: аудит, комплаенс, event-driven архитектуры, приём данных из недоверенных источников.
+
+Если событие прошло верификацию — оно подлинное. Точка.
