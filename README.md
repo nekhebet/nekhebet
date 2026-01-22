@@ -132,7 +132,7 @@ OK. STORE SECURITY CONTRACT SATISFIED.
 - Детерминированные ошибки верификации
 - Zero-trust модель без исключений
 
-➡ [`./packages/nekhebet-core`](./packages/nekhebet-core/README.md) · [PyPI](https://pypi.org/project/nekhebet-core/)
+➡ [`./nekhebet-core`](./packages/nekhebet-core/README.md) · [PyPI](https://pypi.org/project/nekhebet-core/)
 
 ### 🗄 Nekhebet Store  
 **Append-only память**
