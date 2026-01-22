@@ -132,7 +132,7 @@ OK. STORE SECURITY CONTRACT SATISFIED.
 - Детерминированные ошибки верификации
 - Zero-trust модель без исключений
 
-➡ [`./packages/nekhebet-core`](./packages/nekhebet-core) · [PyPI](https://pypi.org/project/nekhebet-core/)
+➡ [`./packages/nekhebet-core`](./packages/nekhebet-core/README.md) · [PyPI](https://pypi.org/project/nekhebet-core/)
 
 ### 🗄 Nekhebet Store  
 **Append-only память**
@@ -142,7 +142,7 @@ OK. STORE SECURITY CONTRACT SATISFIED.
 - Replay-защита на уровне хранилища
 - Store не выполняет криптографию — только обеспечивает инварианты
 
-➡ [`./nekhebet-store`](./nekhebet-store) · [PyPI](https://pypi.org/project/nekhebet-store/)
+➡ [`./nekhebet-store`](./packages/nekhebet-store/README.md) · [PyPI](https://pypi.org/project/nekhebet-store/)
 
 ### 📺 Omen Display  
 **Reference architecture real-time визуализации**
@@ -167,7 +167,7 @@ OK. STORE SECURITY CONTRACT SATISFIED.
 
 > **Примечание:** Omen Display — демонстрация архитектурных паттернов использования Core/Store.
 
-➡ [`./omen-display`](./omen-display)
+➡ [`./omen-display`](./omen-display/README.md)
 
 ### ⚓ Charon Vessel  
 **Secure Atomic File Rotation Daemon**
@@ -177,7 +177,7 @@ OK. STORE SECURITY CONTRACT SATISFIED.
 - Single binary, zero runtime dependencies
 - Предсказуемость при сбоях и перезапусках
 
-➡ [`./charon-vessel`](./charon-vessel)
+➡ [`./charon-vessel`](./charon-vessel/README.md)
 
 ## Модель безопасности (кратко)
 **Защищает от**  
