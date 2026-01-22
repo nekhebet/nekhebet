@@ -1,0 +1,248 @@
+# .github/workflows/ci-cd.yml
+name: CI/CD for Charon Vessel
+
+on:
+  push:
+    branches: [ main ]
+    tags: [ 'v*' ]
+    paths:
+      - 'charon-vessel/**'
+      - '.github/workflows/ci-cd.yml'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'charon-vessel/**'
+      - '.github/workflows/ci-cd.yml'
+  schedule:
+    - cron: '0 2 * * 1'  # Every Monday at 2:00 UTC
+
+permissions:
+  contents: write
+  security-events: write
+
+concurrency:
+  group: ${{ github.ref }}
+  cancel-in-progress: true  # Cancel previous runs on the same ref (faster feedback on PRs)
+
+env:
+  CXX_STANDARD: '17'
+  SOURCE_DATE_EPOCH: '1700000000'  # Reproducible builds
+
+jobs:
+  static-analysis:
+    name: Static Analysis
+    runs-on: ubuntu-24.04
+    continue-on-error: true
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Install tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cppcheck clang-tidy flawfinder clang-format checksec
+
+      - name: cppcheck
+        run: |
+          cd charon-vessel
+          cppcheck --enable=all --std=c++${{ env.CXX_STANDARD }} --inline-suppr --suppress=missingIncludeSystem charon_vessel.cpp 2>&1 | tee cppcheck-report.txt
+
+      - name: flawfinder
+        run: |
+          cd charon-vessel
+          flawfinder --minlevel=3 --context charon_vessel.cpp > flawfinder-report.txt || true
+
+      - name: clang-tidy
+        run: |
+          cd charon-vessel
+          clang-tidy charon_vessel.cpp -- -std=c++${{ env.CXX_STANDARD }} 2>&1 | tee clang-tidy-report.txt || true
+
+      - name: Compiler warnings
+        run: |
+          cd charon-vessel
+          g++ -std=c++${{ env.CXX_STANDARD }} -Wall -Wextra -Wpedantic -c charon_vessel.cpp 2>&1 | tee compiler-warnings.txt || true
+
+      - name: Upload reports
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: static-analysis-reports
+          path: charon-vessel/*.txt
+          retention-days: 14
+
+  build-linux:
+    name: Linux Native Build
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Cache ccache
+        uses: actions/cache@v4
+        with:
+          path: ~/.ccache
+          key: ${{ runner.os }}-ccache-${{ hashFiles('charon-vessel/charon_vessel.cpp') }}
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential libcap-dev libsystemd-dev ccache checksec
+
+      - name: Build
+        env:
+          CCACHE_DIR: ~/.ccache
+        run: |
+          cd charon-vessel
+          export CC="ccache gcc"
+          export CXX="ccache g++"
+          $CXX -std=c++${{ env.CXX_STANDARD }} \
+            -O3 -march=native -flto -DNDEBUG \
+            -Wall -Wextra -Wpedantic \
+            -D_FORTIFY_SOURCE=2 -fstack-protector-strong \
+            -pthread \
+            -DNO_IO_URING \
+            charon_vessel.cpp \
+            -lcap -lsystemd \
+            -o charon_vessel-linux-x86_64
+          ccache -s
+          strip charon_vessel-linux-x86_64
+
+      - name: Smoke test
+        run: |
+          cd charon-vessel
+          ./charon_vessel-linux-x86_64 --help | head -5
+
+      - name: Hardening check
+        run: |
+          cd charon-vessel
+          checksec --file=charon_vessel-linux-x86_64
+
+      - name: Upload artifact
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: actions/upload-artifact@v4
+        with:
+          name: charon_vessel-linux-x86_64
+          path: charon-vessel/charon_vessel-linux-x86_64
+          retention-days: 14
+
+  build-freebsd:
+    name: FreeBSD Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Build on FreeBSD 14.2
+        uses: cross-platform-actions/action@v0.26.0
+        with:
+          operating_system: freebsd
+          version: '14.2'
+          memory: '8G'
+          cpu_count: '4'
+          shell: sh
+          run: |
+            cd charon-vessel
+            clang++ -std=c++17 \
+              -O3 -DNDEBUG \
+              -Wall -Wextra -Wpedantic \
+              -pthread \
+              -DNO_IO_URING \
+              charon_vessel.cpp \
+              -o charon_vessel-freebsd-x86_64
+            [ $? -eq 0 ] || exit 1
+            strip charon_vessel-freebsd-x86_64 2>/dev/null || true
+
+      - name: Smoke test
+        run: |
+          cd charon-vessel
+          ./charon_vessel-freebsd-x86_64 --help | head -5
+
+      - name: Upload artifact
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: actions/upload-artifact@v4
+        with:
+          name: charon_vessel-freebsd-x86_64
+          path: charon-vessel/charon_vessel-freebsd-x86_64
+          retention-days: 14
+
+  create-release:
+    name: Create Release
+    runs-on: ubuntu-24.04
+    needs: [build-linux, build-freebsd]
+    if: startsWith(github.ref, 'refs/tags/v')
+    permissions:
+      contents: write
+
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+
+      - name: Assemble release
+        run: |
+          mkdir -p release
+          cp charon_vessel-linux-x86_64/charon_vessel-linux-x86_64 release/charon_vessel-Linux-x86_64 2>/dev/null || true
+          cp charon_vessel-freebsd-x86_64/charon_vessel-freebsd-x86_64 release/charon_vessel-FreeBSD-x86_64 2>/dev/null || true
+          chmod +x release/charon_vessel-* 2>/dev/null || true
+          cd release
+          sha256sum * > SHA256SUMS
+          cat > README.md << 'EOF'
+          # Charon Vessel ${{ github.ref_name }}
+
+          Secure file rotation daemon.
+
+          ## Binaries
+
+          | Platform       | File                                | Notes                                      |
+          |----------------|-------------------------------------|--------------------------------------------|
+          | Linux x86_64   | charon_vessel-Linux-x86_64         | Full features (systemd integration, capabilities, native optimizations) |
+          | FreeBSD x86_64 | charon_vessel-FreeBSD-x86_64       | Full POSIX functionality                   |
+
+          ## Verification
+
+          sha256sum -c SHA256SUMS
+          chmod +x charon_vessel-*
+          ./charon_vessel-* --help
+
+          ## Quick Start
+
+          export FRESH_PATH="/var/charon/fresh"
+          export ARCHIVE_ROOT="/var/charon/archive"
+          export MAX_FRESH=500
+
+          sudo mkdir -p $FRESH_PATH $ARCHIVE_ROOT
+
+          ./charon_vessel-Linux-x86_64 daemon
+
+          ## Build Information
+
+          - Git commit: ${{ github.sha }}
+          - Build date: $(date -u '+%Y-%m-%d %H:%M UTC')
+          - C++ Standard: 17
+
+          Full documentation: https://github.com/nekhebet/nekhebet
+
+          License: MIT
+          EOF
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: release/*
+          body_path: release/README.md
+          generate_release_notes: true
+          draft: false
+          prerelease: false
+
+  quality-gate:
+    name: Quality Gate
+    runs-on: ubuntu-24.04
+    needs: [build-linux, build-freebsd]
+    if: always()
+    steps:
+      - name: Check results
+        run: |
+          [[ "${{ needs.build-linux.result }}" == "success" ]] || exit 1
+          echo "Critical path passed"
