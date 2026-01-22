@@ -1,0 +1,49 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "nekhebet-core"
+version = "4.0.0"
+description = "Nekhebet Core — canonical signed event system"
+requires-python = ">=3.10"
+
+dependencies = [
+    "msgspec>=0.18",
+    "cryptography>=42.0.0",  # Required for Ed25519 operations
+]
+
+# =============================================================================
+# mypy configuration
+# =============================================================================
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+files = ["."]  # Check current package directory (nekhebet_core + tests)
+
+# msgspec has incomplete/no stubs
+[[tool.mypy.overrides]]
+module = ["msgspec.*"]
+ignore_missing_imports = true
+
+# cryptography has no official stubs — recursively ignore submodules
+[[tool.mypy.overrides]]
+module = "cryptography.*"
+ignore_missing_imports = true
+
+# msgspec.Struct uses __init_subclass__ tricks that mypy cannot fully type-check
+[[tool.mypy.overrides]]
+module = [
+    "nekhebet_core.types",
+    "nekhebet_core.config",
+]
+disable_error_code = ["call-arg"]
+
+# =============================================================================
+# setuptools package discovery
+# =============================================================================
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["nekhebet_core*"]  # Explicitly include the package namespace
