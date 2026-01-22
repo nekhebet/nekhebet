@@ -244,10 +244,10 @@ Telegram → Python Ingest → PostgreSQL
 
 * PostgreSQL 16+ (partitions, JSONB, LISTEN/NOTIFY)
 
-## 📁 Структура проекта
+## 📁 Структура omen_display.html
 
 ```
-index.html
+omen_display.html
 ├── HEAD
 │   ├── Мета-теги Open Graph/Twitter
 │   ├── Inline SVG фавикон
