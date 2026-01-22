@@ -1,0 +1,114 @@
+# .github/workflows/ci.yml
+name: CI for Nekhebet
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'packages/**'
+      - '.github/workflows/ci.yml'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'packages/**'
+      - '.github/workflows/ci.yml'
+
+jobs:
+  nekhebet-core:
+    name: nekhebet-core
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+
+      - name: Cache pip
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: pip-${{ runner.os }}-${{ hashFiles('packages/**/pyproject.toml') }}
+
+      - name: Upgrade pip
+        run: python -m pip install --upgrade pip
+
+      - name: Install nekhebet-core (editable) + dev tools
+        run: |
+          pip install -e packages/nekhebet-core
+          pip install ruff mypy pytest pytest-asyncio
+
+      - name: Ruff (lint)
+        run: |
+          cd packages/nekhebet-core
+          ruff check .
+
+      - name: Mypy (strict)
+        run: |
+          cd packages/nekhebet-core
+          mypy .
+
+      - name: Pytest
+        run: |
+          cd packages/nekhebet-core
+          pytest .
+
+  nekhebet-store:
+    name: nekhebet-store
+    runs-on: ubuntu-latest
+    needs: nekhebet-core
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_HOST_AUTH_METHOD: trust
+          POSTGRES_USER: postgres
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+
+      - name: Cache pip
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: pip-${{ runner.os }}-${{ hashFiles('packages/**/pyproject.toml') }}
+
+      - name: Upgrade pip
+        run: python -m pip install --upgrade pip
+
+      - name: Install dependencies + dev tools
+        run: |
+          pip install -e packages/nekhebet-core
+          pip install -e packages/nekhebet-store
+          pip install ruff mypy pytest pytest-asyncio python-dotenv
+
+      - name: Ruff (lint)
+        run: |
+          cd packages/nekhebet-store
+          ruff check .
+
+      - name: Mypy (strict)
+        run: |
+          cd packages/nekhebet-store
+          mypy .
+
+      - name: Pytest (including security smoke test)
+        run: |
+          cd packages/nekhebet-store
+          pytest .
