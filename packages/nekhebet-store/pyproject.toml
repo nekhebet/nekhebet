@@ -1,0 +1,46 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "nekhebet-store"
+version = "4.0.0"
+description = "Nekhebet storage adapters (PostgreSQL, LMDB, hybrid)"
+requires-python = ">=3.10"
+
+dependencies = [
+    "nekhebet-core>=4.0.0",
+    "psycopg2-binary>=2.9",
+    "lmdb>=1.4.1",
+]
+
+# =============================================================================
+# mypy configuration
+# =============================================================================
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+files = ["."]  # Check current package directory (nekhebet_store + tests)
+
+# lmdb has no stubs
+[[tool.mypy.overrides]]
+module = "lmdb.*"
+ignore_missing_imports = true
+
+# External and optional dependencies without stubs
+[[tool.mypy.overrides]]
+module = [
+    "psycopg2.*",
+    "nekhebet_core.*",  # Local editable dependency may lack stubs in some environments
+    "dotenv.*",        # python-dotenv used only in tests (optional dev dependency)
+]
+ignore_missing_imports = true
+
+# =============================================================================
+# setuptools package discovery
+# =============================================================================
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["nekhebet_store*"]  # Explicitly include the package namespace
