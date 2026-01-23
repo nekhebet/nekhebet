@@ -64,7 +64,7 @@
 | **Nekhebet Core**  | Криптографическое ядро      | Ed25519 подпись и zero-trust верификация            | ✅ Production-ready      |
 | **Nekhebet Store** | Память                      | Append-only хранилище (PostgreSQL + LMDB)           | ✅ Production-ready      |
 | **Omen Display**   | Визуализация                | Reference real-time display pipeline                | 🟡 Working prototype     |
-| **Charon Vessel**  | Файловая надёжность         | Атомарная ротация и архивация файлов                | 🟡 High-reliability prototype |
+| **Charon Vessel**  | Файловая надёжность         | Атомарная ротация и архивация                | 🟡 High-reliability |
 
 ## Общая схема
    ```markdown
