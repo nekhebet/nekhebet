@@ -1,1 +1,4767 @@
 
+<!doctype html>
+<html lang="ru" data-text-lang="mixed">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nekhebet Omen Display</title>
+
+    <meta property="og:title" content="Nekhebet Omen Display" />
+    <meta
+      property="og:description"
+      content="Verifiable Real-Time Event Display Pipeline"
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="http://0808.us.nekhebet.su:8080/" />
+    <meta
+      property="og:image"
+      content="https://i.postimg.cc/qvRwVDvL/080808.png"
+    />
+    <meta property="og:image:width" content="800" />
+    <meta property="og:image:height" content="400" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:site_name" content="Nekhebet" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Nekhebet Omen Display" />
+    <meta
+      name="twitter:description"
+      content="Media Display. An interactive content."
+    />
+    <meta
+      name="twitter:image"
+      content="https://i.postimg.cc/8Cs9XymM/2025-10-05-021749728.png"
+    />
+
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+CjxzdmcKICAgaWQ9Ikljb25zIgogICB2aWV3Qm94PSIwIDAgMjE1IDIxNSIKICAgdmVyc2lvbj0iMS4xIgogICB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciCiAgIHhtbG5zOnN2Zz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgogIDxkZWZzCiAgICAgaWQ9ImRlZnM5Ij4KICAgIDxzdHlsZQogICAgICAgaWQ9InN0eWxlMiI+LmNscy0xe2ZpbGw6dXJsKCPQkdC10LfRi9C80Y/QvdC90YvQuV/Qs9GA0LDQtNC40LXQvdGCXzIpO30uY2xzLTJ7ZmlsbDojZmZmO2ZpbGwtcnVsZTpldmVub2RkO308L3N0eWxlPgogICAgPGxpbmVhckdyYWRpZW50CiAgICAgICBpZD0i0JHQtdC30YvQvNGP0L3QvdGL0Llf0LPRgNCw0LTQuNC10L3Rgl8yIgogICAgICAgeTE9IjEwNy41IgogICAgICAgeDI9IjIxNSIKICAgICAgIHkyPSIxMDcuNSIKICAgICAgIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIj4KICAgICAgPHN0b3AKICAgICAgICAgb2Zmc2V0PSIwIgogICAgICAgICBzdG9wLWNvbG9yPSIjMmFhYmVlIgogICAgICAgICBpZD0ic3RvcDQiCiAgICAgICAgIHN0eWxlPSJzdG9wLWNvbG9yOiMzYzNjM2M7c3RvcC1vcGFjaXR5OjE7IiAvPgogICAgICA8c3RvcAogICAgICAgICBvZmZzZXQ9IjEiCiAgICAgICAgIHN0b3AtY29sb3I9IiMyMjllZDkiCiAgICAgICAgIGlkPSJzdG9wNiIKICAgICAgICAgc3R5bGU9InN0b3AtY29sb3I6IzNjM2MzYztzdG9wLW9wYWNpdHk6MTsiIC8+CiAgICA8L2xpbmVhckdyYWRpZW50PgogIDwvZGVmcz4KICA8ZwogICAgIGlkPSJEcmFnb25LYWxpIj4KICAgIDx0aXRsZQogICAgICAgaWQ9InRpdGxlNDgiPkRyYWdvbkthbGk8L3RpdGxlPgogICAgPGcKICAgICAgIGlkPSJnNSI+CiAgICAgIDxnCiAgICAgICAgIGlkPSJnNCI+CiAgICAgICAgPGNpcmNsZQogICAgICAgICAgIGlkPSJCYWNrZ3JvdW5kIgogICAgICAgICAgIGNsYXNzPSJjbHMtMSIKICAgICAgICAgICBjeD0iMTA3LjUiCiAgICAgICAgICAgY3k9IjEwNy41IgogICAgICAgICAgIHI9IjEwNy41IgogICAgICAgICAgIHN0eWxlPSJtaXgtYmxlbmQtbW9kZTpub3JtYWw7ZmlsbDojNGQ0ZDRkIiAvPgogICAgICAgIDxnCiAgICAgICAgICAgaWQ9ImcxMzA5IgogICAgICAgICAgIHRyYW5zZm9ybT0ibWF0cml4KDAuNDY3NTQwODEsMCwwLDAuNDY3NTQwODEsLTEyLjIwNDAxNywtNy41MjgwOTcpIgogICAgICAgICAgIHN0eWxlPSJmaWxsOiNmZmZmZmY7ZmlsbC1vcGFjaXR5OjEiPgogICAgICAgICAgPGcKICAgICAgICAgICAgIGlkPSJnMTMwMyIKICAgICAgICAgICAgIHN0eWxlPSJmaWxsOiNmZmZmZmY7ZmlsbC1vcGFjaXR5OjEiPgogICAgICAgICAgICA8cGF0aAogICAgICAgICAgICAgICBkPSJNIDE3NS44LDM5NC41IDE4OC4zLDIyNy43IDU3LjcsMTc0LjUgYyAwLDAgMTguMiwzOS45IDUsODkuNiAwLDAgNDgsMjEuMiAzOCw3Ni43IHoiCiAgICAgICAgICAgICAgIGZpbGw9IiM2MzY5NzgiCiAgICAgICAgICAgICAgIGlkPSJwYXRoMTMwMSIKICAgICAgICAgICAgICAgc3R5bGU9ImZpbGw6I2ZmZmZmZjtmaWxsLW9wYWNpdHk6MSIgLz4KICAgICAgICAgIDwvZz4KICAgICAgICAgIDxnCiAgICAgICAgICAgICBpZD0iZzEzMDciCiAgICAgICAgICAgICBzdHlsZT0iZmlsbDojZmZmZmZmO2ZpbGwtb3BhY2l0eToxIj4KICAgICAgICAgICAgPHBhdGgKICAgICAgICAgICAgICAgZD0iTSAzMzYuMiwzOTQuNSAzMjMuNywyMjcuNyA0NTQuMywxNzQuNSBjIDAsMCAtMTguMiwzOS45IC01LDg5LjYgMCwwIC00OCwyMS4yIC0zOCw3Ni43IHoiCiAgICAgICAgICAgICAgIGZpbGw9IiM1NTVhNjYiCiAgICAgICAgICAgICAgIGlkPSJwYXRoMTMwNSIKICAgICAgICAgICAgICAgc3R5bGU9ImZpbGw6I2ZmZmZmZjtmaWxsLW9wYWNpdHk6MSIgLz4KICAgICAgICAgIDwvZz4KICAgICAgICA8L2c+CiAgICAgICAgPGcKICAgICAgICAgICBpZD0iZzEzMzMiCiAgICAgICAgICAgdHJhbnNmb3JtPSJtYXRyaXgoMC4zOTExOTI0MSwwLDAsMC4zOTExOTI0MSw1LjY0MTMwNTksLTQuMjczNTI1MSkiCiAgICAgICAgICAgc3R5bGU9ImZpbGw6I2ZmZmZmZjtmaWxsLW9wYWNpdHk6MSIgLz4KICAgICAgICA8ZwogICAgICAgICAgIGlkPSJnMiIKICAgICAgICAgICBzdHlsZT0iZmlsbDojZmZmZmZmIj4KICAgICAgICAgIDxnCiAgICAgICAgICAgICBpZD0iZzEzMjUiCiAgICAgICAgICAgICB0cmFuc2Zvcm09Im1hdHJpeCgwLjQxMjkyMzY3LDAsMCwwLjMzNjU5NDIsMC45MzUzMTY1NSwxNS40NzMwNTkpIgogICAgICAgICAgICAgc3R5bGU9ImZpbGw6I2ZmZmZmZjtmaWxsLW9wYWNpdHk6MSI+CiAgICAgICAgICAgIDxwYXRoCiAgICAgICAgICAgICAgIGQ9Ik0gMjU2LDQ3IEMgMTk5LDQ3IDE1Mi44LDkzLjIgMTUyLjgsMTUwLjIgdiAyMjQuMyBsIDg3LjQsLTQ3LjIgYyA2LDAgMTEuOSwtMC41IDE3LjcsLTEuMyBWIDQ3IGMgLTAuNiwwIC0xLjIsMCAtMS45LDAgeiIKICAgICAgICAgICAgICAgZmlsbD0iIzQxNDk1MiIKICAgICAgICAgICAgICAgaWQ9InBhdGgxMzIzIgogICAgICAgICAgICAgICBzdHlsZT0iZmlsbDojZmZmZmZmO2ZpbGwtb3BhY2l0eToxIiAvPgogICAgICAgICAgPC9nPgogICAgICAgICAgPGcKICAgICAgICAgICAgIGlkPSJnMTMyOSIKICAgICAgICAgICAgIHRyYW5zZm9ybT0ibWF0cml4KDAuNDEyOTIzNjcsMCwwLDAuMzQxNjYwOSwwLjkzNTMxNjU1LDE1LjIzNDkyNCkiCiAgICAgICAgICAgICBzdHlsZT0iZmlsbDojZmZmZmZmO2ZpbGwtb3BhY2l0eToxIj4KICAgICAgICAgICAgPHBhdGgKICAgICAgICAgICAgICAgZD0ibSAyNTYsNDcgdiAyNzkuMyBjIDU4LjIsLTcuNyAxMDMuMiw5Mi42IDEwMy4yLDMyLjIgViAxNTAuMiBDIDM1OS4yLDkzLjIgMzEzLDQ3IDI1Niw0NyBaIgogICAgICAgICAgICAgICBmaWxsPSIjMjMyNzJiIgogICAgICAgICAgICAgICBpZD0icGF0aDEzMjciCiAgICAgICAgICAgICAgIHN0eWxlPSJmaWxsOiNmZmZmZmY7ZmlsbC1vcGFjaXR5OjEiIC8+CiAgICAgICAgICA8L2c+CiAgICAgICAgICA8ZwogICAgICAgICAgICAgaWQ9ImcxMzUzIgogICAgICAgICAgICAgdHJhbnNmb3JtPSJtYXRyaXgoMC40MTI5MjM2NywwLDAsMC40MTI5MjM2NywwLjkzNTMxNjU1LDExLjg4NTU3MykiCiAgICAgICAgICAgICBzdHlsZT0iZmlsbDojZmZmZmZmO2ZpbGwtb3BhY2l0eToxIj4KICAgICAgICAgICAgPHBhdGgKICAgICAgICAgICAgICAgZD0ibSAyMTkuNiw0MjYuOSAtNjYuOCwtMjYuNCB2IC0xMTYgaCA2Ni44IHoiCiAgICAgICAgICAgICAgIGZpbGw9IiM0MTQ5NTIiCiAgICAgICAgICAgICAgIGlkPSJwYXRoMTM1MSIKICAgICAgICAgICAgICAgc3R5bGU9ImZpbGw6I2ZmZmZmZjtmaWxsLW9wYWNpdHk6MSIgLz4KICAgICAgICAgIDwvZz4KICAgICAgICAgIDxnCiAgICAgICAgICAgICBpZD0iZzEzNTciCiAgICAgICAgICAgICB0cmFuc2Zvcm09Im1hdHJpeCgwLjQxMjkyMzY3LDAsMCwwLjQxMjkyMzY3LDAuOTM1MzE2NTUsMTEuODg1NTczKSIKICAgICAgICAgICAgIHN0eWxlPSJmaWxsOiNmZmZmZmY7ZmlsbC1vcGFjaXR5OjEiPgogICAgICAgICAgICA8cGF0aAogICAgICAgICAgICAgICBkPSJtIDM1OS4yLDQwMC41IC02Ni44LDI2LjQgViAyODQuNSBoIDY2LjggeiIKICAgICAgICAgICAgICAgZmlsbD0iIzIzMjcyYiIKICAgICAgICAgICAgICAgaWQ9InBhdGgxMzU1IgogICAgICAgICAgICAgICBzdHlsZT0iZmlsbDojZmZmZmZmO2ZpbGwtb3BhY2l0eToxIiAvPgogICAgICAgICAgPC9nPgogICAgICAgIDwvZz4KICAgICAgICA8ZwogICAgICAgICAgIGlkPSJnMTM0MyIKICAgICAgICAgICB0cmFuc2Zvcm09Im1hdHJpeCgwLjQxMjkyMzY3LDAsMCwwLjQxMjkyMzY3LDAuOTM1MzE2NTUsMTEuODg1NTczKSIKICAgICAgICAgICBzdHlsZT0iZmlsbDojM2MzYzNjO2ZpbGwtb3BhY2l0eToxIj4KICAgICAgICAgIDxnCiAgICAgICAgICAgICBpZD0iZzEzNDEiCiAgICAgICAgICAgICBzdHlsZT0iZmlsbDojM2MzYzNjO2ZpbGwtb3BhY2l0eToxIiAvPgogICAgICAgIDwvZz4KICAgICAgICA8ZwogICAgICAgICAgIGlkPSJnMSIKICAgICAgICAgICBzdHlsZT0iZmlsbDojNGQ0ZDRkIj4KICAgICAgICAgIDxnCiAgICAgICAgICAgICBpZD0iZzEzNDkiCiAgICAgICAgICAgICB0cmFuc2Zvcm09Im1hdHJpeCgwLjQxMjkyMzY3LDAsMCwwLjQxMjkyMzY3LDAuOTM1MzE2NTUsMTEuODg1NTczKSIKICAgICAgICAgICAgIHN0eWxlPSJmaWxsOiM0ZDRkNGQ7ZmlsbC1vcGFjaXR5OjEiPgogICAgICAgICAgICA8ZwogICAgICAgICAgICAgICBpZD0iZzEzNDciCiAgICAgICAgICAgICAgIHN0eWxlPSJmaWxsOiM0ZDRkNGQ7ZmlsbC1vcGFjaXR5OjEiPgogICAgICAgICAgICAgIDxwYXRoCiAgICAgICAgICAgICAgICAgaWQ9InBhdGgxMzQ1IgogICAgICAgICAgICAgICAgIHN0eWxlPSJmaWxsOiM0ZDRkNGQ7ZmlsbC1vcGFjaXR5OjEiCiAgICAgICAgICAgICAgICAgZD0ibSAyNTYsMTQ3LjMgdiAxNDUgYyA0NC45LDAgODEuMiwtMzYuNCA4MS4yLC04MS4yIHYgLTM3LjMgeiBtIC04MS4yLDI2LjUgViAyMTEgYyAwLDQ0LjkgMzYuNCw4MS4yIDgxLjIsODEuMiBoIDIgbCAtMS40LC0xNDUuMSB6IiAvPgogICAgICAgICAgICA8L2c+CiAgICAgICAgICA8L2c+CiAgICAgICAgPC9nPgogICAgICAgIDxnCiAgICAgICAgICAgaWQ9ImczIgogICAgICAgICAgIHN0eWxlPSJmaWxsOiNmZmZmZmYiCiAgICAgICAgICAgdHJhbnNmb3JtPSJtYXRyaXgoMSwwLDAsMC45MjgzMzE5NiwwLDUuNjI4MTk1MikiPgogICAgICAgICAgPHBhdGgKICAgICAgICAgICAgIGQ9Im0gMTUzLjQ2OTMyLDM4LjQ3Nzg1NyBjIC0zLjI2MjA5LDEzLjU4NTE4OSAtMTguNDU3NjcsMTMuNDYxMzEyIC0xOC40NTc2NywxMy40NjEzMTIgLTMuMjIwODEsMTEuMzE0MTA5IC0xNi4xNDUzMiw4LjI1ODQ3NCAtMTYuMTQ1MzIsOC4yNTg0NzQgbCAtMy40MjcyOCwyLjg0OTE3MiBjIDAuNDk1NTIsLTQuMDQ2NjUxIDAuMTIzODgsLTguMjE3MTggLTEuMTk3NDgsLTEyLjE4MTI0OCBsIC03LjU5Nzc5LC0yMy4wODI0MzMgLTcuNTk3ODAyLDIzLjA0MTE0MSBjIC0xLjM2MjY0NSw0LjA4Nzk0NCAtMS43MzQyODEsOC40MjM2NDQgLTEuMTU2MTg0LDEyLjU5NDE3MiBsIC0zLjk2NDA2OCwtMy4yNjIwOTYgYyAwLDAgLTEyLjkyNDUxMSwzLjA1NTYzNCAtMTYuMTQ1MzE1LC04LjI1ODQ3NSAwLDAgLTE1LjIzNjg4MywwLjEyMzg3OSAtMTguNDk4OTgxLC0xMy40NjEzMSAwLDAgLTYuOTc4NDA5LDI1LjI3MDkyOCAxNi41MTY5NDcsMzEuOTE4OTk4IGggMjMuOTQ5NTggYyAwLjIwNjQ2LDAuNDk1NTA5IDAuNDU0MjEzLDEuMDMyMzA5IDAuNzAxOTYzLDEuNTI3ODE5IGwgMS45NDA3NCw0LjAwNTM1OSBjIDAuNzg0NTcsMS42MTA0MDMgMi4zOTQ5NywyLjYwMTQxOSA0LjE3MDUzLDIuNjAxNDE5IDEuNzc1NTgsMCAzLjQyNzI3LC0xLjAzMjMxIDQuMTcwNTMsLTIuNjAxNDE5IGwgMS45NDA3NSwtNC4wMDUzNTkgYyAwLjI0Nzc0LC0wLjQ5NTUxIDAuNDk1NSwtMS4wMzIzMSAwLjcwMTk3LC0xLjUyNzgxOSBoIDIzLjQ5NTM2IGMgMjMuNjE5MjIsLTYuNTY1NDg1IDE2LjU5OTUyLC0zMS44Nzc3MDcgMTYuNTk5NTIsLTMxLjg3NzcwNyB6IgogICAgICAgICAgICAgZmlsbD0iI2ZmNDY4YyIKICAgICAgICAgICAgIGlkPSJwYXRoMTM2NyIKICAgICAgICAgICAgIHN0eWxlPSJmaWxsOiNmZmZmZmY7ZmlsbC1vcGFjaXR5OjE7c3Ryb2tlLXdpZHRoOjAuNDEyOTI0IiAvPgogICAgICAgICAgPHBhdGgKICAgICAgICAgICAgIGQ9Im0gMTA2LjY0Mzc4LDc4LjUzMTQ1MyBjIDEuNzc1NTgsMCAzLjQyNzI3LC0xLjAzMjMwOCA0LjE3MDUzLC0yLjYwMTQxOCBsIDEuOTQwNzQsLTQuMDA1MzYgYyAwLjI0Nzc3LC0wLjQ5NTUxIDAuNDk1NTEsLTEuMDMyMzEgMC43MDE5NywtMS41Mjc4MTcgaCAyMy40OTUzNiBjIDIzLjQ5NTM2LC02LjY0ODA3MSAxNi41MTY5NCwtMzEuOTE5MDAxIDE2LjUxNjk0LC0zMS45MTkwMDEgLTMuMjYyMDksMTMuNTg1MTg5IC0xOC40NTc2NywxMy40NjEzMTIgLTE4LjQ1NzY3LDEzLjQ2MTMxMiAtMy4yMjA4MSwxMS4zMTQxMDkgLTE2LjE0NTMyLDguMjU4NDc0IC0xNi4xNDUzMiw4LjI1ODQ3NCBsIC0zLjQyNzI4LDIuODQ5MTcyIGMgMC40OTU1MiwtNC4wNDY2NTEgMC4xMjM4OCwtOC4yMTcxOCAtMS4xOTc0OCwtMTIuMTgxMjQ4IGwgLTcuNTk3NzksLTIzLjA4MjQzMyB6IgogICAgICAgICAgICAgZmlsbD0iI2Q3Mjg3OCIKICAgICAgICAgICAgIGlkPSJwYXRoMTM2OSIKICAgICAgICAgICAgIHN0eWxlPSJmaWxsOiNmZmZmZmY7ZmlsbC1vcGFjaXR5OjE7c3Ryb2tlLXdpZHRoOjAuNDEyOTI0IiAvPgogICAgICAgIDwvZz4KICAgICAgPC9nPgogICAgPC9nPgogIDwvZz4KPC9zdmc+"
+    />
+
+    <style>
+      :root {
+        --bg-color: #212121;
+        --text-color: #bdbdbd;
+        --highlight-color: #0aeb51;
+        --dud-color: #444444;
+        --status-color: #606060;
+        --flash-color: rgba(255, 255, 255, 0.3);
+        --progress-bar-color: #ff5555;
+        --button-bg: #343434;
+        --button-bg-hover: #212121;
+        --min-slide-height: 200px;
+        --header-height: 0vh;
+        --content-height: 45vh;
+        --indicator-gray: #3c3c3c;
+        --indicator-yellow: #ffc107;
+        --indicator-green: #05f10f;
+        --indicator-red: #f52323;
+        --indicator-word-cloud-paused: #ff0000;
+      }
+
+      html,
+      body {
+        font-family: "Anonymous Pro", monospace;
+        background: var(--bg-color);
+        height: 100%;
+        margin: 0;
+        overflow: hidden;
+        transition: background 0.5s ease;
+      }
+
+      body.darkened {
+        background: #1a1a1a;
+      }
+
+      .container {
+        height: 100%;
+        width: 100%;
+        max-width: 100vw;
+        max-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .header {
+        height: var(--header-height);
+        width: 90%;
+        background: transparent;
+        position: relative;
+        z-index: 10;
+      }
+
+      .media-slides {
+        width: 100%;
+        height: 50vh;
+        min-height: var(--min-slide-height);
+        z-index: 7;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        position: relative;
+        transition: height 0.5s ease;
+      }
+
+      .content {
+        position: relative;
+        z-index: 10;
+        width: 95%;
+        height: 45vh;
+        min-height: var(--content-height);
+        display: flex;
+        flex-direction: column;
+        transition:
+          height 0.5s ease,
+          background 0.5s ease;
+        min-height: 350px;
+        justify-content: space-evenly;
+        align-items: center;
+        padding-bottom: 50px;
+        box-sizing: border-box;
+      }
+
+      .controls {
+        position: absolute;
+        bottom: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        margin-top: 0;
+        margin-bottom: 0;
+        display: flex;
+        gap: 1px;
+        z-index: 7;
+        flex-wrap: nowrap;
+        justify-content: center;
+        min-width: 300px;
+        backdrop-filter: blur(4px);
+        padding: 8px;
+        border-radius: 12px;
+        background-color: rgba(33, 33, 33, 0.7);
+        transition: background-color 0.3s ease;
+      }
+
+      .controls:hover {
+        background-color: rgba(33, 33, 33, 0.85);
+      }
+
+      .media-slides .backlight {
+        position: absolute;
+        top: -20%;
+        left: 0%;
+        width: 120%;
+        height: 130%;
+        z-index: 7;
+        transition:
+          background 2s ease,
+          opacity 2s ease;
+        pointer-events: none;
+        opacity: 0;
+      }
+
+      .media-slides.visible {
+        opacity: 1;
+      }
+
+      .media-slide {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        visibility: hidden;
+        transform: scale(0.95);
+        transition:
+          opacity 0.4s ease,
+          visibility 0s linear 0.4s,
+          transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        will-change: opacity, visibility, transform;
+        z-index: 0;
+        pointer-events: none;
+      }
+
+      .media-slide.visible {
+        visibility: visible;
+        opacity: 1;
+        transform: scale(1) translateZ(0);
+        transition-delay: 0s;
+        z-index: 9;
+        pointer-events: auto;
+        filter: brightness(1.05) contrast(1.05);
+      }
+
+      .media-slide::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        pointer-events: none;
+        z-index: 1;
+      }
+
+      .media-slide.visible::before {
+        opacity: 1;
+      }
+
+      .media-slide:not(.visible) video::-webkit-media-controls,
+      .media-slide:not(.visible) video::-webkit-media-controls-panel {
+        display: none !important;
+      }
+
+      .media-slide:not(.visible) video {
+        pointer-events: none;
+        visibility: hidden;
+      }
+
+      .media-container {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        overflow: hidden;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 4px;
+      }
+
+      .media-container.special-video {
+        width: 33%;
+        height: 33%;
+        border-radius: 50%;
+        overflow: hidden;
+        box-shadow:
+          0 0 30px rgba(255, 255, 255, 0.6),
+          0 0 60px rgba(255, 255, 255, 0.3);
+        margin: 20px;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .media-container.special-video:hover {
+        transform: scale(1.03);
+        box-shadow:
+          0 0 40px rgba(255, 255, 255, 0.8),
+          0 0 80px rgba(255, 255, 255, 0.4);
+      }
+
+      .media-container img,
+      .media-container video,
+      .media-container lottie-player {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+        object-position: center;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        opacity: 1;
+        transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .media-container:hover img,
+      .media-container:hover video,
+      .media-container:hover lottie-player {
+        transform: translate(-50%, -50%) scale(1.02);
+      }
+
+      .media-container.special-video video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .media-error {
+        color: var(--text-color);
+        text-align: center;
+        font-size: 16px;
+        z-index: 5;
+        display: none;
+      }
+
+      #wordCloud {
+        min-height: 50px;
+        max-width: 95%;
+        padding: 6px 0px 10px 0px;
+        z-index: 5;
+        cursor: pointer;
+        max-height: calc(100% - 100px);
+        overflow: hidden;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        border-radius: 8px;
+      }
+
+      #wordCloud:hover {
+        transform: translateY(0px);
+      }
+
+      #wordCloud.word-cloud {
+        font-family: "Anonymous Pro", monospace;
+        font-weight: 100;
+        font-size: clamp(12px, 2vw, 16px);
+        color: #9b9b9b;
+        text-align: center;
+        max-width: 95%;
+        word-wrap: break-word;
+        margin: 0px 0px 0px 10px;
+        transition: opacity 0.3s ease;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+      }
+
+      #wordCloud.word-cloud-hidden {
+        opacity: 0;
+      }
+
+      .text {
+        font-weight: 100;
+        font-size: clamp(14px, 1.5vw + 0.5rem, 20px);
+        color: #afafaf;
+        max-width: 95%;
+        word-wrap: break-word;
+        padding: 10px 5px 10px 5px;
+        text-align: left;
+        line-height: 1;
+        text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+        letter-spacing: 0.01em;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        backdrop-filter: blur(2px);
+      }
+
+      .text:hover {
+        transform: translateY(0px);
+      }
+
+      .sub-text {
+        font-family: "Roboto", sans-serif;
+        font-weight: 400;
+        font-size: clamp(12px, 1.8vw, 18px);
+        color: #ff5555;
+        text-align: center;
+        max-width: 95%;
+        margin-top: 5px;
+        opacity: 0;
+        transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        text-shadow: 0 0 10px rgba(255, 85, 85, 0.5);
+      }
+
+      .sub-text.visible {
+        opacity: 1;
+        transform: translateY(0);
+        animation: pulse-subtext 2s infinite;
+      }
+
+      .dud {
+        color: var(--dud-color);
+      }
+
+      .highlight {
+        color: var(--highlight-color);
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        text-shadow: 0 0 8px rgba(10, 235, 81, 0.4);
+        position: relative;
+        display: inline-block;
+      }
+
+      .highlight::after {
+        content: "";
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        width: 100%;
+        height: 1px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          var(--highlight-color),
+          transparent
+        );
+        opacity: 0.6;
+        transform: scaleX(0);
+        transition: transform 0.3s ease;
+      }
+
+      .highlight:hover::after {
+        transform: scaleX(1);
+      }
+
+      .highlight:hover {
+        text-shadow: 0 0 12px rgba(10, 235, 81, 0.7);
+        transform: translateY(0px);
+      }
+
+      .segment-indicator {
+        position: absolute;
+        top: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        justify-content: center;
+        gap: 2px;
+        padding: 10px 10px;
+        border-radius: 10px;
+        z-index: 100;
+        opacity: 0.8;
+        transition: all 0.3s ease;
+        min-width: 120px;
+      }
+
+      .controls button {
+        padding: 15px 10px;
+        background: linear-gradient(180deg, #2a2a2a, #1f1f1f);
+        color: #999999;
+        border: none;
+        cursor: pointer;
+        font-family: "Anonymous Pro", monospace;
+        font-size: clamp(14px, 3vw, 16px);
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 4px;
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        min-width: 140px;
+        position: relative;
+        overflow: hidden;
+
+        -webkit-tap-highlight-color: transparent;
+        user-select: none;
+        touch-action: manipulation;
+
+        outline: none !important;
+      }
+
+      .controls button::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.1),
+          transparent
+        );
+        transition: left 0.5s ease;
+      }
+
+      .controls button:hover::before {
+        left: 100%;
+      }
+
+      .controls button:disabled {
+        background: #2a2a2a;
+        color: #666;
+        cursor: not-allowed;
+        box-shadow: none;
+        opacity: 0.5;
+      }
+
+      .controls button:hover:not(:disabled) {
+        background: linear-gradient(180deg, #1f1f1f, #2a2a2a);
+        color: #bdbdbd;
+      }
+
+      .controls button:active:not(:disabled) {
+        background: linear-gradient(180deg, #252525, #1a1a1a);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        transform: translateY(2px);
+        transition:
+          transform 0.08s ease,
+          background 0.08s ease;
+
+        outline: none !important;
+      }
+
+      .controls button:focus:not(:disabled) {
+        outline: none !important;
+      }
+
+      .controls button:focus-visible:not(:disabled) {
+        outline: none !important;
+      }
+
+      .button-indicator {
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        margin-right: 6px;
+        vertical-align: middle;
+        border-radius: 50%;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 0 4px currentColor;
+      }
+
+      .pause-indicator {
+        background: #49ff00;
+        box-shadow: 0 0 6px rgba(73, 255, 0, 0.5);
+      }
+
+      .pause-indicator.resume {
+        background: var(--indicator-yellow);
+        box-shadow: 0 0 6px rgba(255, 193, 7, 0.5);
+      }
+
+      .pause-indicator.word-cloud-paused {
+        background: var(--indicator-word-cloud-paused);
+        box-shadow: 0 0 6px rgba(255, 0, 0, 0.5);
+        animation: pulse-red 1.5s infinite;
+      }
+
+      .next-indicator {
+        background: var(--indicator-gray);
+      }
+
+      .next-indicator.active {
+        animation: indicate-green 0.3s cubic-bezier(0.4, 0, 0.2, 1) 0.03s;
+      }
+
+      .reset-indicator {
+        background: var(--indicator-gray);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .reset-indicator.has-queue {
+        background: var(--indicator-green);
+        box-shadow: 0 0 6px rgba(5, 241, 15, 0.5);
+        animation: pulse-green 2s infinite;
+      }
+
+      .reset-indicator.active {
+        animation: indicate-green 0.3s cubic-bezier(0.4, 0, 0.2, 1) 0.03s;
+      }
+
+      .flash {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: #00000080;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        z-index: 9999;
+        backdrop-filter: blur(3px);
+      }
+
+      .flash.active {
+        opacity: 1;
+      }
+
+      .cursor {
+        display: inline-block;
+        width: 2px;
+        height: 0.3em;
+        background: var(--text-color);
+        animation: blink 0.7s step-end infinite;
+        vertical-align: middle;
+        margin-left: 2px;
+        box-shadow: 0 0 4px currentColor;
+      }
+
+      .blinking-block {
+        display: inline-flex;
+        align-items: center;
+        margin-right: 5px;
+        vertical-align: middle;
+      }
+
+      .blinking-segment {
+        display: inline-block;
+        width: 4px;
+        height: 4px;
+        margin-right: 4px;
+        border-radius: 50%;
+        transition: all 0.3s ease;
+        box-shadow: 0 0 3px currentColor;
+      }
+
+      @keyframes shake {
+        0% {
+          transform: translate(0, 0);
+        }
+        20% {
+          transform: translate(-2px, 2px);
+        }
+        40% {
+          transform: translate(2px, -2px);
+        }
+        60% {
+          transform: translate(-2px, 2px);
+        }
+        80% {
+          transform: translate(2px, -2px);
+        }
+        100% {
+          transform: translate(0, 0);
+        }
+      }
+
+      @keyframes flash {
+        0% {
+          opacity: 0;
+        }
+        50% {
+          opacity: 0.1;
+        }
+        80% {
+          opacity: 0;
+        }
+      }
+
+      @keyframes indicate-green {
+        0% {
+          background: var(--indicator-gray);
+          box-shadow: 0 0 4px var(--indicator-gray);
+        }
+        50% {
+          background: var(--indicator-green);
+          box-shadow: 0 0 12px var(--indicator-green);
+        }
+        100% {
+          background: var(--indicator-gray);
+          box-shadow: 0 0 4px var(--indicator-gray);
+        }
+      }
+
+      @keyframes blink {
+        50% {
+          opacity: 0;
+        }
+      }
+
+      @keyframes blink-segment {
+        0% {
+          opacity: 1;
+          transform: scale(1);
+        }
+        50% {
+          opacity: 0.3;
+          transform: scale(0.9);
+        }
+        100% {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+
+      @keyframes pulse-green {
+        0%,
+        100% {
+          opacity: 1;
+          box-shadow: 0 0 6px rgba(5, 241, 15, 0.5);
+        }
+        50% {
+          opacity: 0.7;
+          box-shadow: 0 0 12px rgba(5, 241, 15, 0.8);
+        }
+      }
+
+      @keyframes pulse-red {
+        0%,
+        100% {
+          opacity: 1;
+          box-shadow: 0 0 6px rgba(255, 0, 0, 0.5);
+        }
+        50% {
+          opacity: 0.7;
+          box-shadow: 0 0 12px rgba(255, 0, 0, 0.8);
+        }
+      }
+
+      @keyframes pulse-subtext {
+        0%,
+        100% {
+          opacity: 1;
+          text-shadow: 0 0 10px rgba(255, 85, 85, 0.5);
+        }
+        50% {
+          opacity: 0.8;
+          text-shadow: 0 0 15px rgba(255, 85, 85, 0.8);
+        }
+      }
+
+      .blinking-segment:nth-child(1) {
+        animation: blink-segment 400ms cubic-bezier(0.4, 0, 0.2, 1) 0ms 3;
+      }
+      .blinking-segment:nth-child(2) {
+        animation: blink-segment 400ms cubic-bezier(0.4, 0, 0.2, 1) 100ms 3;
+      }
+      .blinking-segment:nth-child(3) {
+        animation: blink-segment 400ms cubic-bezier(0.4, 0, 0.2, 1) 200ms 3;
+      }
+      .blinking-segment:nth-child(4) {
+        animation: blink-segment 400ms cubic-bezier(0.4, 0, 0.2, 1) 300ms 3;
+      }
+      .blinking-segment:nth-child(5) {
+        animation: blink-segment 400ms cubic-bezier(0.4, 0, 0.2, 1) 400ms 3;
+      }
+
+      @media (max-height: 600px) {
+        .media-slides {
+          height: clamp(var(--min-slide-height), 30vh, 50vh);
+        }
+        .content {
+          height: clamp(var(--content-height), 50vh, 70vh);
+          transition:
+            height 0.5s ease,
+            background 0.5s ease;
+        }
+        .controls {
+          padding: 6px;
+          border-radius: 8px;
+        }
+        .controls button {
+          padding: 12px 5px;
+          min-width: 105px;
+        }
+      }
+
+      @media (orientation: landscape) {
+        .container {
+          flex-direction: row;
+          flex-wrap: wrap;
+        }
+        .media-slides {
+          height: 100%;
+          width: 50%;
+          min-height: var(--min-slide-height);
+        }
+        .content {
+          height: 100%;
+          width: 50%;
+          min-height: var(--content-height);
+          transition:
+            height 0.5s ease,
+            background 0.5s ease;
+          flex-direction: column;
+          display: flex;
+          justify-content: center;
+        }
+        .controls {
+          width: 100%;
+          max-width: 150px;
+        }
+
+        @media (max-width: 900px) and (orientation: landscape) {
+          .controls button {
+            font-size: 14px !important;
+          }
+
+          .text {
+            font-size: 14px !important;
+          }
+
+          #wordCloud.word-cloud {
+            font-size: 12px !important;
+          }
+        }
+      }
+
+      @media (max-width: 600px) {
+        .content {
+          margin-top: 10px;
+          transition:
+            height 0.5s ease,
+            background 0.5s ease;
+        }
+        .controls {
+          align-items: center;
+          min-width: 140px;
+          padding: 5px;
+          transform: translateX(-50%) scale(0.95);
+        }
+        .controls:hover {
+          transform: translateX(-50%) scale(0.95) translateY(0px);
+        }
+        .controls button {
+          min-width: 110px;
+          padding: 15px 0px;
+          font-size: clamp(14px, 2.5vw, 16px);
+        }
+
+        @media (hover: none) and (pointer: coarse) {
+          .controls button {
+            min-height: 44px;
+            -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+            padding: 15px 5px;
+          }
+
+          .controls button:active:not(:disabled) {
+            transform: translateY(3px) scale(0.98);
+            transition-duration: 0.05s;
+          }
+
+          .controls button:hover:not(:disabled) {
+            transform: none;
+            background: linear-gradient(180deg, #2a2a2a, #1f1f1f);
+          }
+
+          .controls button::before {
+            display: none;
+          }
+        }
+      }
+    </style>
+
+    <script>
+      window.wordcloudLoaded = false;
+      window.wordcloudError = false;
+
+      function handleWordCloudError() {
+        console.warn("WordCloud2.js failed to load");
+        window.wordcloudError = true;
+      }
+    </script>
+
+    <script>
+      "use strict";
+
+      if (!window.setImmediate) {
+        window.setImmediate = (function setupSetImmediate() {
+          return (
+            window.msSetImmediate ||
+            window.webkitSetImmediate ||
+            window.mozSetImmediate ||
+            window.oSetImmediate ||
+            (function setupSetZeroTimeout() {
+              if (!window.postMessage || !window.addEventListener) {
+                return null;
+              }
+
+              var callbacks = [undefined];
+              var message = "zero-timeout-message";
+
+              var setZeroTimeout = function setZeroTimeout(callback) {
+                var id = callbacks.length;
+                callbacks.push(callback);
+                window.postMessage(message + id.toString(36), "*");
+
+                return id;
+              };
+
+              window.addEventListener(
+                "message",
+                function setZeroTimeoutMessage(evt) {
+                  if (
+                    typeof evt.data !== "string" ||
+                    evt.data.substr(0, message.length) !== message
+                  ) {
+                    return;
+                  }
+
+                  evt.stopImmediatePropagation();
+
+                  var id = parseInt(evt.data.substr(message.length), 36);
+                  if (!callbacks[id]) {
+                    return;
+                  }
+
+                  callbacks[id]();
+                  callbacks[id] = undefined;
+                },
+                true,
+              );
+
+              window.clearImmediate = function clearZeroTimeout(id) {
+                if (!callbacks[id]) {
+                  return;
+                }
+
+                callbacks[id] = undefined;
+              };
+
+              return setZeroTimeout;
+            })() ||
+            function setImmediateFallback(fn) {
+              window.setTimeout(fn, 0);
+            }
+          );
+        })();
+      }
+
+      if (!window.clearImmediate) {
+        window.clearImmediate = (function setupClearImmediate() {
+          return (
+            window.msClearImmediate ||
+            window.webkitClearImmediate ||
+            window.mozClearImmediate ||
+            window.oClearImmediate ||
+            function clearImmediateFallback(timer) {
+              window.clearTimeout(timer);
+            }
+          );
+        })();
+      }
+
+      (function (global) {
+        var isSupported = (function isSupported() {
+          var canvas = document.createElement("canvas");
+          if (!canvas || !canvas.getContext) {
+            return false;
+          }
+
+          var ctx = canvas.getContext("2d");
+          if (!ctx) {
+            return false;
+          }
+          if (!ctx.getImageData) {
+            return false;
+          }
+          if (!ctx.fillText) {
+            return false;
+          }
+
+          if (!Array.prototype.some) {
+            return false;
+          }
+          if (!Array.prototype.push) {
+            return false;
+          }
+
+          return true;
+        })();
+
+        var minFontSize = (function getMinFontSize() {
+          if (!isSupported) {
+            return;
+          }
+
+          var ctx = document.createElement("canvas").getContext("2d");
+
+          var size = 12;
+
+          var hanWidth, mWidth;
+
+          while (size) {
+            ctx.font = size.toString(10) + "px sans-serif";
+            if (
+              ctx.measureText("\uFF37").width === hanWidth &&
+              ctx.measureText("m").width === mWidth
+            ) {
+              return size + 1;
+            }
+
+            hanWidth = ctx.measureText("\uFF37").width;
+            mWidth = ctx.measureText("m").width;
+
+            size--;
+          }
+
+          return 0;
+        })();
+
+        var getItemExtraData = function (item) {
+          if (Array.isArray(item)) {
+            var itemCopy = item.slice();
+
+            itemCopy.splice(0, 2);
+            return itemCopy;
+          } else {
+            return [];
+          }
+        };
+
+        var shuffleArray = function shuffleArray(arr) {
+          for (var j, x, i = arr.length; i; ) {
+            j = Math.floor(Math.random() * i);
+            x = arr[--i];
+            arr[i] = arr[j];
+            arr[j] = x;
+          }
+          return arr;
+        };
+
+        var timer = {};
+        var WordCloud = function WordCloud(elements, options) {
+          if (!isSupported) {
+            return;
+          }
+
+          var timerId = Math.floor(Math.random() * Date.now());
+
+          if (!Array.isArray(elements)) {
+            elements = [elements];
+          }
+
+          elements.forEach(function (el, i) {
+            if (typeof el === "string") {
+              elements[i] = document.getElementById(el);
+              if (!elements[i]) {
+                throw new Error("The element id specified is not found.");
+              }
+            } else if (!el.tagName && !el.appendChild) {
+              throw new Error(
+                "You must pass valid HTML elements, or ID of the element.",
+              );
+            }
+          });
+
+          var settings = {
+            list: [],
+            fontFamily:
+              '"Trebuchet MS", "Heiti TC", "微軟正黑體", ' +
+              '"Arial Unicode MS", "Droid Fallback Sans", sans-serif',
+            fontWeight: "normal",
+            color: "random-dark",
+            minSize: 12,
+            weightFactor: 1,
+            clearCanvas: true,
+            backgroundColor: "#00000000",
+
+            gridSize: 10,
+            drawOutOfBound: false,
+            shrinkToFit: false,
+            origin: null,
+
+            drawMask: false,
+            maskColor: "rgba(255,0,0,0.3)",
+            maskGapWidth: 0.3,
+
+            wait: 0,
+            abortThreshold: 0,
+            abort: function noop() {},
+
+            minRotation: -Math.PI / 2,
+            maxRotation: Math.PI / 2,
+            rotationSteps: 0,
+
+            shuffle: true,
+            rotateRatio: 0.1,
+
+            shape: "square",
+            ellipticity: 0.5,
+
+            classes: null,
+
+            hover: null,
+            click: null,
+          };
+
+          if (options) {
+            for (var key in options) {
+              if (key in settings) {
+                settings[key] = options[key];
+              }
+            }
+          }
+
+          if (typeof settings.weightFactor !== "function") {
+            var factor = settings.weightFactor;
+            settings.weightFactor = function weightFactor(pt) {
+              return pt * factor;
+            };
+          }
+
+          if (typeof settings.shape !== "function") {
+            switch (settings.shape) {
+              case "circle":
+
+              default:
+                settings.shape = "circle";
+                break;
+
+              case "cardioid":
+                settings.shape = function shapeCardioid(theta) {
+                  return 1 - Math.sin(theta);
+                };
+                break;
+
+              case "diamond":
+                settings.shape = function shapeSquare(theta) {
+                  var thetaPrime = theta % ((2 * Math.PI) / 4);
+                  return 1 / (Math.cos(thetaPrime) + Math.sin(thetaPrime));
+                };
+                break;
+
+              case "square":
+                settings.shape = function shapeSquare(theta) {
+                  return Math.min(
+                    1 / Math.abs(Math.cos(theta)),
+                    1 / Math.abs(Math.sin(theta)),
+                  );
+                };
+                break;
+
+              case "triangle-forward":
+                settings.shape = function shapeTriangle(theta) {
+                  var thetaPrime = theta % ((2 * Math.PI) / 3);
+                  return (
+                    1 /
+                    (Math.cos(thetaPrime) + Math.sqrt(3) * Math.sin(thetaPrime))
+                  );
+                };
+                break;
+
+              case "triangle":
+              case "triangle-upright":
+                settings.shape = function shapeTriangle(theta) {
+                  var thetaPrime =
+                    (theta + (Math.PI * 3) / 2) % ((2 * Math.PI) / 3);
+                  return (
+                    1 /
+                    (Math.cos(thetaPrime) + Math.sqrt(3) * Math.sin(thetaPrime))
+                  );
+                };
+                break;
+
+              case "pentagon":
+                settings.shape = function shapePentagon(theta) {
+                  var thetaPrime = (theta + 0.955) % ((2 * Math.PI) / 5);
+                  return (
+                    1 / (Math.cos(thetaPrime) + 0.726543 * Math.sin(thetaPrime))
+                  );
+                };
+                break;
+
+              case "star":
+                settings.shape = function shapeStar(theta) {
+                  var thetaPrime = (theta + 0.955) % ((2 * Math.PI) / 10);
+                  if (
+                    ((theta + 0.955) % ((2 * Math.PI) / 5)) -
+                      (2 * Math.PI) / 10 >=
+                    0
+                  ) {
+                    return (
+                      1 /
+                      (Math.cos((2 * Math.PI) / 10 - thetaPrime) +
+                        3.07768 * Math.sin((2 * Math.PI) / 10 - thetaPrime))
+                    );
+                  } else {
+                    return (
+                      1 /
+                      (Math.cos(thetaPrime) + 3.07768 * Math.sin(thetaPrime))
+                    );
+                  }
+                };
+                break;
+            }
+          }
+
+          settings.gridSize = Math.max(Math.floor(settings.gridSize), 4);
+
+          var g = settings.gridSize;
+          var maskRectWidth = g - settings.maskGapWidth;
+
+          var rotationRange = Math.abs(
+            settings.maxRotation - settings.minRotation,
+          );
+          var rotationSteps = Math.abs(Math.floor(settings.rotationSteps));
+          var minRotation = Math.min(
+            settings.maxRotation,
+            settings.minRotation,
+          );
+
+          var grid, ngx, ngy, center, maxRadius;
+
+          var escapeTime;
+
+          var getTextColor;
+          function randomHslColor(min, max) {
+            return (
+              "hsl(" +
+              (Math.random() * 360).toFixed() +
+              "," +
+              (Math.random() * 30 + 70).toFixed() +
+              "%," +
+              (Math.random() * (max - min) + min).toFixed() +
+              "%)"
+            );
+          }
+          switch (settings.color) {
+            case "random-dark":
+              getTextColor = function getRandomDarkColor() {
+                return randomHslColor(10, 50);
+              };
+              break;
+
+            case "random-light":
+              getTextColor = function getRandomLightColor() {
+                return randomHslColor(50, 90);
+              };
+              break;
+
+            default:
+              if (typeof settings.color === "function") {
+                getTextColor = settings.color;
+              }
+              break;
+          }
+
+          var getTextFontWeight;
+          if (typeof settings.fontWeight === "function") {
+            getTextFontWeight = settings.fontWeight;
+          }
+
+          var getTextClasses = null;
+          if (typeof settings.classes === "function") {
+            getTextClasses = settings.classes;
+          }
+
+          var interactive = false;
+          var infoGrid = [];
+          var hovered;
+
+          var getInfoGridFromMouseTouchEvent =
+            function getInfoGridFromMouseTouchEvent(evt) {
+              var canvas = evt.currentTarget;
+              var rect = canvas.getBoundingClientRect();
+              var clientX;
+              var clientY;
+
+              if (evt.touches) {
+                clientX = evt.touches[0].clientX;
+                clientY = evt.touches[0].clientY;
+              } else {
+                clientX = evt.clientX;
+                clientY = evt.clientY;
+              }
+
+              var eventXvalue = clientX - rect.left;
+              var eventX = eventXvalue < 0 ? 0 : eventXvalue;
+              var eventY = clientY - rect.top;
+
+              var x = Math.floor(
+                (eventX * (canvas.width / rect.width || 1)) / g,
+              );
+              var y = Math.floor(
+                (eventY * (canvas.height / rect.height || 1)) / g,
+              );
+
+              if (!infoGrid[x]) {
+                return null;
+              }
+
+              return infoGrid[x][y];
+            };
+
+          var wordcloudhover = function wordcloudhover(evt) {
+            var info = getInfoGridFromMouseTouchEvent(evt);
+
+            if (hovered === info) {
+              return;
+            }
+
+            hovered = info;
+            if (!info) {
+              settings.hover(undefined, undefined, evt);
+
+              return;
+            }
+
+            settings.hover(info.item, info.dimension, evt);
+          };
+
+          var wordcloudclick = function wordcloudclick(evt) {
+            var info = getInfoGridFromMouseTouchEvent(evt);
+            if (!info) {
+              return;
+            }
+
+            settings.click(info.item, info.dimension, evt);
+            evt.preventDefault();
+          };
+
+          var pointsAtRadius = [];
+          var getPointsAtRadius = function getPointsAtRadius(radius) {
+            if (pointsAtRadius[radius]) {
+              return pointsAtRadius[radius];
+            }
+
+            var T = radius * 8;
+            var points = [];
+
+            if (radius === 0) {
+              points.push([center[0], center[1], 0]);
+            }
+
+            var leftShiftedCenter = [center[0] - ngx * 0.3, center[1]];
+
+            for (var t = 0; t < T; t++) {
+              var rx = 1;
+              if (settings.shape !== "circle") {
+                rx = settings.shape((t / T) * 2 * Math.PI);
+              }
+
+              var bias = Math.pow(1 - t / T, 2);
+              var xOffset =
+                radius *
+                rx *
+                Math.cos((-t / T) * 2 * Math.PI) *
+                (1 - bias * 0.5);
+
+              points.push([
+                leftShiftedCenter[0] + xOffset,
+                leftShiftedCenter[1] +
+                  radius *
+                    rx *
+                    Math.sin((-t / T) * 2 * Math.PI) *
+                    settings.ellipticity,
+                (t / T) * 2 * Math.PI,
+              ]);
+            }
+
+            pointsAtRadius[radius] = points;
+            return points;
+          };
+
+          var exceedTime = function exceedTime() {
+            return (
+              settings.abortThreshold > 0 &&
+              new Date().getTime() - escapeTime > settings.abortThreshold
+            );
+          };
+
+          var getRotateDeg = function getRotateDeg() {
+            if (settings.rotateRatio === 0) {
+              return 0;
+            }
+
+            if (Math.random() > settings.rotateRatio) {
+              return 0;
+            }
+
+            if (rotationRange === 0) {
+              return minRotation;
+            }
+
+            if (rotationSteps > 0) {
+              return (
+                minRotation +
+                (Math.floor(Math.random() * rotationSteps) * rotationRange) /
+                  (rotationSteps - 1)
+              );
+            } else {
+              return minRotation + Math.random() * rotationRange;
+            }
+          };
+
+          var getTextInfo = function getTextInfo(
+            word,
+            weight,
+            rotateDeg,
+            extraDataArray,
+          ) {
+            var debug = false;
+            var fontSize = settings.weightFactor(weight);
+            if (fontSize <= settings.minSize) {
+              return false;
+            }
+
+            var mu = 1;
+            if (fontSize < minFontSize) {
+              mu = (function calculateScaleFactor() {
+                var mu = 2;
+                while (mu * fontSize < minFontSize) {
+                  mu += 2;
+                }
+                return mu;
+              })();
+            }
+
+            var fontWeight;
+            if (getTextFontWeight) {
+              fontWeight = getTextFontWeight(
+                word,
+                weight,
+                fontSize,
+                extraDataArray,
+              );
+            } else {
+              fontWeight = settings.fontWeight;
+            }
+
+            var fcanvas = document.createElement("canvas");
+            var fctx = fcanvas.getContext("2d", { willReadFrequently: true });
+
+            fctx.font =
+              fontWeight +
+              " " +
+              (fontSize * mu).toString(10) +
+              "px " +
+              settings.fontFamily;
+
+            var fw = fctx.measureText(word).width / mu;
+            var fh =
+              Math.max(
+                fontSize * mu,
+                fctx.measureText("m").width,
+                fctx.measureText("\uFF37").width,
+              ) / mu;
+
+            var boxWidth = fw + fh * 2;
+            var boxHeight = fh * 3;
+            var fgw = Math.ceil(boxWidth / g);
+            var fgh = Math.ceil(boxHeight / g);
+            boxWidth = fgw * g;
+            boxHeight = fgh * g;
+
+            var fillTextOffsetX = -fw / 2;
+
+            var fillTextOffsetY = -fh * 0.4;
+
+            var cgh = Math.ceil(
+              (boxWidth * Math.abs(Math.sin(rotateDeg)) +
+                boxHeight * Math.abs(Math.cos(rotateDeg))) /
+                g,
+            );
+            var cgw = Math.ceil(
+              (boxWidth * Math.abs(Math.cos(rotateDeg)) +
+                boxHeight * Math.abs(Math.sin(rotateDeg))) /
+                g,
+            );
+            var width = cgw * g;
+            var height = cgh * g;
+
+            fcanvas.setAttribute("width", width);
+            fcanvas.setAttribute("height", height);
+
+            if (debug) {
+              document.body.appendChild(fcanvas);
+
+              fctx.save();
+            }
+
+            fctx.scale(1 / mu, 1 / mu);
+            fctx.translate((width * mu) / 2, (height * mu) / 2);
+            fctx.rotate(-rotateDeg);
+
+            fctx.font =
+              fontWeight +
+              " " +
+              (fontSize * mu).toString(10) +
+              "px " +
+              settings.fontFamily;
+
+            fctx.fillStyle = "#000";
+            fctx.textBaseline = "middle";
+            fctx.fillText(
+              word,
+              fillTextOffsetX * mu,
+              (fillTextOffsetY + fontSize * 0.5) * mu,
+            );
+
+            var imageData = fctx.getImageData(0, 0, width, height).data;
+
+            if (exceedTime()) {
+              return false;
+            }
+
+            if (debug) {
+              fctx.strokeRect(
+                fillTextOffsetX * mu,
+                fillTextOffsetY,
+                fw * mu,
+                fh * mu,
+              );
+              fctx.restore();
+            }
+
+            var occupied = [];
+            var gx = cgw;
+            var gy, x, y;
+            var bounds = [cgh / 2, cgw / 2, cgh / 2, cgw / 2];
+            while (gx--) {
+              gy = cgh;
+              while (gy--) {
+                y = g;
+
+                singleGridLoop: while (y--) {
+                  x = g;
+                  while (x--) {
+                    if (
+                      imageData[((gy * g + y) * width + (gx * g + x)) * 4 + 3]
+                    ) {
+                      occupied.push([gx, gy]);
+
+                      if (gx < bounds[3]) {
+                        bounds[3] = gx;
+                      }
+                      if (gx > bounds[1]) {
+                        bounds[1] = gx;
+                      }
+                      if (gy < bounds[0]) {
+                        bounds[0] = gy;
+                      }
+                      if (gy > bounds[2]) {
+                        bounds[2] = gy;
+                      }
+
+                      if (debug) {
+                        fctx.fillStyle = "rgba(255, 0, 0, 0.5)";
+                        fctx.fillRect(gx * g, gy * g, g - 0.5, g - 0.5);
+                      }
+                      break singleGridLoop;
+                    }
+                  }
+                }
+                if (debug) {
+                  fctx.fillStyle = "rgba(0, 0, 255, 0.5)";
+                  fctx.fillRect(gx * g, gy * g, g - 0.5, g - 0.5);
+                }
+              }
+            }
+
+            if (debug) {
+              fctx.fillStyle = "rgba(0, 255, 0, 0.5)";
+              fctx.fillRect(
+                bounds[3] * g,
+                bounds[0] * g,
+                (bounds[1] - bounds[3] + 1) * g,
+                (bounds[2] - bounds[0] + 1) * g,
+              );
+            }
+
+            return {
+              mu: mu,
+              occupied: occupied,
+              bounds: bounds,
+              gw: cgw,
+              gh: cgh,
+              fillTextOffsetX: fillTextOffsetX,
+              fillTextOffsetY: fillTextOffsetY,
+              fillTextWidth: fw,
+              fillTextHeight: fh,
+              fontSize: fontSize,
+            };
+          };
+
+          var canFitText = function canFitText(gx, gy, gw, gh, occupied) {
+            var i = occupied.length;
+            while (i--) {
+              var px = gx + occupied[i][0];
+              var py = gy + occupied[i][1];
+
+              if (px >= ngx || py >= ngy || px < 0 || py < 0) {
+                if (!settings.drawOutOfBound) {
+                  return false;
+                }
+                continue;
+              }
+
+              if (!grid[px][py]) {
+                return false;
+              }
+            }
+            return true;
+          };
+
+          var drawText = function drawText(
+            gx,
+            gy,
+            info,
+            word,
+            weight,
+            distance,
+            theta,
+            rotateDeg,
+            attributes,
+            extraDataArray,
+          ) {
+            var fontSize = info.fontSize;
+            var color;
+            if (getTextColor) {
+              color = getTextColor(
+                word,
+                weight,
+                fontSize,
+                distance,
+                theta,
+                extraDataArray,
+              );
+            } else {
+              color = settings.color;
+            }
+
+            var fontWeight;
+            if (getTextFontWeight) {
+              fontWeight = getTextFontWeight(
+                word,
+                weight,
+                fontSize,
+                extraDataArray,
+              );
+            } else {
+              fontWeight = settings.fontWeight;
+            }
+
+            var classes;
+            if (getTextClasses) {
+              classes = getTextClasses(word, weight, fontSize, extraDataArray);
+            } else {
+              classes = settings.classes;
+            }
+
+            elements.forEach(function (el) {
+              if (el.getContext) {
+                var ctx = el.getContext("2d");
+                var mu = info.mu;
+
+                ctx.save();
+                ctx.scale(1 / mu, 1 / mu);
+
+                ctx.font =
+                  fontWeight +
+                  " " +
+                  (fontSize * mu).toString(10) +
+                  "px " +
+                  settings.fontFamily;
+                ctx.fillStyle = color;
+
+                ctx.translate(
+                  (gx + info.gw / 2) * g * mu,
+                  (gy + info.gh / 2) * g * mu,
+                );
+
+                if (rotateDeg !== 0) {
+                  ctx.rotate(-rotateDeg);
+                }
+
+                // Please read https://bugzil.la/737852#c6.
+
+                ctx.textBaseline = "middle";
+                ctx.fillText(
+                  word,
+                  info.fillTextOffsetX * mu,
+                  (info.fillTextOffsetY + fontSize * 0.5) * mu,
+                );
+
+                ctx.restore();
+              } else {
+                var span = document.createElement("span");
+                var transformRule = "";
+                transformRule =
+                  "rotate(" + (-rotateDeg / Math.PI) * 180 + "deg) ";
+                if (info.mu !== 1) {
+                  transformRule +=
+                    "translateX(-" +
+                    info.fillTextWidth / 4 +
+                    "px) " +
+                    "scale(" +
+                    1 / info.mu +
+                    ")";
+                }
+                var styleRules = {
+                  position: "absolute",
+                  display: "block",
+                  font:
+                    fontWeight +
+                    " " +
+                    fontSize * info.mu +
+                    "px " +
+                    settings.fontFamily,
+                  left: (gx + info.gw / 2) * g + info.fillTextOffsetX + "px",
+                  top: (gy + info.gh / 2) * g + info.fillTextOffsetY + "px",
+                  width: info.fillTextWidth + "px",
+                  height: info.fillTextHeight + "px",
+                  lineHeight: fontSize + "px",
+                  whiteSpace: "nowrap",
+                  transform: transformRule,
+                  webkitTransform: transformRule,
+                  msTransform: transformRule,
+                  transformOrigin: "50% 40%",
+                  webkitTransformOrigin: "50% 40%",
+                  msTransformOrigin: "50% 40%",
+                };
+                if (color) {
+                  styleRules.color = color;
+                }
+                span.textContent = word;
+                for (var cssProp in styleRules) {
+                  span.style[cssProp] = styleRules[cssProp];
+                }
+                if (attributes) {
+                  for (var attribute in attributes) {
+                    span.setAttribute(attribute, attributes[attribute]);
+                  }
+                }
+                if (classes) {
+                  span.className += classes;
+                }
+                el.appendChild(span);
+              }
+            });
+          };
+
+          var fillGridAt = function fillGridAt(
+            x,
+            y,
+            drawMask,
+            dimension,
+            item,
+          ) {
+            if (x >= ngx || y >= ngy || x < 0 || y < 0) {
+              return;
+            }
+
+            grid[x][y] = false;
+
+            if (drawMask) {
+              var ctx = elements[0].getContext("2d");
+              ctx.fillRect(x * g, y * g, maskRectWidth, maskRectWidth);
+            }
+
+            if (interactive) {
+              infoGrid[x][y] = { item: item, dimension: dimension };
+            }
+          };
+
+          var updateGrid = function updateGrid(gx, gy, gw, gh, info, item) {
+            var occupied = info.occupied;
+            var drawMask = settings.drawMask;
+            var ctx;
+            if (drawMask) {
+              ctx = elements[0].getContext("2d");
+              ctx.save();
+              ctx.fillStyle = settings.maskColor;
+            }
+
+            var dimension;
+            if (interactive) {
+              var bounds = info.bounds;
+              dimension = {
+                x: (gx + bounds[3]) * g,
+                y: (gy + bounds[0]) * g,
+                w: (bounds[1] - bounds[3] + 1) * g,
+                h: (bounds[2] - bounds[0] + 1) * g,
+              };
+            }
+
+            var i = occupied.length;
+            while (i--) {
+              var px = gx + occupied[i][0];
+              var py = gy + occupied[i][1];
+
+              if (px >= ngx || py >= ngy || px < 0 || py < 0) {
+                continue;
+              }
+
+              fillGridAt(px, py, drawMask, dimension, item);
+            }
+
+            if (drawMask) {
+              ctx.restore();
+            }
+          };
+
+          var putWord = function putWord(item) {
+            var word, weight, attributes;
+            if (Array.isArray(item)) {
+              word = item[0];
+              weight = item[1];
+            } else {
+              word = item.word;
+              weight = item.weight;
+              attributes = item.attributes;
+            }
+            var rotateDeg = getRotateDeg();
+
+            var extraDataArray = getItemExtraData(item);
+
+            var info = getTextInfo(word, weight, rotateDeg, extraDataArray);
+
+            if (!info) {
+              return false;
+            }
+
+            if (exceedTime()) {
+              return false;
+            }
+
+            if (!settings.drawOutOfBound && !settings.shrinkToFit) {
+              var bounds = info.bounds;
+              if (
+                bounds[1] - bounds[3] + 1 > ngx ||
+                bounds[2] - bounds[0] + 1 > ngy
+              ) {
+                return false;
+              }
+            }
+
+            var r = maxRadius + 1;
+
+            var tryToPutWordAtPoint = function (gxy) {
+              var gx = Math.floor(gxy[0] - info.gw / 2);
+              var gy = Math.floor(gxy[1] - info.gh / 2);
+              var gw = info.gw;
+              var gh = info.gh;
+
+              if (!canFitText(gx, gy, gw, gh, info.occupied)) {
+                return false;
+              }
+
+              drawText(
+                gx,
+                gy,
+                info,
+                word,
+                weight,
+                maxRadius - r,
+                gxy[2],
+                rotateDeg,
+                attributes,
+                extraDataArray,
+              );
+
+              updateGrid(gx, gy, gw, gh, info, item);
+
+              return true;
+            };
+
+            while (r--) {
+              var points = getPointsAtRadius(maxRadius - r);
+
+              if (settings.shuffle) {
+                points = [].concat(points);
+                shuffleArray(points);
+              }
+
+              var drawn = points.some(tryToPutWordAtPoint);
+
+              if (drawn) {
+                return true;
+              }
+            }
+            if (settings.shrinkToFit) {
+              if (Array.isArray(item)) {
+                item[1] = (item[1] * 3) / 4;
+              } else {
+                item.weight = (item.weight * 3) / 4;
+              }
+              return putWord(item);
+            }
+
+            return false;
+          };
+
+          var sendEvent = function sendEvent(type, cancelable, details) {
+            if (cancelable) {
+              return !elements.some(function (el) {
+                var event = new CustomEvent(type, {
+                  detail: details || {},
+                });
+                return !el.dispatchEvent(event);
+              }, this);
+            } else {
+              elements.forEach(function (el) {
+                var event = new CustomEvent(type, {
+                  detail: details || {},
+                });
+                el.dispatchEvent(event);
+              }, this);
+            }
+          };
+
+          var start = function start() {
+            var canvas = elements[0];
+
+            if (canvas.getContext) {
+              ngx = Math.ceil(canvas.width / g);
+              ngy = Math.ceil(canvas.height / g);
+            } else {
+              var rect = canvas.getBoundingClientRect();
+              ngx = Math.ceil(rect.width / g);
+              ngy = Math.ceil(rect.height / g);
+            }
+
+            if (!sendEvent("wordcloudstart", true)) {
+              return;
+            }
+
+            center = settings.origin
+              ? [settings.origin[0] / g, settings.origin[1] / g]
+              : [ngx / 2, ngy / 2];
+
+            maxRadius = Math.floor(Math.sqrt(ngx * ngx + ngy * ngy));
+
+            grid = [];
+
+            var gx, gy, i;
+            if (!canvas.getContext || settings.clearCanvas) {
+              elements.forEach(function (el) {
+                if (el.getContext) {
+                  var ctx = el.getContext("2d");
+                  ctx.fillStyle = settings.backgroundColor;
+                  ctx.clearRect(0, 0, ngx * (g + 1), ngy * (g + 1));
+                  ctx.fillRect(0, 0, ngx * (g + 1), ngy * (g + 1));
+                } else {
+                  el.textContent = "";
+                  el.style.backgroundColor = settings.backgroundColor;
+                  el.style.position = "relative";
+                }
+              });
+
+              gx = ngx;
+              while (gx--) {
+                grid[gx] = [];
+                gy = ngy;
+                while (gy--) {
+                  grid[gx][gy] = true;
+                }
+              }
+            } else {
+              var bctx = document.createElement("canvas").getContext("2d");
+
+              bctx.fillStyle = settings.backgroundColor;
+              bctx.fillRect(0, 0, 1, 1);
+              var bgPixel = bctx.getImageData(0, 0, 1, 1).data;
+
+              var imageData = canvas
+                .getContext("2d")
+                .getImageData(0, 0, ngx * g, ngy * g).data;
+
+              gx = ngx;
+              var x, y;
+              while (gx--) {
+                grid[gx] = [];
+                gy = ngy;
+                while (gy--) {
+                  y = g;
+
+                  singleGridLoop: while (y--) {
+                    x = g;
+                    while (x--) {
+                      i = 4;
+                      while (i--) {
+                        if (
+                          imageData[
+                            ((gy * g + y) * ngx * g + (gx * g + x)) * 4 + i
+                          ] !== bgPixel[i]
+                        ) {
+                          grid[gx][gy] = false;
+                          break singleGridLoop;
+                        }
+                      }
+                    }
+                  }
+                  if (grid[gx][gy] !== false) {
+                    grid[gx][gy] = true;
+                  }
+                }
+              }
+
+              imageData = bctx = bgPixel = undefined;
+            }
+
+            if (settings.hover || settings.click) {
+              interactive = true;
+
+              gx = ngx + 1;
+              while (gx--) {
+                infoGrid[gx] = [];
+              }
+
+              if (settings.hover) {
+                canvas.addEventListener("mousemove", wordcloudhover);
+              }
+
+              if (settings.click) {
+                canvas.addEventListener("click", wordcloudclick);
+                canvas.style.webkitTapHighlightColor = "rgba(0, 0, 0, 0)";
+              }
+
+              canvas.addEventListener(
+                "wordcloudstart",
+                function stopInteraction() {
+                  canvas.removeEventListener("wordcloudstart", stopInteraction);
+                  canvas.removeEventListener("mousemove", wordcloudhover);
+                  canvas.removeEventListener("click", wordcloudclick);
+                  hovered = undefined;
+                },
+              );
+            }
+
+            i = 0;
+            var loopingFunction, stoppingFunction;
+            if (settings.wait !== 0) {
+              loopingFunction = window.setTimeout;
+              stoppingFunction = window.clearTimeout;
+            } else {
+              loopingFunction = window.setImmediate;
+              stoppingFunction = window.clearImmediate;
+            }
+
+            var addEventListener = function addEventListener(type, listener) {
+              elements.forEach(function (el) {
+                el.addEventListener(type, listener);
+              }, this);
+            };
+
+            var removeEventListener = function removeEventListener(
+              type,
+              listener,
+            ) {
+              elements.forEach(function (el) {
+                el.removeEventListener(type, listener);
+              }, this);
+            };
+
+            var anotherWordCloudStart = function anotherWordCloudStart() {
+              removeEventListener("wordcloudstart", anotherWordCloudStart);
+              stoppingFunction(timer[timerId]);
+            };
+
+            addEventListener("wordcloudstart", anotherWordCloudStart);
+            timer[timerId] = loopingFunction(function loop() {
+              if (i >= settings.list.length) {
+                stoppingFunction(timer[timerId]);
+                sendEvent("wordcloudstop", false);
+                removeEventListener("wordcloudstart", anotherWordCloudStart);
+                delete timer[timerId];
+                return;
+              }
+              escapeTime = new Date().getTime();
+              var drawn = putWord(settings.list[i]);
+              var canceled = !sendEvent("wordclouddrawn", true, {
+                item: settings.list[i],
+                drawn: drawn,
+              });
+              if (exceedTime() || canceled) {
+                stoppingFunction(timer[timerId]);
+                settings.abort();
+                sendEvent("wordcloudabort", false);
+                sendEvent("wordcloudstop", false);
+                removeEventListener("wordcloudstart", anotherWordCloudStart);
+                delete timer[timerId];
+                return;
+              }
+              i++;
+              timer[timerId] = loopingFunction(loop, settings.wait);
+            }, settings.wait);
+          };
+
+          start();
+        };
+
+        WordCloud.isSupported = isSupported;
+        WordCloud.minFontSize = minFontSize;
+        WordCloud.stop = function stop() {
+          if (timer) {
+            for (var timerId in timer) {
+              window.clearImmediate(timer[timerId]);
+            }
+          }
+        };
+
+        if (typeof define === "function" && define.amd) {
+          global.WordCloud = WordCloud;
+          define("wordcloud", [], function () {
+            return WordCloud;
+          });
+        } else if (typeof module !== "undefined" && module.exports) {
+          module.exports = WordCloud;
+        } else {
+          global.WordCloud = WordCloud;
+        }
+      })(this);
+    </script>
+  </head>
+  <body>
+    <div class="container">
+      <div class="flash" role="alert" aria-live="assertive"></div>
+
+      <div class="media-slides" role="region" aria-label="Media slideshow">
+        <div class="media-error" role="alert"></div>
+      </div>
+
+      <div class="content">
+        <div class="text" role="status" aria-live="polite"></div>
+
+        <canvas
+          id="wordCloud"
+          width="800"
+          height="400"
+          role="img"
+          aria-label="Word cloud visualization"
+        >
+        </canvas>
+
+        <div class="controls" role="toolbar" aria-label="Media controls">
+          <button onclick="pauseSlides()" aria-label="Toggle auto-play">
+            <span class="button-indicator pause-indicator"></span>
+            AUTO (0)
+          </button>
+
+          <button onclick="nextSlide()" aria-label="Next image">
+            <span class="button-indicator next-indicator"></span>
+            NEXT
+          </button>
+
+          <button onclick="resetQueue()" aria-label="Reset queue and refresh">
+            <span class="button-indicator reset-indicator"></span>
+            RESET (0)
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <noscript>
+      <style>
+        .container {
+          display: none;
+        }
+      </style>
+      <div style="text-align: center; padding: 50px; color: #bdbdbd">
+        <h1>JavaScript Required</h1>
+        <p>This interactive display requires JavaScript to function.</p>
+      </div>
+    </noscript>
+
+    <script>
+      const API_BASE = "http://0808.us.nekhebet.su:8080";
+
+      class Typewriter {
+        constructor(el) {
+          this.el = el;
+          this.update = this.update.bind(this);
+          this.frameRequest = null;
+          this.timeoutId = null;
+          this.resolve = null;
+          this.isStopped = false;
+          this.newText = "";
+        }
+
+        setText(newText, highlights = [], prefix = "", speed = "normal") {
+          this.isStopped = false;
+          const promise = new Promise((resolve) => (this.resolve = resolve));
+          this.newText = newText;
+          this.highlights = highlights;
+          this.prefix = prefix;
+          this.currentIndex = 0;
+          this.output = "";
+          this.delayPerChar =
+            speed === "fast" ? 2 : speed === "instant" ? 0 : 8;
+          cancelAnimationFrame(this.frameRequest);
+          if (this.timeoutId) {
+            clearTimeout(this.timeoutId);
+            this.timeoutId = null;
+          }
+          if (speed === "instant") {
+            this.el.innerHTML =
+              this.prefix + this.applyHighlights(this.newText, this.highlights);
+            if (this.resolve) this.resolve();
+            return promise;
+          }
+          this.el.innerHTML = this.prefix;
+          this.update();
+          return promise;
+        }
+
+        update() {
+          if (this.isStopped || this.currentIndex >= this.newText.length) {
+            this.el.innerHTML =
+              this.prefix + this.applyHighlights(this.newText, this.highlights);
+            if (this.resolve) this.resolve();
+            return;
+          }
+          this.output = this.newText.slice(0, this.currentIndex + 1);
+          this.el.innerHTML =
+            this.prefix + this.applyHighlights(this.output, this.highlights);
+          this.currentIndex++;
+          if (this.delayPerChar > 0) {
+            this.timeoutId = setTimeout(() => {
+              this.frameRequest = requestAnimationFrame(() => this.update());
+            }, this.delayPerChar);
+          } else {
+            this.frameRequest = requestAnimationFrame(() => this.update());
+          }
+        }
+
+        applyHighlights(text, highlights) {
+          if (!highlights || highlights.length === 0) {
+            return this.escapeHtml(text);
+          }
+          let result = "";
+          let lastIndex = 0;
+          const sortedHighlights = [...highlights].sort(
+            (a, b) => a.start - b.start,
+          );
+          for (const h of sortedHighlights) {
+            if (h.start >= lastIndex && h.start < text.length) {
+              result += this.escapeHtml(text.slice(lastIndex, h.start));
+              const end = Math.min(h.end, text.length);
+              const safeText = this.escapeHtml(text.slice(h.start, end));
+              result += `<span class="highlight">${safeText}</span>`;
+              lastIndex = end;
+            }
+          }
+          result += this.escapeHtml(text.slice(lastIndex));
+          return result;
+        }
+
+        escapeHtml(text) {
+          const div = document.createElement("div");
+          div.textContent = text;
+          return div.innerHTML;
+        }
+
+        stopAnimation() {
+          this.isStopped = true;
+          cancelAnimationFrame(this.frameRequest);
+          if (this.timeoutId) {
+            clearTimeout(this.timeoutId);
+            this.timeoutId = null;
+          }
+          this.el.innerHTML =
+            this.prefix + this.applyHighlights(this.newText, this.highlights);
+          if (this.resolve) this.resolve();
+        }
+      }
+
+      class MediaSlides {
+        constructor(messageDisplay) {
+          this.slidesEl = document.querySelector(".media-slides");
+          this.messageDisplay = messageDisplay;
+          this.slides = [];
+          this.currentIndex = -1;
+          this.files = [];
+          this.newMediaQueue = [];
+          this.priorityQueue = [];
+          this.globalQueue = [];
+          this.currentPage = 1;
+          this.lastCheckTime = 0;
+          this.lastFullRefresh = 0;
+          this.MAX_FILES = 50;
+          this.colorQueue = [];
+          this.skipNextAutoSlide = false;
+          this.retryCount = 0;
+          this.pastelPalette = [
+            { r: 100, g: 120, b: 140 },
+            { r: 140, g: 100, b: 120 },
+            { r: 100, g: 204, b: 255 },
+            { r: 228, g: 113, b: 122 },
+            { r: 113, g: 188, b: 120 },
+            { r: 127, g: 199, b: 255 },
+            { r: 255, g: 193, b: 204 },
+          ];
+          this.currentColorEqual = 0;
+          this.isLocalPhraseMode = true;
+          this.newMediaFiles = [];
+          this.isAnimating = false;
+          this.lastManualSwitch = 0;
+          this.justSwitchedToNormalMode = false;
+          this.lastWebSocketSwitch = 0;
+          this.ws = null;
+          this.permanentPreloaded = true;
+          this.touchStartX = 0;
+          this.touchEndX = 0;
+          this.SWIPE_THRESHOLD = 50;
+          this.mediaErrorEl = null;
+          this.contentEl = null;
+          this.flashEl = null;
+          this.initDomCache();
+          this.initSwipeHandlers();
+        }
+
+        initDomCache() {
+          this.mediaErrorEl = document.querySelector(".media-error");
+          this.contentEl = document.querySelector(".content");
+          this.flashEl = document.querySelector(".flash");
+        }
+
+        initSwipeHandlers() {
+          if (!this.slidesEl) return;
+
+          this.slidesEl.addEventListener(
+            "touchstart",
+            (e) => {
+              this.touchStartX = e.changedTouches[0].screenX;
+            },
+            { passive: true },
+          );
+
+          this.slidesEl.addEventListener(
+            "touchend",
+            (e) => {
+              if (this.isAnimating || this.messageDisplay.isWordCloudPaused)
+                return;
+
+              this.touchEndX = e.changedTouches[0].screenX;
+              const diffX = this.touchStartX - this.touchEndX;
+
+              if (Math.abs(diffX) > this.SWIPE_THRESHOLD) {
+                if (diffX > 0) {
+                  this.handleSwipeNext();
+                }
+              }
+            },
+            { passive: true },
+          );
+
+          let mouseDownX = 0;
+          this.slidesEl.addEventListener("mousedown", (e) => {
+            mouseDownX = e.clientX;
+          });
+
+          this.slidesEl.addEventListener("mouseup", (e) => {
+            if (this.isAnimating || this.messageDisplay.isWordCloudPaused)
+              return;
+
+            const diffX = mouseDownX - e.clientX;
+            if (Math.abs(diffX) > this.SWIPE_THRESHOLD && diffX > 0) {
+              this.handleSwipeNext();
+            }
+          });
+        }
+
+        async handleSwipeNext() {
+          if (
+            this.messageDisplay.nextButton &&
+            !this.messageDisplay.nextButton.disabled
+          ) {
+            await window.nextSlide();
+          }
+        }
+
+        async closeWebSocket() {
+          return new Promise((resolve) => {
+            if (!this.ws) {
+              resolve();
+              return;
+            }
+
+            const oldWs = this.ws;
+            this.ws = null;
+
+            if (
+              oldWs.readyState === WebSocket.OPEN ||
+              oldWs.readyState === WebSocket.CONNECTING
+            ) {
+              oldWs.onclose = () => resolve();
+              oldWs.close();
+            } else {
+              resolve();
+            }
+          });
+        }
+
+        async waitForWebSocketConnection(timeout = 5000) {
+          return new Promise((resolve, reject) => {
+            if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+              resolve();
+              return;
+            }
+
+            const checkInterval = setInterval(() => {
+              if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+                clearInterval(checkInterval);
+                clearTimeout(timeoutId);
+                resolve();
+              }
+            }, 50);
+
+            const timeoutId = setTimeout(() => {
+              clearInterval(checkInterval);
+              reject(new Error("WebSocket connection timeout"));
+            }, timeout);
+          });
+        }
+
+        async init() {
+          try {
+            if (this.mediaErrorEl) this.mediaErrorEl.style.display = "none";
+            await this.loadNewMediaFiles();
+            if (!this.slidesEl) {
+              throw new Error(".media-slides element not found");
+            }
+            this.newMediaFiles.forEach(({ id, mtime, file_type }) => {
+              if (!id || !mtime || !file_type) return;
+              this.createSlide({ id, mtime, file_type }, true);
+            });
+            if (this.isLocalPhraseMode) {
+              await this.preloadPermanentFile();
+            }
+            if (this.slides.length === 0) {
+              if (this.mediaErrorEl) this.mediaErrorEl.style.display = "block";
+              throw new Error("Slides not created");
+            } else {
+              this.files = [...this.newMediaFiles];
+              if (!this.isLocalPhraseMode) {
+                this.currentPage = 1;
+                this.globalQueue = [...this.newMediaFiles];
+                await this.refreshFiles(true);
+              }
+              setInterval(() => this.checkNewMediaFiles(), 150000);
+              this.startMediaSwitchInterval();
+              this.initWebSocket();
+            }
+          } catch (error) {
+            if (this.mediaErrorEl) this.mediaErrorEl.style.display = "block";
+          }
+        }
+
+        async preloadPermanentFile() {
+          try {
+            const response = await fetch(
+              `${API_BASE}/media-files?page=1&noCache=${Date.now()}`,
+            );
+            if (!response.ok) {
+              throw new Error(
+                `Request error /media-files?page=1: ${response.status}`,
+              );
+            }
+            const permanentFiles = (await response.json()).slice(0, 1);
+            if (permanentFiles.length > 0) {
+              const file = permanentFiles[0];
+              if (
+                !this.slides.some(
+                  (slide) => slide.dataset.id === String(file.id),
+                )
+              ) {
+                this.createSlide(file, false);
+                this.permanentPreloaded = true;
+              }
+            }
+          } catch (error) {
+            console.error("preloadPermanentFile failed:", error);
+          }
+        }
+
+        initWebSocket() {
+          if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+            return;
+          }
+          if (this.ws && this.ws.readyState === WebSocket.CONNECTING) {
+            setTimeout(() => this.initWebSocket(), 100);
+            return;
+          }
+          this.ws = new WebSocket("ws://0808.us.nekhebet.su:8080");
+          this.ws.onopen = () => {
+            this.messageDisplay.updatePauseButton();
+            if (this.mediaErrorEl) this.mediaErrorEl.style.display = "none";
+            this.refreshFiles(true).then(() => {
+              this.newMediaQueue = [...this.newMediaFiles];
+              this.newMediaQueue.sort(
+                (a, b) =>
+                  new Date(b.mtime || new Date()).getTime() -
+                  new Date(a.mtime || new Date()).getTime(),
+              );
+            });
+          };
+          this.ws.onmessage = async (event) => {
+            try {
+              const data = JSON.parse(event.data);
+              if (data.type === "new_media") {
+                await this.createSlide({
+                  id: data.id,
+                  file_type: data.file_type,
+                  special_id: data.special_id,
+                });
+                if (
+                  this.slides.some(
+                    (slide) => slide.dataset.id === String(data.id),
+                  )
+                ) {
+                  this.newMediaQueue.push({
+                    id: data.id,
+                    mtime: data.mtime || new Date().toISOString(),
+                    file_type: data.file_type,
+                    special_id: data.special_id,
+                  });
+                  if (
+                    data.special_id !== undefined &&
+                    data.special_id !== null
+                  ) {
+                    this.priorityQueue.push({
+                      id: data.id,
+                      mtime: data.mtime || new Date().toISOString(),
+                      file_type: data.file_type,
+                      special_id: data.special_id,
+                    });
+                  }
+                }
+              }
+            } catch (error) {}
+          };
+          this.ws.onclose = () => {
+            if (this.mediaErrorEl) this.mediaErrorEl.style.display = "block";
+            setTimeout(() => {
+              this.initWebSocket();
+            }, 6000);
+          };
+          this.ws.onerror = (error) => {};
+        }
+
+        async doubleFlashScreen() {
+          const flashEl = this.flashEl || document.querySelector(".flash");
+          if (!flashEl) {
+            return;
+          }
+          const randomColor = `hsl(${Math.random() * 360}, 50%, 60%)`;
+          flashEl.style.backgroundColor = randomColor;
+          flashEl.classList.add("active");
+          await new Promise((resolve) => setTimeout(resolve, 200));
+          flashEl.classList.remove("active");
+          await new Promise((resolve) => setTimeout(resolve, 100));
+          flashEl.classList.add("active");
+          await new Promise((resolve) => setTimeout(resolve, 200));
+          flashEl.classList.remove("active");
+          flashEl.style.backgroundColor = "";
+        }
+
+        async loadNewMediaFiles() {
+          try {
+            const response = await fetch(`${API_BASE}/new-media-files`);
+            if (!response.ok) {
+              throw new Error(`Error /new-media-files: ${response.status}`);
+            }
+            this.newMediaFiles = (await response.json()).slice(
+              0,
+              this.MAX_FILES,
+            );
+          } catch (error) {
+            console.error("loadNewMediaFiles failed:", error);
+          }
+        }
+
+        startMediaSwitchInterval() {
+          if (this.mediaSwitchInterval) {
+            clearInterval(this.mediaSwitchInterval);
+            this.mediaSwitchInterval = null;
+          }
+          if (this.slides.length > 0 && this.currentIndex === -1) {
+            this.nextSlide(true);
+          }
+        }
+
+        stopMediaSwitchInterval() {
+          if (this.mediaSwitchInterval) {
+            clearInterval(this.mediaSwitchInterval);
+            this.mediaSwitchInterval = null;
+          }
+        }
+
+        async switchToNormalMode() {
+          if (this.isAnimating) {
+            await new Promise((resolve) => setTimeout(resolve, 200));
+          }
+          this.isLocalPhraseMode = false;
+          this.justSwitchedToNormalMode = true;
+          this.stopMediaSwitchInterval();
+          await this.hideAllSlides();
+          this.slides.forEach((slide) => this.removeSlide(slide));
+          this.slides = [];
+          this.currentIndex = -1;
+          this.newMediaQueue = [];
+          this.priorityQueue = [];
+          this.globalQueue = [];
+          this.files = [];
+          this.currentPage = 1;
+          await this.refreshFiles(true);
+          if (this.slides.length === 0) {
+            if (this.mediaErrorEl) this.mediaErrorEl.style.display = "block";
+          } else {
+            await this.nextSlide(true);
+          }
+        }
+
+        async refreshFiles(force = false) {
+          try {
+            const now = Date.now();
+            if (!force && now - this.lastFullRefresh < 300000) {
+              return;
+            }
+            this.lastFullRefresh = now;
+            if (this.isLocalPhraseMode) {
+              await this.loadNewMediaFiles();
+              const existingIds = new Set(
+                this.slides.map((slide) => String(slide.dataset.id)),
+              );
+              this.newMediaFiles.forEach((file) => {
+                if (!existingIds.has(String(file.id))) {
+                  this.createSlide(file);
+                }
+              });
+              const newIds = new Set(
+                this.newMediaFiles.map((f) => String(f.id)),
+              );
+              this.slides = this.slides.filter((slide) => {
+                if (!slide || !slide.dataset || !slide.dataset.id) return false;
+                const slideId = String(slide.dataset.id);
+                if (!newIds.has(slideId)) {
+                  if (
+                    !(
+                      this.messageDisplay.isPaused &&
+                      this.currentIndex !== -1 &&
+                      this.slides[this.currentIndex]?.dataset.id === slideId
+                    )
+                  ) {
+                    slide.remove();
+                  }
+                  return false;
+                }
+                return true;
+              });
+              this.files = [...this.newMediaFiles];
+              return;
+            }
+            const response = await fetch(
+              `${API_BASE}/media-files?page=${this.currentPage}&noCache=${Date.now()}`,
+            );
+            if (!response.ok) {
+              throw new Error(
+                `Request error /media-files?page=${this.currentPage}: ${response.status}`,
+              );
+            }
+            let newFiles = (await response.json()).slice(0, this.MAX_FILES);
+
+            if (newFiles.length === 0 && this.currentPage > 1) {
+              this.currentPage = 1;
+              const fallbackResponse = await fetch(
+                `${API_BASE}/media-files?page=${this.currentPage}&noCache=${Date.now()}`,
+              );
+              if (!fallbackResponse.ok) {
+                throw new Error(
+                  `Request error /media-files?page=${this.currentPage}: ${fallbackResponse.status}`,
+                );
+              }
+              newFiles = (await fallbackResponse.json()).slice(
+                0,
+                this.MAX_FILES,
+              );
+            }
+            const existingIds = new Set(
+              this.globalQueue.map((f) => String(f.id)),
+            );
+            newFiles = newFiles.filter(
+              (file) => !existingIds.has(String(file.id)),
+            );
+            newFiles.forEach((file) => {
+              if (
+                !this.slides.some(
+                  (slide) => slide.dataset.id === String(file.id),
+                )
+              ) {
+                this.createSlide(file);
+                if (["jpg", "jfif", "png", "gif"].includes(file.file_type)) {
+                  const img = new Image();
+                  img.src = `${API_BASE}/media/${file.id}`;
+                  img.loading = this.globalQueue.length <= 2 ? "eager" : "lazy";
+                } else if (["mp4", "webm", "mov"].includes(file.file_type)) {
+                  const video = document.createElement("video");
+                  video.src = `${API_BASE}/media/${file.id}`;
+                  video.preload =
+                    this.globalQueue.length <= 2 ? "auto" : "metadata";
+                }
+              }
+            });
+            this.files = [...this.files, ...newFiles].slice(-this.MAX_FILES);
+            this.globalQueue.push(...newFiles);
+          } catch (error) {
+            if (this.mediaErrorEl) this.mediaErrorEl.style.display = "block";
+          }
+        }
+
+        removeSlide(slide) {
+          const index = this.slides.findIndex((s) => s === slide);
+          if (index !== -1) {
+            const media = slide.querySelector("img, video");
+            if (media) {
+              if (media.tagName === "VIDEO") {
+                media.pause();
+                media.src = "";
+                media.load();
+              }
+              if (media.tagName === "IMG") {
+                media.src = "";
+              }
+            }
+            delete slide.dataset.dimensions;
+            slide.remove();
+            this.slides.splice(index, 1);
+          }
+        }
+
+        createSlide({ id, file_type, special_id }, prepend = false) {
+          const existingSlide = this.slides.find(
+            (slide) => slide?.dataset?.id === String(id),
+          );
+          if (existingSlide) {
+            if (
+              special_id !== undefined &&
+              existingSlide.dataset.special_id !== String(special_id)
+            ) {
+              existingSlide.dataset.special_id = String(special_id);
+            }
+            return;
+          }
+
+          const slide = document.createElement("div");
+          slide.className = "media-slide";
+          slide.style.opacity = "0";
+          slide.style.visibility = "hidden";
+          slide.dataset.id = String(id);
+          slide.dataset.special_id =
+            special_id !== undefined ? String(special_id) : null;
+
+          const mediaContainer = document.createElement("div");
+          mediaContainer.className = "media-container";
+
+          let mediaCreated = false;
+          const isActiveOrNext =
+            this.currentIndex === -1 || this.slides.length <= 2;
+          const handleError = () => {
+            this.removeSlide(slide);
+            if (this.retryCount < 3) {
+              this.retryCount++;
+              this.nextSlide(false);
+            } else if (this.mediaErrorEl) {
+              this.mediaErrorEl.classList.add("visible");
+            }
+          };
+
+          try {
+            if (["jpg", "jfif", "png", "gif"].includes(file_type)) {
+              const img = document.createElement("img");
+              img.src = `${API_BASE}/media/${id}`;
+              img.loading = isActiveOrNext ? "eager" : "lazy";
+              img.onerror = handleError.bind(this);
+              mediaContainer.appendChild(img);
+              mediaCreated = true;
+            } else if (["mp4", "webm", "mov"].includes(file_type)) {
+              const video = document.createElement("video");
+              video.src = `${API_BASE}/media/${id}`;
+              video.muted = true;
+              video.loop = true;
+              video.playsInline = true;
+              video.loading = isActiveOrNext ? "auto" : "lazy";
+              video.preload = isActiveOrNext ? "eager" : "metadata";
+
+              if (!this.isLocalPhraseMode) {
+                video.controls = true;
+              }
+
+              video.addEventListener("loadedmetadata", () => {
+                if (this.slides[this.currentIndex]?.dataset.id === id) {
+                  video.play().catch((err) => {
+                    setTimeout(() => video.play().catch(() => {}), 1000);
+                  });
+                }
+              });
+
+              video.onerror = handleError.bind(this);
+              video.addEventListener("click", (event) => {
+                if (!this.isLocalPhraseMode) {
+                  event.preventDefault();
+                  this.toggleVideoSound(video, slide);
+                }
+              });
+
+              mediaContainer.appendChild(video);
+              mediaCreated = true;
+            } else if (file_type === "json") {
+              const lottie = document.createElement("lottie-player");
+              lottie.src = `${API_BASE}/media/${id}`;
+              lottie.autoplay = true;
+              lottie.loop = true;
+              lottie.loading = isActiveOrNext ? "eager" : "lazy";
+              lottie.addEventListener("error", handleError.bind(this));
+              mediaContainer.appendChild(lottie);
+              mediaCreated = true;
+            }
+
+            if (mediaCreated) {
+              slide.appendChild(mediaContainer);
+              if (prepend) {
+                this.slidesEl.prepend(slide);
+                this.slides.unshift(slide);
+              } else {
+                this.slidesEl.appendChild(slide);
+                this.slides.push(slide);
+              }
+            }
+          } catch (err) {
+            console.error("Error creating media element:", err);
+            handleError();
+          }
+        }
+
+        async nextSlide(isManual = false) {
+          if (this.isAnimating || this.messageDisplay.isWordCloudPaused) {
+            return;
+          }
+          if (
+            (this.messageDisplay.isPaused ||
+              this.messageDisplay.isWordCloudPaused) &&
+            !isManual
+          ) {
+            return;
+          }
+          if (this.slides.length === 0) {
+            await this.refreshFiles(true);
+            if (this.slides.length === 0) {
+              await this.loadNewMediaFiles();
+              this.newMediaFiles.forEach(({ id, mtime, file_type }) => {
+                this.createSlide({ id, mtime, file_type });
+              });
+              if (!this.isLocalPhraseMode) {
+                this.globalQueue = [...this.newMediaFiles];
+                this.currentPage = 1;
+              }
+            }
+            if (this.slides.length === 0) {
+              if (this.mediaErrorEl) this.mediaErrorEl.style.display = "block";
+              return;
+            }
+          }
+          if (!isManual && this.skipNextAutoSlide) {
+            this.skipNextAutoSlide = false;
+            this.ignoreNextMessageSlide = true;
+            return;
+          }
+          if (
+            this.isLocalPhraseMode &&
+            this.messageDisplay.queue.length === 0 &&
+            !isManual
+          ) {
+            return;
+          }
+          if (
+            !isManual &&
+            this.lastManualSwitch &&
+            Date.now() - this.lastManualSwitch < 1000
+          ) {
+            return;
+          }
+          if (!isManual && Date.now() - this.lastWebSocketSwitch < 500) {
+            return;
+          }
+          if (!isManual) {
+            this.lastWebSocketSwitch = Date.now();
+          }
+          if (!this.isLocalPhraseMode && this.priorityQueue.length > 0) {
+            let attempts = 3;
+            while (this.priorityQueue.length > 0 && attempts > 0) {
+              const nextFile = this.priorityQueue[0];
+              let nextIndex = this.slides.findIndex(
+                (slide) => String(slide.dataset.id) === String(nextFile.id),
+              );
+              if (nextIndex === -1) {
+                await new Promise((resolve) => setTimeout(resolve, 100));
+                nextIndex = this.slides.findIndex(
+                  (slide) => String(slide.dataset.id) === String(nextFile.id),
+                );
+                if (nextIndex === -1) {
+                  attempts--;
+                  continue;
+                }
+              }
+              this.priorityQueue.shift();
+              await this.showSlide(nextIndex);
+              return;
+            }
+          }
+          let nextIndex = await this.selectNextIndex();
+          if (nextIndex === -1 && !this.isLocalPhraseMode) {
+            this.currentPage++;
+            await this.refreshFiles(true);
+            nextIndex = await this.selectNextIndex();
+          }
+          if (nextIndex !== -1) {
+            await this.showSlide(nextIndex);
+          } else {
+            if (this.mediaErrorEl) this.mediaErrorEl.style.display = "block";
+          }
+        }
+
+        toggleVideoSound(video, slide) {
+          if (video.muted) {
+            video.muted = false;
+            video.volume = 0.5;
+          } else {
+            video.muted = true;
+          }
+        }
+
+        async show() {
+          if (this.mediaErrorEl) this.mediaErrorEl.style.display = "none";
+          if (this.slides.length > 0) {
+            this.slidesEl.classList.add("visible");
+            if (this.currentIndex === -1) {
+              await this.nextSlide(false);
+            }
+          } else {
+            if (this.mediaErrorEl) this.mediaErrorEl.style.display = "block";
+          }
+        }
+
+        getMediaDimensions(slide) {
+          if (!slide || !slide.querySelector) {
+            return {
+              width: this.slidesEl.clientWidth,
+              height: this.slidesEl.clientHeight,
+              top: 0,
+              left: 0,
+            };
+          }
+          if (slide.dataset.dimensions) {
+            return JSON.parse(slide.dataset.dimensions);
+          }
+          const media = slide.querySelector("img, video, lottie-player");
+          if (!media)
+            return {
+              width: this.slidesEl.clientWidth,
+              height: this.slidesEl.clientHeight,
+              top: 0,
+              left: 0,
+            };
+          const containerWidth = this.slidesEl.clientWidth;
+          const containerHeight = this.slidesEl.clientHeight;
+          let mediaWidth =
+            media.naturalWidth || media.videoWidth || containerWidth;
+          let mediaHeight =
+            media.naturalHeight || media.videoHeight || containerHeight;
+          if (!mediaWidth || !mediaHeight) {
+            return {
+              width: containerWidth,
+              height: containerHeight,
+              top: 0,
+              left: 0,
+            };
+          }
+          const containerRatio = containerWidth / containerHeight;
+          const mediaRatio = mediaWidth / mediaHeight;
+          let scaledWidth, scaledHeight, top, left;
+          if (mediaRatio > containerRatio) {
+            scaledWidth = containerWidth;
+            scaledHeight = containerWidth / mediaRatio;
+            if (scaledHeight > containerHeight) {
+              scaledHeight = containerHeight;
+              scaledWidth = containerHeight * mediaRatio;
+            }
+            top = (containerHeight - scaledHeight) / 2;
+            left = 0;
+          } else {
+            scaledHeight = containerHeight;
+            scaledWidth = containerHeight * mediaRatio;
+            if (scaledWidth > containerWidth) {
+              scaledWidth = containerWidth;
+              scaledHeight = containerWidth / mediaRatio;
+            }
+            top = 0;
+            left = (containerWidth - scaledWidth) / 2;
+          }
+          const dimensions = {
+            width: scaledWidth,
+            height: scaledHeight,
+            top,
+            left,
+          };
+          slide.dataset.dimensions = JSON.stringify(dimensions);
+          return dimensions;
+        }
+
+        async checkNewMediaFiles() {
+          const now = new Date();
+          if (now - this.lastCheckTime < 150000) return null;
+          this.lastCheckTime = now;
+          try {
+            const response = await fetch(
+              "http://0808.us.nekhebet.su:8080/new-media-files",
+            );
+            if (!response.ok) throw new Error("Error loading new files");
+            const newFiles = await response.json();
+            const existingIds = new Set(this.newMediaFiles.map((f) => f.id));
+            const addedFiles = newFiles.filter(
+              (file) => !existingIds.has(file.id),
+            );
+            if (addedFiles.length > 0) {
+              const spaceAvailable = this.MAX_FILES - this.newMediaFiles.length;
+              const filesToAdd = addedFiles.slice(0, spaceAvailable);
+              if (this.isLocalPhraseMode) {
+                filesToAdd.forEach((file) => {
+                  this.createSlide(file);
+                  this.newMediaFiles.push(file);
+                  if (!this.newMediaQueue.some((f) => f.id === file.id)) {
+                    this.newMediaQueue.push(file);
+                    this.newMediaQueue.sort(
+                      (a, b) => new Date(b.mtime) - new Date(a.mtime),
+                    );
+                  }
+                  if (this.currentIndex === -1) {
+                    this.show();
+                  }
+                });
+              } else {
+                filesToAdd.forEach((file) => {
+                  this.createSlide(file);
+                  this.newMediaFiles.push(file);
+                  this.priorityQueue.push(file);
+                  if (this.currentIndex === -1) {
+                    this.show();
+                  }
+                });
+              }
+              this.newMediaFiles = [...this.newMediaFiles, ...filesToAdd];
+              this.newMediaFiles.sort(
+                (a, b) => new Date(b.mtime) - new Date(a.mtime),
+              );
+              if (this.newMediaFiles.length > this.MAX_FILES) {
+                const filesToRemove = this.newMediaFiles.splice(this.MAX_FILES);
+                filesToRemove.forEach((file) => {
+                  const index = this.slides.findIndex(
+                    (slide) => slide.dataset.id === String(file.id),
+                  );
+                  if (
+                    index !== -1 &&
+                    (this.currentIndex === -1 || index !== this.currentIndex)
+                  ) {
+                    if (
+                      !(
+                        this.messageDisplay.isPaused &&
+                        index === this.currentIndex
+                      )
+                    ) {
+                      this.slides[index].remove();
+                      this.slides.splice(index, 1);
+                    }
+                  }
+                  this.newMediaQueue = this.newMediaQueue.filter(
+                    (f) => f.id !== file.id,
+                  );
+                  this.priorityQueue = this.priorityQueue.filter(
+                    (f) => f.id !== file.id,
+                  );
+                  this.globalQueue = this.globalQueue.filter(
+                    (f) => f.id !== file.id,
+                  );
+                });
+              }
+              return filesToAdd;
+            }
+            return null;
+          } catch (error) {
+            return null;
+          }
+        }
+
+        addNewMedia(file) {
+          if (
+            this.newMediaFiles.some(
+              (f) => f.id === file.id && f.mtime === file.mtime,
+            )
+          ) {
+            this.newMediaFiles = this.newMediaFiles.map((f) =>
+              f.id === file.id && f.mtime === file.mtime
+                ? { ...f, special_id: file.special_id }
+                : f,
+            );
+            this.newMediaQueue = this.newMediaQueue.map((f) =>
+              f.id === file.id && f.mtime === file.mtime
+                ? { ...f, special_id: file.special_id }
+                : f,
+            );
+            this.priorityQueue = this.priorityQueue.map((f) =>
+              f.id === file.id && f.mtime === file.mtime
+                ? { ...f, special_id: file.special_id }
+                : f,
+            );
+            if (
+              file.special_id !== undefined &&
+              !this.priorityQueue.some(
+                (f) => f.id === file.id && f.mtime === file.mtime,
+              )
+            ) {
+              this.priorityQueue.push({
+                id: file.id,
+                mtime: file.mtime,
+                file_type: file.file_type,
+                special_id: file.special_id,
+              });
+            }
+            return;
+          }
+          if (this.isLocalPhraseMode) {
+            if (this.newMediaFiles.length >= this.MAX_FILES) {
+              const fileToRemove = this.newMediaFiles.shift();
+              const index = this.slides.findIndex(
+                (slide) => slide.dataset.id === String(fileToRemove.id),
+              );
+              if (index !== -1) {
+                this.slides[index].remove();
+                this.slides.splice(index, 1);
+              }
+              this.newMediaQueue = this.newMediaQueue.filter(
+                (item) => item.id !== fileToRemove.id,
+              );
+              this.priorityQueue = this.priorityQueue.filter(
+                (item) => item.id !== fileToRemove.id,
+              );
+            }
+            this.createSlide(file);
+            this.newMediaFiles.push(file);
+            if (
+              !this.newMediaQueue.some(
+                (item) => item.id === file.id && item.mtime === file.mtime,
+              )
+            ) {
+              this.newMediaQueue.push({
+                id: file.id,
+                mtime: file.mtime,
+                file_type: file.file_type,
+                special_id: file.special_id,
+              });
+              this.newMediaQueue.sort(
+                (a, b) => new Date(b.mtime) - new Date(a.mtime),
+              );
+            }
+            if (
+              file.special_id !== undefined &&
+              !this.priorityQueue.some(
+                (f) => f.id === file.id && f.mtime === file.mtime,
+              )
+            ) {
+              this.priorityQueue.push({
+                id: file.id,
+                mtime: file.mtime,
+                file_type: file.file_type,
+                special_id: file.special_id,
+              });
+            }
+            if (this.currentIndex === -1) {
+              this.show();
+            }
+          } else {
+            if (this.files.length >= this.MAX_FILES) {
+              const fileToRemove = this.files.find(
+                (f) =>
+                  !this.priorityQueue.some((p) => p.id === f.id) &&
+                  (this.currentIndex === -1 ||
+                    String(f.id) !==
+                      this.slides[this.currentIndex]?.dataset.id),
+              );
+              if (fileToRemove) {
+                const index = this.slides.findIndex(
+                  (slide) => slide.dataset.id === String(fileToRemove.id),
+                );
+                if (
+                  index !== -1 &&
+                  !(
+                    this.messageDisplay.isPaused &&
+                    this.currentIndex !== -1 &&
+                    index === this.currentIndex
+                  )
+                ) {
+                  this.slides[index].remove();
+                  this.slides.splice(index, 1);
+                }
+                this.files = this.files.filter((f) => f.id !== fileToRemove.id);
+                this.newMediaQueue = this.newMediaQueue.filter(
+                  (item) => item.id !== fileToRemove.id,
+                );
+                this.priorityQueue = this.priorityQueue.filter(
+                  (item) => item.id !== fileToRemove.id,
+                );
+                this.globalQueue = this.globalQueue.filter(
+                  (item) => item.id !== fileToRemove.id,
+                );
+              }
+            }
+            this.createSlide(file);
+            this.files.push(file);
+            if (
+              !this.newMediaQueue.some(
+                (item) => item.id === file.id && item.mtime === file.mtime,
+              )
+            ) {
+              this.newMediaQueue.push({
+                id: file.id,
+                mtime: file.mtime,
+                file_type: file.file_type,
+                special_id: file.special_id,
+              });
+            }
+            if (
+              file.special_id !== undefined &&
+              !this.priorityQueue.some(
+                (f) => f.id === file.id && f.mtime === file.mtime,
+              )
+            ) {
+              this.priorityQueue.push({
+                id: file.id,
+                mtime: file.mtime,
+                file_type: file.file_type,
+                special_id: file.special_id,
+              });
+            }
+            if (
+              !this.globalQueue.some(
+                (f) => f.id === file.id && f.mtime === file.mtime,
+              )
+            ) {
+              this.globalQueue.push({
+                id: file.id,
+                mtime: file.mtime,
+                file_type: file.file_type,
+                special_id: file.special_id,
+              });
+            }
+          }
+        }
+
+        async selectNextIndex() {
+          if (!this.isLocalPhraseMode && this.priorityQueue.length > 0) {
+            const nextFile = this.priorityQueue[0];
+            const nextIndex = this.slides.findIndex(
+              (slide) => String(slide.dataset.id) === String(nextFile.id),
+            );
+            if (nextIndex !== -1) {
+              this.priorityQueue.shift();
+              this.globalQueue = this.globalQueue.filter(
+                (f) => f.id !== nextFile.id || f.mtime !== nextFile.mtime,
+              );
+              return nextIndex;
+            }
+          }
+          if (this.globalQueue.length <= 10 && !this.isLocalPhraseMode) {
+            this.currentPage++;
+            await this.refreshFiles(true).catch((error) => {});
+          }
+          if (this.globalQueue.length === 0) {
+            if (this.isLocalPhraseMode) {
+              this.globalQueue = [...this.newMediaFiles];
+            } else {
+              this.currentPage = 1;
+              await this.refreshFiles(true);
+            }
+          }
+          if (this.globalQueue.length === 0) {
+            if (this.mediaErrorEl) this.mediaErrorEl.style.display = "block";
+            return -1;
+          }
+          const nextFile = this.globalQueue.shift();
+          const nextIndex = this.slides.findIndex(
+            (slide) => String(slide.dataset.id) === String(nextFile.id),
+          );
+          if (nextIndex === -1) {
+            return await this.selectNextIndex();
+          }
+          return nextIndex;
+        }
+
+        async showSlide(nextIndex) {
+          if (this.isAnimating || this.messageDisplay.isWordCloudPaused) {
+            return;
+          }
+          if (nextIndex === this.currentIndex) {
+            this.isAnimating = false;
+            return;
+          }
+          this.isAnimating = true;
+          try {
+            if (nextIndex === -1 || !this.slides[nextIndex]) {
+              if (this.mediaErrorEl) this.mediaErrorEl.style.display = "block";
+              this.isAnimating = false;
+              return;
+            }
+            await this.hideAllSlides();
+            const SLIDE_ANIMATION_DURATION = 200;
+            this.currentIndex = nextIndex;
+            const nextSlide = this.slides[this.currentIndex];
+            const media = nextSlide.querySelector("img, video, lottie-player");
+            if (nextSlide.dataset.special_id == 1) {
+              await this.doubleFlashScreen();
+            }
+            if (media && media.tagName === "VIDEO") {
+              if (media.paused) {
+                media.play().catch((err) => {});
+              }
+            }
+            nextSlide.style.transition = `opacity ${SLIDE_ANIMATION_DURATION}ms ease`;
+            nextSlide.style.visibility = "visible";
+            nextSlide.classList.add("visible");
+            nextSlide.style.opacity = "0";
+            await new Promise((resolve) => {
+              if (this.messageDisplay.isWordCloudPaused) {
+                this.isAnimating = false;
+                resolve();
+                return;
+              }
+              const timeoutId = setTimeout(
+                resolve,
+                SLIDE_ANIMATION_DURATION + 100,
+              );
+              nextSlide.addEventListener(
+                "transitionend",
+                () => {
+                  clearTimeout(timeoutId);
+                  if (media && media.tagName === "VIDEO" && media.paused) {
+                    media.play().catch(() => {});
+                  }
+                  resolve();
+                },
+                { once: true },
+              );
+              nextSlide.style.opacity = "1";
+            });
+            const slideId = nextSlide.dataset.id;
+            this.priorityQueue = this.priorityQueue.filter(
+              (f) => String(f.id) !== slideId,
+            );
+            this.globalQueue = this.globalQueue.filter(
+              (f) => String(f.id) !== slideId,
+            );
+            this.newMediaQueue = this.newMediaQueue.filter(
+              (f) => String(f.id) !== slideId,
+            );
+          } catch (error) {
+          } finally {
+            this.isAnimating = false;
+          }
+        }
+
+        hideAllSlides(duration = 200) {
+          const validSlides = this.slides.filter(
+            (slide) => slide && slide.style && slide.parentNode,
+          );
+          return new Promise((resolve) => {
+            let hiddenCount = 0;
+            const totalSlides = validSlides.length;
+            if (totalSlides === 0) {
+              resolve();
+              return;
+            }
+            validSlides.forEach((slide) => {
+              try {
+                const video = slide.querySelector("video");
+                if (video) {
+                  video.pause();
+                  video.currentTime = 0;
+                  video.muted = true;
+                }
+                slide.style.transition = `opacity ${duration}ms ease`;
+                slide.style.opacity = "0";
+                slide.style.visibility = "hidden";
+                slide.classList.remove("visible");
+                setTimeout(() => {
+                  hiddenCount++;
+                  if (hiddenCount === totalSlides) resolve();
+                }, duration);
+              } catch (e) {
+                hiddenCount++;
+                if (hiddenCount === totalSlides) resolve();
+              }
+            });
+          });
+        }
+
+        stopAnimations(preserveCurrent = false) {
+          this.isAnimating = false;
+          this.slides.forEach((slide) => {
+            if (slide && slide.style) {
+              slide.style.transition = "";
+              if (
+                !preserveCurrent ||
+                slide !== this.slides[this.currentIndex]
+              ) {
+                slide.style.opacity = "0";
+                slide.style.visibility = "hidden";
+                slide.classList.remove("visible");
+                const video = slide.querySelector("video");
+                if (video) {
+                  video.pause();
+                  video.muted = true;
+                }
+              }
+            }
+          });
+        }
+      }
+
+      class MessageDisplay {
+        constructor() {
+          this.fullLocalPhrases = [];
+          this.textEl = document.querySelector(".text");
+          this.wordCloudEl = document.getElementById("wordCloud");
+          this.fxText = new Typewriter(this.textEl);
+          this.queue = [];
+          this.isAnimating = false;
+          this.isPaused = false;
+          this.isWordCloudPaused = false;
+          this.wasPausedBeforeWordCloud = false;
+          this.timeouts = [];
+          this.ws = null;
+          this.flashEl = document.querySelector(".flash");
+          this.localPhrases = [];
+          this.messageCount = 0;
+          this.startTime = Date.now();
+          this.lastWebSocketMessage = null;
+          this.allLocalPhrasesDisplayed = false;
+          this.localPhraseIndex = 0;
+          this.mediaSlides = new MediaSlides(this);
+          this.pauseTimer = null;
+          this.lastWordCloudClick = 0;
+          this.lastResetClick = 0;
+          this.currentMessage = null;
+          this.currentHighlights = [];
+          this.currentPrefix = "";
+          this.pauseButton = document.querySelector(
+            ".controls button:nth-child(1)",
+          );
+          this.nextButton = document.querySelector(
+            ".controls button:nth-child(2)",
+          );
+          this.resetButton = document.querySelector(
+            ".controls button:nth-child(3)",
+          );
+          this.controlsEl = document.querySelector(".controls");
+          this.MAX_QUEUE_SIZE = 100;
+          this.MESSAGE_DISPLAY_DURATION = 6000;
+          this.LOCAL_PHRASE_DURATION = 5000;
+          this.mediaErrorEl = document.querySelector(".media-error");
+          this.contentEl = document.querySelector(".content");
+          this.pendingMessagesBuffer = [];
+          this.isWebSocketReady = false;
+          this.isResetting = false;
+          this.lastMessageTime = 0;
+          this.MIN_MESSAGE_INTERVAL = 3000;
+          this.isFastStartMode = false;
+          this.initWebSocket();
+          this.loadLocalPhrases();
+          this.updateResetButton();
+          this.hideControls();
+          this.initWordCloudToggle();
+        }
+
+        hideControls() {
+          if (this.controlsEl) {
+            this.controlsEl.style.visibility = "hidden";
+            this.controlsEl.style.opacity = "0";
+            this.controlsEl.style.height = "auto";
+          }
+        }
+
+        showControls() {
+          if (this.controlsEl) {
+            this.controlsEl.style.visibility = "visible";
+            this.controlsEl.style.opacity = "1";
+          }
+        }
+
+        toggleButtonsDisabled(disabled) {
+          const buttons = [this.pauseButton, this.nextButton, this.resetButton];
+          buttons.forEach((button) => {
+            if (button) {
+              button.disabled = disabled;
+              button.style.opacity = disabled ? "0.5" : "1";
+              button.style.cursor = disabled ? "not-allowed" : "pointer";
+            }
+          });
+        }
+
+        updatePauseButton() {
+          if (!this.pauseButton) return;
+
+          if (this.pauseTimer) {
+            const indicator =
+              this.pauseButton.querySelector(".pause-indicator");
+            if (indicator) {
+              if (this.isWordCloudPaused) {
+                indicator.className =
+                  "button-indicator pause-indicator word-cloud-paused";
+              } else if (this.isPaused || !this.allLocalPhrasesDisplayed) {
+                indicator.className = "button-indicator pause-indicator resume";
+              } else {
+                indicator.className = "button-indicator pause-indicator";
+              }
+            }
+            return;
+          }
+
+          if (this.isWordCloudPaused) {
+            this.pauseButton.innerHTML =
+              '<span class="button-indicator pause-indicator word-cloud-paused"></span>AUTO (0)';
+          } else if (this.isPaused || !this.allLocalPhrasesDisplayed) {
+            this.pauseButton.innerHTML =
+              '<span class="button-indicator pause-indicator resume"></span>AUTO (0)';
+          } else {
+            this.pauseButton.innerHTML = `<span class="button-indicator pause-indicator"></span>AUTO (${Math.ceil(this.MESSAGE_DISPLAY_DURATION / 1000)})`;
+          }
+        }
+
+        initWordCloudToggle() {
+          const debounce = (func, wait) => {
+            let timeout;
+            return function executedFunction(...args) {
+              const later = () => {
+                clearTimeout(timeout);
+                func.apply(this, args);
+              };
+              clearTimeout(timeout);
+              timeout = setTimeout(later, wait);
+            };
+          };
+
+          this.wordCloudEl.addEventListener(
+            "click",
+            debounce(async () => {
+              if (!this.allLocalPhrasesDisplayed) {
+                return;
+              }
+              try {
+                this.isWordCloudPaused = !this.isWordCloudPaused;
+                if (this.isWordCloudPaused) {
+                  this.wasPausedBeforeWordCloud = this.isPaused;
+                  this.mediaSlides.stopMediaSwitchInterval();
+                  this.stopPauseTimer();
+                  this.fxText.stopAnimation();
+                  this.mediaSlides.stopAnimations(true);
+                  this.isAnimating = false;
+                  this.timeouts.forEach(clearTimeout);
+                  this.timeouts = [];
+                  this.toggleButtonsDisabled(true);
+                  this.wordCloudEl.classList.add("paused");
+                  this.wordCloudEl.style.animationPlayState = "paused";
+                  if (this.currentMessage) {
+                    this.textEl.innerHTML =
+                      this.currentPrefix +
+                      this.applyHighlights(
+                        this.currentMessage,
+                        this.currentHighlights,
+                      );
+                  }
+                  this.updatePauseButton();
+                } else {
+                  this.toggleButtonsDisabled(false);
+                  this.wordCloudEl.classList.remove("paused");
+                  this.wordCloudEl.style.animationPlayState = "running";
+                  if (!this.wasPausedBeforeWordCloud) {
+                    this.mediaSlides.startMediaSwitchInterval();
+                  }
+                  this.updatePauseButton();
+                  if (
+                    this.queue.length > 0 &&
+                    this.allLocalPhrasesDisplayed &&
+                    !this.isAnimating
+                  ) {
+                    this.startPauseTimer();
+                    await this.displayNext();
+                  } else if (this.currentMessage) {
+                    this.textEl.innerHTML =
+                      this.currentPrefix +
+                      this.applyHighlights(
+                        this.currentMessage,
+                        this.currentHighlights,
+                      );
+                    this.renderWordCloud(this.generateLocalWordCloud());
+                  }
+                }
+              } catch (error) {}
+            }, 200),
+          );
+        }
+
+        updateResetButton() {
+          if (this.resetButton) {
+            this.resetButton.innerHTML = `<span class="button-indicator reset-indicator ${this.queue.length > 0 ? "has-queue" : ""}"></span>RESET (${this.queue.length})`;
+          }
+        }
+
+        startPauseTimer(highlightDuration = 0) {
+          if (
+            this.isPaused ||
+            this.isWordCloudPaused ||
+            !this.allLocalPhrasesDisplayed ||
+            this.queue.length === 0
+          ) {
+            this.stopPauseTimer();
+            return;
+          }
+
+          if (this.pauseTimer) {
+            clearInterval(this.pauseTimer);
+            this.pauseTimer = null;
+          }
+
+          let remainingTime = this.MESSAGE_DISPLAY_DURATION - highlightDuration;
+          if (remainingTime <= 0) {
+            remainingTime = this.MESSAGE_DISPLAY_DURATION;
+          }
+
+          if (this.pauseButton) {
+            this.pauseButton.innerHTML = `<span class="button-indicator pause-indicator"></span>AUTO (${Math.ceil(remainingTime / 1000)})`;
+          }
+
+          this.pauseTimer = setInterval(() => {
+            remainingTime -= 1000;
+            if (
+              remainingTime <= 0 ||
+              this.queue.length === 0 ||
+              this.isPaused ||
+              this.isWordCloudPaused ||
+              !this.allLocalPhrasesDisplayed
+            ) {
+              this.stopPauseTimer();
+              return;
+            }
+
+            if (this.pauseButton) {
+              this.pauseButton.innerHTML = `<span class="button-indicator pause-indicator"></span>AUTO (${Math.ceil(remainingTime / 1000)})`;
+            }
+          }, 1000);
+        }
+
+        stopPauseTimer() {
+          if (this.pauseTimer) {
+            clearInterval(this.pauseTimer);
+            this.pauseTimer = null;
+          }
+
+          if (this.pauseButton) {
+            if (this.isWordCloudPaused) {
+              this.pauseButton.innerHTML =
+                '<span class="button-indicator pause-indicator word-cloud-paused"></span>AUTO (0)';
+            } else if (this.isPaused || !this.allLocalPhrasesDisplayed) {
+              this.pauseButton.innerHTML =
+                '<span class="button-indicator pause-indicator resume"></span>AUTO (0)';
+            } else if (this.queue.length === 0) {
+              this.pauseButton.innerHTML =
+                '<span class="button-indicator pause-indicator"></span>AUTO (0)';
+            } else {
+              this.pauseButton.innerHTML = `<span class="button-indicator pause-indicator"></span>AUTO (${Math.ceil(this.MESSAGE_DISPLAY_DURATION / 1000)})`;
+            }
+          }
+        }
+
+        async closeWebSocket() {
+          return new Promise((resolve) => {
+            if (!this.ws) {
+              resolve();
+              return;
+            }
+
+            const oldWs = this.ws;
+            this.ws = null;
+
+            if (
+              oldWs.readyState === WebSocket.OPEN ||
+              oldWs.readyState === WebSocket.CONNECTING
+            ) {
+              oldWs.onclose = () => resolve();
+              oldWs.close();
+            } else {
+              resolve();
+            }
+          });
+        }
+
+        async waitForWebSocketConnection(timeout = 5000) {
+          return new Promise((resolve, reject) => {
+            if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+              resolve();
+              return;
+            }
+
+            const checkInterval = setInterval(() => {
+              if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+                clearInterval(checkInterval);
+                clearTimeout(timeoutId);
+                resolve();
+              }
+            }, 50);
+
+            const timeoutId = setTimeout(() => {
+              clearInterval(checkInterval);
+              reject(new Error("WebSocket connection timeout"));
+            }, timeout);
+          });
+        }
+
+        initWebSocket() {
+          try {
+            this.ws = new WebSocket("ws://0808.us.nekhebet.su:8080");
+            this.ws.onopen = () => {
+              this.isWebSocketReady = true;
+              this.updatePauseButton();
+
+              if (this.pendingMessagesBuffer.length > 0) {
+                const processBuffer = async () => {
+                  for (const msg of this.pendingMessagesBuffer) {
+                    this.addMessage(msg, true);
+                    await new Promise((resolve) => setTimeout(resolve, 1000));
+                  }
+                  this.pendingMessagesBuffer = [];
+                };
+                processBuffer();
+              }
+            };
+            this.ws.onmessage = (event) => {
+              try {
+                const data = JSON.parse(event.data);
+
+                if (data.type === "new_media") {
+                  return;
+                }
+
+                if (
+                  data.text &&
+                  (data.chat_list === "black" || data.user_list === "black")
+                ) {
+                  let text = data.text.slice(0, 170);
+                  if (data.text.length > 170) text += "...";
+                  const message = {
+                    text,
+                    tags: data.tags || {},
+                    wordCloud: data.wordCloud || [],
+                    date: data.date || new Date().toISOString(),
+                    special_id: data.special_id,
+                  };
+
+                  if (!this.isWebSocketReady || this.isResetting) {
+                    this.pendingMessagesBuffer.push(message);
+                  } else {
+                    this.addMessage(message, true);
+                  }
+                }
+              } catch (error) {}
+            };
+            this.ws.onerror = (error) => {
+              if (
+                error.message?.includes("cdn-cgi") ||
+                error.message?.includes("MIME type")
+              )
+                return;
+            };
+            this.ws.onclose = () => {
+              this.isWebSocketReady = false;
+              setTimeout(() => this.initWebSocket(), 6000);
+            };
+          } catch (error) {}
+        }
+
+        async loadLocalPhrases() {
+          try {
+            const response = await fetch(
+              "http://0808.us.nekhebet.su:8080/local.json",
+            );
+            if (!response.ok) throw new Error("local.json missing");
+            const data = await response.json();
+            this.fullLocalPhrases = [...(data.ru || []), ...(data.en || [])];
+            this.localPhrases = this.fullLocalPhrases.map((p) => {
+              let text = p.toUpperCase().slice(0, 68);
+              if (p.length > 68) text += " ";
+              return text;
+            });
+            await this.mediaSlides.init();
+            await this.mediaSlides.show();
+            this.displayLocalPhrases();
+          } catch (error) {
+            const defaultPhrase =
+              "Nekhebet Omen Display / Real-Time Event Visualization System / Cryptographic Guarantees / FreeBSD Jail Horny Middleware WebSocket Bash SQL JavaScript Python C++ ASM И ДРУГИЕ КЕКСЫ. We trust you have received the usual lecture from the local System Administrator. It usually boils down to these three things:,#1) Respect the privacy of others. #2) Think before you type. #3) With great power comes great responsibility. ....";
+            this.fullLocalPhrases = [defaultPhrase];
+            this.localPhrases = [
+              defaultPhrase.toUpperCase().slice(0, 68) + " ",
+            ];
+            await this.mediaSlides.init();
+            await this.mediaSlides.show();
+            this.displayLocalPhrases();
+          }
+        }
+
+        setLocalPhraseDuration(duration) {
+          if (typeof duration === "number" && duration >= 1000) {
+            this.LOCAL_PHRASE_DURATION = duration;
+          }
+        }
+
+        async displayLocalPhrases() {
+          if (this.localPhrases.length === 0) {
+            this.allLocalPhrasesDisplayed = true;
+            this.mediaSlides.isLocalPhraseMode = false;
+            await this.mediaSlides.switchToNormalMode();
+            this.showControls();
+            this.mediaSlides.startMediaSwitchInterval();
+            this.updatePauseButton();
+            if (this.queue.length > 0) {
+              await new Promise((resolve) => setTimeout(resolve, 6000));
+              await this.displayNext();
+            }
+            return;
+          }
+          if (
+            this.mediaSlides.isLocalPhraseMode &&
+            this.mediaSlides.slides.length > 0
+          ) {
+            await this.mediaSlides.show();
+          }
+          for (
+            let i = this.localPhraseIndex;
+            i < this.localPhrases.length;
+            i++
+          ) {
+            if (this.isWordCloudPaused) {
+              this.localPhraseIndex = i;
+              return;
+            }
+            const phrase = this.localPhrases[i];
+            await this.displayLocalPhrase(phrase);
+            if (i === this.localPhrases.length - 1) {
+              this.allLocalPhrasesDisplayed = true;
+              this.mediaSlides.isLocalPhraseMode = false;
+              await this.mediaSlides.switchToNormalMode();
+              if (this.mediaSlides.slides.length > 0) {
+                await this.mediaSlides.show();
+              } else {
+                await this.mediaSlides.refreshFiles(true);
+                if (this.mediaSlides.slides.length > 0) {
+                  await this.mediaSlides.show();
+                } else {
+                  if (this.mediaErrorEl)
+                    this.mediaErrorEl.style.display = "block";
+                }
+              }
+              this.showControls();
+              this.mediaSlides.startMediaSwitchInterval();
+              this.updatePauseButton();
+            }
+          }
+          this.localPhraseIndex = 0;
+          if (
+            this.queue.length > 0 &&
+            this.allLocalPhrasesDisplayed &&
+            !this.isWordCloudPaused
+          ) {
+            await new Promise((resolve) => setTimeout(resolve, 3500));
+            await this.displayNext();
+          }
+          this.updatePauseButton();
+        }
+
+        async displayLocalPhrase(phrase) {
+          if (this.isAnimating || this.isWordCloudPaused) {
+            return;
+          }
+          this.isAnimating = true;
+          try {
+            this.wordCloudEl.classList.add("word-cloud-hidden");
+            await new Promise((resolve) => setTimeout(resolve, 10));
+            this.textEl.style.display = "block";
+            const textPromise = this.fxText.setText(phrase, []);
+            await textPromise;
+            await new Promise((resolve) => setTimeout(resolve, 100));
+            const wordCloudData = this.generateLocalWordCloud();
+            this.renderWordCloud(wordCloudData);
+            await new Promise((resolve) =>
+              setTimeout(resolve, this.LOCAL_PHRASE_DURATION),
+            );
+          } catch (error) {
+          } finally {
+            this.isAnimating = false;
+          }
+        }
+
+        generateLocalWordCloud() {
+          const wordFreq = {};
+          const stopWords = new Set([
+            "а",
+            "без",
+            "более",
+            "бы",
+            "был",
+            "была",
+            "были",
+            "было",
+            "быть",
+            "в",
+            "вам",
+            "вас",
+            "весь",
+            "во",
+            "вот",
+            "все",
+            "всего",
+            "всех",
+            "вы",
+            "где",
+            "да",
+            "для",
+            "до",
+            "его",
+            "ее",
+            "ей",
+            "ему",
+            "если",
+            "есть",
+            "еще",
+            "ж",
+            "же",
+            "за",
+            "здесь",
+            "и",
+            "из",
+            "или",
+            "им",
+            "их",
+            "к",
+            "как",
+            "какая",
+            "какие",
+            "какой",
+            "когда",
+            "кто",
+            "куда",
+            "ли",
+            "между",
+            "меня",
+            "мне",
+            "много",
+            "может",
+            "можно",
+            "мы",
+            "на",
+            "над",
+            "надо",
+            "нас",
+            "не",
+            "него",
+            "нее",
+            "ней",
+            "нет",
+            "ни",
+            "них",
+            "но",
+            "ну",
+            "о",
+            "об",
+            "один",
+            "оно",
+            "он",
+            "она",
+            "они",
+            "оно",
+            "от",
+            "перед",
+            "по",
+            "под",
+            "после",
+            "потом",
+            "потому",
+            "при",
+            "про",
+            "с",
+            "себе",
+            "себя",
+            "со",
+            "так",
+            "также",
+            "там",
+            "те",
+            "тебя",
+            "тем",
+            "то",
+            "того",
+            "той",
+            "только",
+            "том",
+            "тот",
+            "ты",
+            "у",
+            "уже",
+            "хотя",
+            "чего",
+            "чей",
+            "чем",
+            "что",
+            "чтобы",
+            "чья",
+            "чье",
+            "чьи",
+            "эта",
+            "эти",
+            "этого",
+            "этом",
+            "этот",
+            "эту",
+            "я",
+          ]);
+          this.fullLocalPhrases.forEach((phrase) => {
+            const words = phrase
+              .toLowerCase()
+              .replace(/https?:\/\/[^\s]+/g, "")
+              .replace(/[^a-zA-Zа-яА-Я\s]/g, "")
+              .split(/\s+/)
+              .filter((word) => word.length > 2 && !stopWords.has(word));
+            words.forEach((word) => {
+              wordFreq[word] = (wordFreq[word] || 0) + 1;
+            });
+          });
+          return Object.entries(wordFreq)
+            .sort(([, freqA], [, freqB]) => freqB - freqA)
+            .slice(0, 20)
+            .map(([word, freq]) => ({ word: word.toUpperCase(), freq }));
+        }
+
+        async addMessage(message, fromWebSocket = false) {
+          try {
+            if (!message || typeof message !== "object") return;
+            if (typeof message.text !== "string") return;
+            if (message.text.length > 500) return;
+
+            const now = Date.now();
+            const timeSinceLast = now - this.lastMessageTime;
+
+            if (
+              this.isFastStartMode &&
+              this.queue.length === 0 &&
+              timeSinceLast < this.MIN_MESSAGE_INTERVAL
+            ) {
+              await new Promise((resolve) =>
+                setTimeout(resolve, this.MIN_MESSAGE_INTERVAL - timeSinceLast),
+              );
+            }
+
+            message.text = this.sanitizeText(message.text);
+
+            if (this.queue.length >= this.MAX_QUEUE_SIZE) {
+              this.queue.shift();
+            }
+            this.queue.push({ message, fromWebSocket });
+            this.queue.sort(
+              (a, b) => new Date(a.message.date) - new Date(b.message.date),
+            );
+            this.updateResetButton();
+
+            if (
+              this.allLocalPhrasesDisplayed &&
+              !this.isAnimating &&
+              !this.isWordCloudPaused
+            ) {
+              if (fromWebSocket && this.mediaSlides.ignoreNextMessageSlide) {
+                this.mediaSlides.ignoreNextMessageSlide = false;
+              } else if (fromWebSocket && this.mediaSlides.isLocalPhraseMode) {
+                if (this.isAnimating) {
+                  await new Promise((resolve) => setTimeout(resolve, 100));
+                }
+                await this.mediaSlides.switchToNormalMode();
+              }
+              await this.displayNext();
+            }
+            this.updatePauseButton();
+            this.lastMessageTime = Date.now();
+          } catch (error) {}
+        }
+
+        sanitizeText(text) {
+          return text.replace(/[<>]/g, "").slice(0, 500);
+        }
+
+        getHighlightWords(text, tags) {
+          const wordsToHighlight = (tags.new_words || []).filter(
+            (word) =>
+              word && typeof word === "string" && word.trim().length > 0,
+          );
+          let highlights = [];
+          const urlPattern = /https?:\/\/[^\s]+/gi;
+          const urls = text.match(urlPattern) || [];
+          urls.forEach((url) => {
+            if (wordsToHighlight.includes(url)) {
+              const start = text.indexOf(url);
+              const end = start + url.length;
+              highlights.push({ start, end, word: url });
+            }
+          });
+          wordsToHighlight.forEach((word) => {
+            if (urls.includes(word)) return;
+            const escapedWord = word.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+            const pattern = new RegExp(
+              `(?<=\\s|^|\\p{P})${escapedWord}(?=\\s|$|\\p{P})`,
+              "gui",
+            );
+            let match;
+            while ((match = pattern.exec(text)) !== null) {
+              const start = match.index;
+              const end = start + match[0].length;
+              highlights.push({ start, end, word: match[0] });
+            }
+          });
+          highlights = highlights.sort((a, b) => a.start - b.start);
+          highlights = highlights.filter((h, i, arr) => {
+            return !arr.some(
+              (other, j) =>
+                j !== i &&
+                other.start <= h.start &&
+                other.end >= h.end &&
+                other.word.length > h.word.length,
+            );
+          });
+          highlights = highlights.slice(0, 5);
+          return { highlights, wordsToHighlight };
+        }
+
+        async highlightWordsSequentially(
+          text,
+          highlights,
+          element,
+          prefix = "",
+        ) {
+          let accumulatedHighlights = [];
+          const urlHighlights = highlights.filter((h) =>
+            h.word.match(/https?:\/\/[^\s]+/i),
+          );
+          const nonUrlHighlights = highlights.filter(
+            (h) => !h.word.match(/https?:\/\/[^\s]+/i),
+          );
+          if (urlHighlights.length > 0) {
+            accumulatedHighlights = [...urlHighlights];
+            element.innerHTML =
+              prefix + this.applyHighlights(text, accumulatedHighlights);
+            await new Promise((resolve) => {
+              if (this.isWordCloudPaused) {
+                resolve();
+                return;
+              }
+              this.timeouts.push(setTimeout(resolve, 100));
+            });
+            this.flashEl.classList.remove("active");
+          }
+          element.innerHTML =
+            prefix + this.applyHighlights(text, accumulatedHighlights);
+        }
+
+        applyHighlights(text, highlights, currentHighlight = null) {
+          if (!highlights || highlights.length === 0) {
+            return this.fxText.escapeHtml(text);
+          }
+          let result = "";
+          let lastIndex = 0;
+          const sortedHighlights = [...highlights].sort(
+            (a, b) => a.start - b.start,
+          );
+          for (const h of sortedHighlights) {
+            if (h.start >= lastIndex) {
+              result += this.fxText.escapeHtml(text.slice(lastIndex, h.start));
+              const classes = ["highlight"];
+              if (currentHighlight === h) {
+                classes.push("highlight-appear", "shake");
+              }
+              const safeText = this.fxText.escapeHtml(
+                text.slice(h.start, h.end),
+              );
+              result += `<span class="${classes.join(" ")}">${safeText}</span>`;
+              lastIndex = h.end;
+            }
+          }
+          result += this.fxText.escapeHtml(text.slice(lastIndex));
+          return result;
+        }
+
+        getSegmentColors(message) {
+          const colors = [];
+          const pastelPalette = [
+            { r: 100, g: 120, b: 140 },
+            { r: 140, g: 100, b: 120 },
+            { r: 100, g: 204, b: 255 },
+            { r: 228, g: 113, b: 122 },
+            { r: 113, g: 188, b: 120 },
+            { r: 127, g: 199, b: 255 },
+            { r: 255, g: 193, b: 204 },
+          ];
+          const hashToColor = (id) => {
+            if (!id) return "var(--dud-color)";
+            const hash = String(id)
+              .split("")
+              .reduce((acc, char) => acc + char.charCodeAt(0), 0);
+            return `hsl(${hash % 360}, 50%, 60%)`;
+          };
+          colors.push(
+            message.chat_id ? hashToColor(message.chat_id) : "var(--dud-color)",
+          );
+          colors.push(
+            message.chat_list === "black" ? "#FF5555" : "var(--dud-color)",
+          );
+          colors.push(
+            message.sender_id
+              ? `rgb(${pastelPalette[Math.abs(message.sender_id) % pastelPalette.length].r}, ${pastelPalette[Math.abs(message.sender_id) % pastelPalette.length].g}, ${pastelPalette[Math.abs(message.sender_id) % pastelPalette.length].b})`
+              : "var(--dud-color)",
+          );
+          colors.push(
+            message.user_list === "black" ? "#FF5555" : "var(--dud-color)",
+          );
+          colors.push(
+            message.message_id
+              ? hashToColor(message.message_id)
+              : "var(--dud-color)",
+          );
+          return colors;
+        }
+
+        renderWordCloud(wordCloudData) {
+          const rect = this.wordCloudEl.getBoundingClientRect();
+          if (rect.width === 0 || rect.height === 0) {
+            this.wordCloudEl.innerHTML =
+              "<p>Error: word cloud container invisible</p>";
+            return;
+          }
+          this.wordCloudEl.innerHTML = "";
+          this.wordCloudEl.classList.remove("word-cloud-hidden");
+          const stopWords = new Set([
+            "а",
+            "без",
+            "более",
+            "бы",
+            "был",
+            "была",
+            "были",
+            "было",
+            "быть",
+            "в",
+            "вам",
+            "вас",
+            "весь",
+            "во",
+            "вот",
+            "все",
+            "всего",
+            "всех",
+            "вы",
+            "где",
+            "да",
+            "для",
+            "до",
+            "его",
+            "ее",
+            "ей",
+            "ему",
+            "если",
+            "есть",
+            "еще",
+            "ж",
+            "же",
+            "за",
+            "здесь",
+            "и",
+            "из",
+            "или",
+            "им",
+            "их",
+            "к",
+            "как",
+            "какая",
+            "какие",
+            "какой",
+            "когда",
+            "кто",
+            "куда",
+            "ли",
+            "между",
+            "меня",
+            "мне",
+            "много",
+            "может",
+            "можно",
+            "мы",
+            "на",
+            "над",
+            "надо",
+            "нас",
+            "не",
+            "него",
+            "нее",
+            "ней",
+            "нет",
+            "ни",
+            "них",
+            "но",
+            "ну",
+            "о",
+            "об",
+            "один",
+            "оно",
+            "он",
+            "она",
+            "они",
+            "оно",
+            "от",
+            "перед",
+            "по",
+            "под",
+            "после",
+            "потом",
+            "потому",
+            "при",
+            "про",
+            "с",
+            "себе",
+            "себя",
+            "со",
+            "так",
+            "также",
+            "там",
+            "те",
+            "тебя",
+            "тем",
+            "то",
+            "того",
+            "той",
+            "только",
+            "том",
+            "тот",
+            "ты",
+            "у",
+            "уже",
+            "хотя",
+            "чего",
+            "чей",
+            "чем",
+            "что",
+            "чтобы",
+            "чья",
+            "чье",
+            "чьи",
+            "эта",
+            "эти",
+            "этого",
+            "этом",
+            "этот",
+            "эту",
+            "я",
+          ]);
+          let wordList = [];
+          if (wordCloudData && wordCloudData.length > 0) {
+            wordList = wordCloudData
+              .filter(
+                (item) =>
+                  item.word.length > 2 &&
+                  !stopWords.has(item.word.toLowerCase()),
+              )
+              .map((item) => [item.word.toUpperCase(), item.freq || 1]);
+          }
+          if (wordList.length === 0) {
+            const wordSet = new Set();
+            this.localPhrases.forEach((phrase) => {
+              const words = phrase
+                .split(" ")
+                .filter(
+                  (word) =>
+                    word.length > 2 && !stopWords.has(word.toLowerCase()),
+                );
+              words.forEach((word) => wordSet.add(word.toUpperCase()));
+            });
+            wordList = Array.from(wordSet).map((word) => [
+              word,
+              Math.random() * 6 + 2,
+            ]);
+          }
+          if (wordList.length === 0) {
+            wordList = [
+              ["WORD", 1],
+              ["TEXT", 1],
+              ["WAS", 1],
+              ["IN THE BEGINNING", 1],
+              ["CODE", 2],
+              ["THEN", 3],
+              ["THE REST", 2],
+              ["DEPLOY", 1],
+              ["THEME", 2],
+            ].filter(
+              ([word]) => word.length > 2 && !stopWords.has(word.toLowerCase()),
+            );
+          }
+          if (typeof WordCloud === "undefined") {
+            this.wordCloudEl.innerHTML =
+              "<p>Error: WordCloud not available</p>";
+            return;
+          }
+          const maxFreq = Math.max(
+            ...wordList.map(([_, freq]) => parseFloat(freq) || 1),
+          );
+          wordList = wordList.map(([word, freq]) => [
+            word,
+            Math.max(1, (parseFloat(freq) / maxFreq) * 10),
+          ]);
+          try {
+            WordCloud(this.wordCloudEl, {
+              list: wordList,
+              animate: !this.isWordCloudPaused,
+              animationDuration: 100,
+              fontFamily: "Anonymous Pro, monospace",
+              fontWeight: "normal",
+              color: () => `hsl(${Math.random() * 360}, 50%, 60%)`,
+              minSize: 12,
+              maxSize: 48,
+              minRotation: 0,
+              maxRotation: Math.PI / 2,
+              rotationSteps: 3,
+              rotateRatio: 0.4,
+              shape: "square",
+              backgroundColor: "#00000000",
+              gridSize: 10,
+              drawOutOfBound: false,
+              shrinkToFit: true,
+              weightFactor: (size) => size * 19,
+              origin: [
+                this.wordCloudEl.clientWidth * 0.4,
+                this.wordCloudEl.clientHeight / 4,
+              ],
+            });
+          } catch (error) {
+            this.wordCloudEl.innerHTML =
+              "<p>Error: word cloud container invisible</p>";
+          }
+        }
+
+        async displayNext() {
+          if (this.isWordCloudPaused || this.isAnimating) {
+            return;
+          }
+          let highlightDuration = 0;
+          this.isAnimating = true;
+          this.timeouts = [];
+          if (!this.allLocalPhrasesDisplayed) {
+            this.isAnimating = false;
+            return;
+          }
+          if (this.queue.length === 0) {
+            this.isAnimating = false;
+            this.stopPauseTimer();
+            this.updatePauseButton();
+            if (!this.currentMessage) {
+              this.renderWordCloud(this.generateLocalWordCloud());
+            }
+            return;
+          }
+          const { message, fromWebSocket } = this.queue.shift();
+          if (fromWebSocket) {
+            this.lastWebSocketMessage = { message, fromWebSocket };
+          }
+          this.currentMessage = message.text;
+          this.currentHighlights = fromWebSocket
+            ? this.getHighlightWords(message.text, message.tags).highlights
+            : [];
+          this.currentPrefix = fromWebSocket
+            ? `<div class="segment-indicator">${this.getSegmentColors(message)
+                .map(
+                  (color, index) =>
+                    `<span class="blinking-segment" style="background-color: ${color};"></span>`,
+                )
+                .join("")}</div>`
+            : "";
+          this.updateResetButton();
+
+          if (this.contentEl) {
+            this.contentEl.style.background = "";
+            if (message.special_id === "1b") {
+              await new Promise((resolve) => setTimeout(resolve, 1000));
+              this.contentEl.style.transition = "background 1s ease";
+              this.contentEl.style.background =
+                "radial-gradient(#000000, transparent 50%)";
+            }
+            if (message.special_id === "2b") {
+              await new Promise((resolve) => setTimeout(resolve, 1000));
+              this.contentEl.style.transition = "background 1s ease";
+              this.contentEl.style.background =
+                "radial-gradient(#8d1919, transparent 50%)";
+            }
+            if (message.special_id === "3b") {
+              await new Promise((resolve) => setTimeout(resolve, 1000));
+              this.contentEl.style.transition = "background 1s ease";
+              this.contentEl.style.background =
+                "radial-gradient(#6e5b07, transparent 50%)";
+            }
+            if (message.special_id === "4b") {
+              await new Promise((resolve) => setTimeout(resolve, 1000));
+              this.contentEl.style.transition = "background 1s ease";
+              this.contentEl.style.background =
+                "radial-gradient(#810372, transparent 50%)";
+            }
+            if (message.special_id === "5b") {
+              await new Promise((resolve) => setTimeout(resolve, 1000));
+              this.contentEl.style.transition = "background 1s ease";
+              this.contentEl.style.background =
+                "radial-gradient(#036b81, transparent 50%)";
+            }
+            if (message.special_id === "6b") {
+              await new Promise((resolve) => setTimeout(resolve, 1000));
+              this.contentEl.style.transition = "background 1s ease";
+              this.contentEl.style.background =
+                "radial-gradient(#0c6019, transparent 50%)";
+            }
+          }
+          try {
+            const { highlights, wordsToHighlight } = fromWebSocket
+              ? this.getHighlightWords(message.text, message.tags)
+              : { highlights: [], wordsToHighlight: [] };
+            this.wordCloudEl.classList.add("word-cloud-hidden");
+            await new Promise((resolve) => {
+              if (this.isWordCloudPaused) {
+                this.isAnimating = false;
+                resolve();
+                return;
+              }
+              this.timeouts.push(setTimeout(resolve, 50));
+            });
+            if (this.isWordCloudPaused) {
+              this.isAnimating = false;
+              return;
+            }
+            this.textEl.style.display = "block";
+            let blinkingBlock = this.currentPrefix;
+            const textPromise = this.fxText.setText(
+              message.text,
+              highlights,
+              blinkingBlock,
+              "instant",
+            );
+            this.mediaSlides.ignoreNextMessageSlide = false;
+            this.mediaSlides.justSwitchedToNormalMode = false;
+            if (
+              fromWebSocket &&
+              !this.isWordCloudPaused &&
+              !this.isPaused &&
+              message.text
+            ) {
+              if (this.mediaSlides.slides.length > 0) {
+                await this.mediaSlides.nextSlide(false);
+              } else {
+                if (this.mediaErrorEl)
+                  this.mediaErrorEl.style.display = "block";
+              }
+            }
+            if (highlights.length > 0) {
+              await this.highlightWordsSequentially(
+                message.text,
+                highlights,
+                this.textEl,
+                blinkingBlock,
+              );
+              highlightDuration =
+                highlights.filter((h) => !h.word.match(/https?:\/\/[^\s]+/i))
+                  .length * 150;
+            }
+            await textPromise;
+            if (this.isWordCloudPaused) {
+              this.isAnimating = false;
+              return;
+            }
+            if (fromWebSocket) {
+              this.textEl.innerHTML =
+                blinkingBlock + this.applyHighlights(message.text, highlights);
+            }
+            if (!fromWebSocket) {
+              await new Promise((resolve) => {
+                if (this.isWordCloudPaused) {
+                  this.isAnimating = false;
+                  resolve();
+                  return;
+                }
+                this.timeouts.push(
+                  setTimeout(
+                    resolve,
+                    this.MESSAGE_DISPLAY_DURATION - highlightDuration,
+                  ),
+                );
+              });
+            }
+            if (this.isWordCloudPaused) {
+              this.isAnimating = false;
+              return;
+            }
+            if (fromWebSocket && message.wordCloud) {
+              this.renderWordCloud(message.wordCloud);
+            } else {
+              this.renderWordCloud(this.generateLocalWordCloud());
+            }
+            this.messageCount++;
+            if (this.isWordCloudPaused) {
+              this.isAnimating = false;
+              return;
+            }
+            await new Promise((resolve) => {
+              if (this.isWordCloudPaused) {
+                this.isAnimating = false;
+                resolve();
+                return;
+              }
+              this.timeouts.push(
+                setTimeout(
+                  resolve,
+                  this.MESSAGE_DISPLAY_DURATION - highlightDuration,
+                ),
+              );
+            });
+            if (!this.isPaused && !this.isWordCloudPaused) {
+              this.mediaSlides.startMediaSwitchInterval();
+            }
+          } catch (error) {
+          } finally {
+            this.isAnimating = false;
+            this.timeouts.forEach(clearTimeout);
+            this.timeouts = [];
+            if (this.queue.length > 0 && !this.isWordCloudPaused) {
+              this.startPauseTimer(highlightDuration);
+              await this.displayNext();
+            } else {
+              this.stopPauseTimer();
+              this.updatePauseButton();
+              if (!this.currentMessage) {
+                this.renderWordCloud(this.generateLocalWordCloud());
+              }
+            }
+          }
+        }
+
+        async resetQueue() {
+          const now = Date.now();
+          if (now - this.lastResetClick < 5000) {
+            return;
+          }
+          this.lastResetClick = now;
+
+          this.isResetting = true;
+          this.isWebSocketReady = false;
+          this.isFastStartMode = true;
+
+          setTimeout(() => {
+            this.isFastStartMode = false;
+          }, 5000);
+
+          if (this.isAnimating) {
+            await new Promise((resolve) => setTimeout(resolve, 200));
+          }
+          this.isAnimating = false;
+          this.fxText.stopAnimation();
+          this.mediaSlides.stopAnimations();
+          this.stopPauseTimer();
+          this.queue = [];
+          this.currentMessage = null;
+          this.currentHighlights = [];
+          this.currentPrefix = "";
+          this.textEl.innerHTML = "";
+          this.updateResetButton();
+          this.mediaSlides.files = [];
+          this.mediaSlides.currentPage = 1;
+
+          try {
+            await this.closeWebSocket();
+            await this.mediaSlides.closeWebSocket();
+
+            await new Promise((resolve) => setTimeout(resolve, 100));
+
+            await this.mediaSlides.initWebSocket();
+
+            await this.mediaSlides.waitForWebSocketConnection(10000);
+
+            this.initWebSocket();
+
+            this.isResetting = false;
+
+            const resetIndicator =
+              this.resetButton.querySelector(".reset-indicator");
+            if (resetIndicator) {
+              resetIndicator.style.backgroundColor = "#FF5555";
+              setTimeout(() => {
+                resetIndicator.style.backgroundColor = "";
+              }, 6000);
+            }
+            if (this.flashEl) {
+              this.flashEl.classList.add("active");
+              setTimeout(() => {
+                this.flashEl.classList.remove("active");
+              }, 300);
+            }
+            await this.renderWordCloud(this.generateLocalWordCloud());
+            await this.mediaSlides.switchToNormalMode();
+            this.updatePauseButton();
+            if (this.localPhrases.length > 0) {
+              const defaultPhrase = this.localPhrases[0];
+              await this.fxText.setText(defaultPhrase, [], "", "fast");
+              this.currentMessage = defaultPhrase;
+              this.currentHighlights = [];
+              this.currentPrefix = "";
+            }
+          } catch (error) {
+            this.isResetting = false;
+            this.isFastStartMode = false;
+            setTimeout(() => this.initWebSocket(), 1000);
+          }
+        }
+      }
+
+      const display = new MessageDisplay();
+
+      window.pauseSlides = async () => {
+        if (display.pauseButton.disabled) return;
+        display.pauseButton.style.opacity = "1";
+        try {
+          display.isPaused = !display.isPaused;
+          if (display.isPaused) {
+            display.mediaSlides.stopMediaSwitchInterval();
+            display.controlsEl.classList.add("paused");
+            display.updatePauseButton();
+          } else {
+            display.controlsEl.classList.remove("paused");
+            if (!display.isWordCloudPaused) {
+              display.mediaSlides.startMediaSwitchInterval();
+            }
+            display.updatePauseButton();
+            if (
+              display.queue.length > 0 &&
+              display.allLocalPhrasesDisplayed &&
+              !display.isAnimating &&
+              !display.isWordCloudPaused
+            ) {
+              display.startPauseTimer();
+              await display.displayNext();
+            }
+          }
+        } finally {
+          setTimeout(() => {
+            display.pauseButton.disabled = false;
+            display.pauseButton.style.opacity = "1";
+          }, 300);
+        }
+      };
+
+      window.nextSlide = async () => {
+        if (
+          display.mediaSlides.lastManualSwitch &&
+          Date.now() - display.mediaSlides.lastManualSwitch < 500
+        ) {
+          return;
+        }
+        const nextIndicator =
+          display.nextButton.querySelector(".next-indicator");
+        if (nextIndicator) {
+          nextIndicator.classList.add("active");
+          setTimeout(() => nextIndicator.classList.remove("active"), 300);
+        }
+        display.mediaSlides.lastManualSwitch = Date.now();
+        display.mediaSlides.skipNextAutoSlide = true;
+        display.mediaSlides.ignoreNextMessageSlide = true;
+        await display.mediaSlides.nextSlide(true);
+        if (
+          display.queue.length > 0 &&
+          display.allLocalPhrasesDisplayed &&
+          !display.isWordCloudPaused &&
+          !display.isAnimating
+        ) {
+          display.isAnimating = false;
+          display.fxText.stopAnimation();
+          await display.displayNext();
+          display.startPauseTimer();
+        } else {
+          display.updatePauseButton();
+        }
+      };
+
+      window.resetQueue = () => {
+        display.resetQueue();
+      };
+
+      window.setLocalPhraseDuration = (duration) => {
+        display.setLocalPhraseDuration(duration);
+      };
+    </script>
+  </body>
+</html>
