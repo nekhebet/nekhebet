@@ -12,7 +12,7 @@
       content="Verifiable Real-Time Event Display Pipeline"
     />
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="http://0808.us.nekhebet.su:8080/" />
+    <meta property="og:url" content="https://0808.us.nekhebet.su:8080/" />
     <meta
       property="og:image"
       content="https://i.postimg.cc/qvRwVDvL/080808.png"
@@ -122,6 +122,7 @@
         min-height: 350px;
         justify-content: space-evenly;
         align-items: center;
+  padding-top: 5px;
         padding-bottom: 50px;
         box-sizing: border-box;
       }
@@ -291,7 +292,7 @@
       #wordCloud {
         min-height: 50px;
         max-width: 95%;
-        padding: 6px 0px 10px 0px;
+        padding: 10px 0px 15px 0px;
         z-index: 5;
         cursor: pointer;
         max-height: calc(100% - 100px);
@@ -421,7 +422,7 @@
         border: none;
         cursor: pointer;
         font-family: "Anonymous Pro", monospace;
-        font-size: clamp(14px, 3vw, 16px);
+        font-size: clamp(12px, 3vw, 14px);
         text-align: center;
         display: flex;
         align-items: center;
@@ -2119,7 +2120,7 @@
     </noscript>
 
     <script>
-      const API_BASE = "http://0808.us.nekhebet.su:8080";
+      const API_BASE = "https://0808.us.nekhebet.su:8080";
 
       class Typewriter {
         constructor(el) {
@@ -2436,7 +2437,7 @@
             setTimeout(() => this.initWebSocket(), 100);
             return;
           }
-          this.ws = new WebSocket("ws://0808.us.nekhebet.su:8080");
+          this.ws = new WebSocket("wss://0808.us.nekhebet.su:8080");
           this.ws.onopen = () => {
             this.messageDisplay.updatePauseButton();
             if (this.mediaErrorEl) this.mediaErrorEl.style.display = "none";
@@ -2968,7 +2969,7 @@
           this.lastCheckTime = now;
           try {
             const response = await fetch(
-              "http://0808.us.nekhebet.su:8080/new-media-files",
+              "https://0808.us.nekhebet.su:8080/new-media-files",
             );
             if (!response.ok) throw new Error("Error loading new files");
             const newFiles = await response.json();
@@ -3680,7 +3681,7 @@
 
         initWebSocket() {
           try {
-            this.ws = new WebSocket("ws://0808.us.nekhebet.su:8080");
+            this.ws = new WebSocket("wss://0808.us.nekhebet.su:8080");
             this.ws.onopen = () => {
               this.isWebSocketReady = true;
               this.updatePauseButton();
@@ -3743,7 +3744,7 @@
         async loadLocalPhrases() {
           try {
             const response = await fetch(
-              "http://0808.us.nekhebet.su:8080/local.json",
+              "https://0808.us.nekhebet.su:8080/local.json",
             );
             if (!response.ok) throw new Error("local.json missing");
             const data = await response.json();
