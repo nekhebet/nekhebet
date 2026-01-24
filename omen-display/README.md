@@ -48,13 +48,13 @@
 
 ```javascript
 // API endpoint по умолчанию
-const API_BASE = 'http://0808.us.nekhebet.su:8080';
+const API_BASE = 'https://0808.us.nekhebet.su:8080';
 ```
 
 ## 📺 Live демо
 
 ```
-http://0808.us.nekhebet.su:8080
+https://0808.us.nekhebet.su:8080
 ```
 
 ## 📋 Обзор
