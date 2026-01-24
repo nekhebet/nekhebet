@@ -1,0 +1,11 @@
+{
+  "name": "Nekhebet Omen Display",
+  "short_name": "Omen",
+  "description": "Verifiable Real-Time Event Display Pipeline",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#212121",
+  "theme_color": "#212121",
+  "icons": []
+}
